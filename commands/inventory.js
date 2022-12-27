@@ -5,15 +5,6 @@ const {
 } = require("discord.js");
 const fs = require("fs");
 const feishu = require("../feishu.js");
-const luckySymbols = {
-	20: ["☃️", "🧦", "🎄"],
-	21: ["🍬", "🎅", "🧣"],
-	22: ["🧣", "🧦", "☃️"],
-	23: ["🧦", "🎅", "☃️"],
-	24: ["🎄", "🍬", "🎅"],
-	25: ["🧦", "🎄", "🧣"],
-	26: ["🧣", "🍬", "☃️"],
-};
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -29,11 +20,10 @@ module.exports = {
 	async execute(interaction, client) {
 		await interaction.deferReply({ ephemeral: true });
 		let discordId, discordName, username;
-		const date = new Date().toLocaleString("en-US", {
-			timeZone: "Asia/Singapore",
-		});
-		let currentDay = new Date(date).getDate();
-		let luckySymbolsToday = luckySymbols[currentDay];
+		// const date = new Date().toLocaleString("en-US", {
+		// 	timeZone: "Asia/Singapore",
+		// });
+		// let currentDay = new Date(date).getDate();
 
 		if (interaction.options.getUser("user")) {
 			if (interaction.user.id != "132784173311197184") {
@@ -75,10 +65,10 @@ module.exports = {
 
 		let inventory = [];
 		let expired = [];
-		let won = false;
+		//let won = false;
 		for (const item of response.data.items) {
 			if (item.fields["Valid"]) {
-				if (item.fields["Item"] == "⭐") won = true;
+				//if (item.fields["Item"] == "⭐") won = true;
 				inventory.push(item.fields["Item"]);
 			} else expired.push(item.fields["Item"]);
 		}
@@ -87,78 +77,6 @@ module.exports = {
 			inventoryEmbed.setDescription("*Your inventory is currently empty.*");
 		else {
 			inventoryEmbed.setDescription(inventory.join(" "));
-			let thrice = hasElementOccurringThrice(inventory);
-			if (thrice && !won) {
-				inventoryEmbed.addFields(
-					{
-						name: "\u200B",
-						value: "\u200B",
-					},
-					{
-						name: "⭐⭐⭐ **3 Matching Gifts** ⭐⭐⭐",
-						value:
-							"<a:arrowanimate:1010745620069372044> " +
-							thrice +
-							" " +
-							thrice +
-							" " +
-							thrice,
-					},
-					{
-						name: "\u200B",
-						value:
-							"**❄️ Merry Christmas ❄️**\n*You have received the maximum number of rewards from this event. Thank you for taking part! You will be messaged soon with your prize. Please keep your DMs open.*",
-					}
-				);
-				await feishu.createRecord(
-					tenantToken,
-					"bascnmtfV0mbNf8o2cmZkeHBGjd",
-					"tblkFaNcK0MyYXR7",
-					{
-						fields: {
-							"Discord ID": discordId,
-							"Discord Name": discordName,
-							Item: "⭐",
-							Event: "Christmas 2022",
-							Valid: true,
-							"Interaction ID": "3 Gifts",
-						},
-					}
-				);
-			} else if (containsAllElements(inventory, luckySymbolsToday) && !won) {
-				inventoryEmbed.addFields(
-					{
-						name: "\u200B",
-						value: "\u200B",
-					},
-					{
-						name: "⭐⭐⭐ **Lucky Gifts** ⭐⭐⭐",
-						value:
-							"<a:arrowanimate:1010745620069372044> " +
-							luckySymbolsToday.join(" "),
-					},
-					{
-						name: "\u200B",
-						value:
-							"**❄️ Merry Christmas ❄️**\n*You have received the maximum number of rewards from this event. Thank you for taking part! You will be messaged soon with your prize. Please keep your DMs open.*",
-					}
-				);
-				await feishu.createRecord(
-					tenantToken,
-					"bascnmtfV0mbNf8o2cmZkeHBGjd",
-					"tblkFaNcK0MyYXR7",
-					{
-						fields: {
-							"Discord ID": discordId,
-							"Discord Name": discordName,
-							Item: "⭐",
-							Event: "Christmas 2022",
-							Valid: true,
-							"Interaction ID": "Lucky Gifts",
-						},
-					}
-				);
-			}
 		}
 
 		await interaction.editReply({
@@ -167,10 +85,10 @@ module.exports = {
 	},
 };
 
-function hasElementOccurringThrice(arr) {
+function hasElementOccurringThrice(array) {
 	const counts = {};
 
-	for (const element of arr) {
+	for (const element of array) {
 		if (element in counts) {
 			counts[element]++;
 		} else {
@@ -187,10 +105,10 @@ function hasElementOccurringThrice(arr) {
 	return null;
 }
 
-function containsAllElements(inventory, luckySymbolsToday) {
-	const set = new Set(inventory);
+function containsAllElements(array, mainArray) {
+	const set = new Set(array);
 
-	for (const element of luckySymbolsToday) {
+	for (const element of mainArray) {
 		if (!set.has(element)) {
 			return false;
 		}
