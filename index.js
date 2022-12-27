@@ -896,21 +896,32 @@ client.on("interactionCreate", async (interaction) => {
 				process.env.FEISHU_ID,
 				process.env.FEISHU_SECRET
 			);
-			let records = await feishu.getRecords(
-				tenantToken,
-				process.env.CODE_BASE,
-				process.env.BETA_TESTER_ONE,
-				`AND(CurrentValue.[Codes] = "${activationCode}",NOT(CurrentValue.[Status] = "Binded"))`
+			let records = JSON.parse(
+				await feishu.getRecords(
+					tenantToken,
+					process.env.CODE_BASE,
+					process.env.BETA_TESTER_ONE,
+					`AND(CurrentValue.[Codes] = "${activationCode}",NOT(CurrentValue.[Status] = "Binded"))`
+				)
 			);
-			records = JSON.parse(records);
 
-			let records2 = await feishu.getRecords(
-				tenantToken,
-				process.env.CODE_BASE,
-				process.env.BETA_TESTER_TWO,
-				`AND(CurrentValue.[Codes] = "${activationCode}",NOT(CurrentValue.[Status] = "Binded"))`
+			let records2 = JSON.parse(
+				await feishu.getRecords(
+					tenantToken,
+					process.env.CODE_BASE,
+					process.env.BETA_TESTER_TWO,
+					`AND(CurrentValue.[Codes] = "${activationCode}",NOT(CurrentValue.[Status] = "Binded"))`
+				)
 			);
-			records2 = JSON.parse(records2);
+
+			let records3 = JSON.parse(
+				await feishu.getRecords(
+					tenantToken,
+					process.env.CODE_BASE,
+					process.env.BETA_TESTER_THREE,
+					`AND(CurrentValue.[Codes] = "${activationCode}",NOT(CurrentValue.[Status] = "Binded"))`
+				)
+			);
 
 			if (parseInt(records.data.total)) {
 				let recordId = records.data.items[0].record_id;
@@ -938,6 +949,26 @@ client.on("interactionCreate", async (interaction) => {
 					tenantToken,
 					process.env.CODE_BASE,
 					process.env.BETA_TESTER_TWO,
+					recordId,
+					{
+						fields: {
+							"Discord ID": interaction.user.id,
+							Status: "Binded",
+						},
+					}
+				);
+
+				await interaction.member.roles.add("1032238398829768735").then(() => {
+					interaction.editReply({
+						content: "Congrats! <#1018243733373866004> channels are unlocked!",
+					});
+				});
+			} else if (parseInt(records3.data.total)) {
+				let recordId = records3.data.items[0].record_id;
+				await feishu.updateRecord(
+					tenantToken,
+					process.env.CODE_BASE,
+					process.env.BETA_TESTER_THREE,
 					recordId,
 					{
 						fields: {
