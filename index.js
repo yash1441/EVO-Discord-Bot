@@ -60,8 +60,6 @@ for (const file of commandFiles) {
 
 let alreadyPressed = [];
 
-// client.on("debug", ( e ) => console.log(e));
-
 client.on("ready", () => {
 	console.log("* Discord bot connected. *");
 	client.user.setPresence({
@@ -1082,6 +1080,15 @@ client.on("interactionCreate", async (interaction) => {
 				return await interaction.editReply({
 					content: `\`${s1}\`\nPlease enter a valid **YouTube**\**TapTap** link. If you have \`www\` in your link, please remove it.`,
 				});
+			} else if (s1.includes("youtube")) {
+				let url = new URL(s1);
+				let videoId = url.searchParams.get("v");
+				let modifiedUrl = `https://www.youtube.com/watch?v=${videoId}`;
+				s1 = modifiedUrl;
+			} else if (s1.includes("youtu.be")) {
+				let videoId = s1.split("/").pop().split("?")[0];
+				let modifiedUrl = `https://youtu.be/${videoId}`;
+				s1 = modifiedUrl;
 			}
 
 			let content = {
