@@ -454,7 +454,7 @@ module.exports = {
 				});
 			}
 
-			let uniqueRecords = mergeRecords(recordsSimplified, {
+			let uniqueRecords = await mergeRecords(recordsSimplified, {
 				id: "Discord ID",
 				others: ["Weekly Valid Views", "Weekly Valid Videos"],
 			});
@@ -565,7 +565,7 @@ async function memberRegionRole(client, userId) {
 	return roles;
 }
 
-function mergeRecords(records, keys) {
+async function mergeRecords(records, keys) {
 	// Create an empty array to store the merged data
 	const mergedData = [];
 
