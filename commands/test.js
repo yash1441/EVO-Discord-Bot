@@ -442,7 +442,12 @@ module.exports = {
 
 			for (const record of response.data.items) {
 				let wviews = 0;
-				if (record.fields.View != null) wviews = parseInt(record.fields.Views);
+				if (record.fields.View != undefined) {
+					wviews = parseInt(record.fields.Views);
+					if (record.fields["Discord ID"] == "1049239337319006208") {
+						console.log("---><---");
+					}
+				}
 				if (record.fields["Discord ID"] == "1049239337319006208") {
 					console.log(record.fields.Views);
 				}
