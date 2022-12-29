@@ -445,7 +445,7 @@ module.exports = {
 				if (record.fields.View != undefined)
 					wviews = parseInt(record.fields.Views);
 				if (record.fields["Discord ID"] == "1049239337319006208") {
-					console.log(wviews);
+					console.log(record.fields.Views);
 				}
 				recordsSimplified.push({
 					"Discord ID": record.fields["Discord ID"],
