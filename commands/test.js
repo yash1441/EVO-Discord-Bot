@@ -429,7 +429,7 @@ module.exports = {
 					tenantToken,
 					"bascnxUOz7DdG9mcOUvFlH7BIPg",
 					"tbl3pXwSxiOrfj7W",
-					'AND(CurrentValue.[Validity] = "VALID", CurrentValue.[Submission Date] >= DATE(2022,12,15), CurrentValue.[Submission Date] < DATE(2022,12,22), NOT(CurrentValue.[Video Platform] = "TapTap"))'
+					'AND(CurrentValue.[Validity] = "VALID", CurrentValue.[Submission Date] >= DATE(2022,12,8), CurrentValue.[Submission Date] < DATE(2022,12,15), NOT(CurrentValue.[Video Platform] = "TapTap"))'
 				)
 			);
 
