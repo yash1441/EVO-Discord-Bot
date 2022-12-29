@@ -436,7 +436,7 @@ module.exports = {
 			if (!response.data.total) {
 				console.log("No valid submissions this week.");
 				return;
-			} else console.log(response);
+			}
 
 			let recordsSimplified = [];
 
@@ -449,6 +449,10 @@ module.exports = {
 					"Weekly Valid Views": wviews,
 					"Weekly Valid Videos": 1,
 				});
+
+				if (record.fields["Discord ID"] == "1049239337319006208") {
+					console.log(record);
+				}
 			}
 
 			let uniqueRecords = Object.values(
