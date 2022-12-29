@@ -209,7 +209,6 @@ module.exports = {
 					proReward = 200;
 				}
 
-
 				if (videos >= 1 && views >= 500) {
 					newbieReward.push("Beginners");
 				}
@@ -430,7 +429,7 @@ module.exports = {
 					tenantToken,
 					"bascnxUOz7DdG9mcOUvFlH7BIPg",
 					"tbl3pXwSxiOrfj7W",
-					'AND(CurrentValue.[Validity] = "VALID", CurrentValue.[Submission Date] >= DATE(2022,12,1), CurrentValue.[Submission Date] < DATE(2022,12,8))'
+					'AND(CurrentValue.[Validity] = "VALID", CurrentValue.[Submission Date] >= DATE(2022,12,8), CurrentValue.[Submission Date] < DATE(2022,12,15))'
 				)
 			);
 
@@ -442,8 +441,9 @@ module.exports = {
 			let recordsSimplified = [];
 
 			for (const record of response.data.items) {
-				let wviews = 0;;
-				if (record.fields.View != undefined) wviews = parseInt(record.fields.Views);
+				let wviews = 0;
+				if (record.fields.View != undefined)
+					wviews = parseInt(record.fields.Views);
 				recordsSimplified.push({
 					"Discord ID": record.fields["Discord ID"],
 					"Weekly Valid Views": wviews,
