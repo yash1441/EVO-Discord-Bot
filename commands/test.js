@@ -451,22 +451,10 @@ module.exports = {
 				});
 			}
 
-			let uniqueRecords = Object.values(
-				recordsSimplified.reduce((acc, item) => {
-					acc[item["Discord ID"]] = acc[item["Discord ID"]]
-						? {
-								...item,
-								"Weekly Valid Views":
-									item["Weekly Valid Views"] +
-									acc[item["Discord ID"]]["Weekly Valid Views"],
-								"Weekly Valid Videos":
-									item["Weekly Valid Videos"] +
-									acc[item["Discord ID"]]["Weekly Valid Videos"],
-						  }
-						: item;
-					return acc;
-				}, {})
-			);
+			let uniqueRecords = mergeRecords(recordsSimplified, {
+				id: "Discord ID",
+				others: ["Weekly Valid Views", "Weekly Valid Videos"],
+			});
 
 			for (const record of uniqueRecords) {
 				if (record["Discord ID"] == "1049239337319006208") {
@@ -572,4 +560,35 @@ async function memberRegionRole(client, userId) {
 	if (roles.length === 0) return ["None"];
 
 	return roles;
+}
+
+function mergeRecords(records, keys) {
+	// Create an empty array to store the merged data
+	const mergedData = [];
+
+	// Iterate through the array of records
+	for (const record of records) {
+		// Destructure the record object and assign the values to variables with more readable names
+		const id = record[keys.id];
+		const values = Object.entries(record)
+			.filter(([key]) => !keys.id.includes(key))
+			.reduce((obj, [key, value]) => {
+				obj[key] = value;
+				return obj;
+			}, {});
+
+		// Check if an entry with the same ID already exists in the array
+		const existingRecord = mergedData.find((r) => r[keys.id] === id);
+		if (existingRecord) {
+			// If it does, add the values of the other keys to the corresponding values in the existing record
+			for (const key of keys.others) {
+				existingRecord[key] += values[key];
+			}
+		} else {
+			// If it does not, add a new entry to the array with the ID and the object containing the values of the other keys
+			mergedData.push({ [keys.id]: id, ...values });
+		}
+	}
+
+	return mergedData;
 }
