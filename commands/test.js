@@ -478,7 +478,7 @@ module.exports = {
 					)
 				);
 				if (!response.data.total) {
-					console.log({ record });
+					console.log({ record, test: "test" });
 					continue;
 				}
 				await feishu.updateRecord(
