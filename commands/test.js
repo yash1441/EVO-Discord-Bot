@@ -449,10 +449,6 @@ module.exports = {
 					"Weekly Valid Views": wviews,
 					"Weekly Valid Videos": 1,
 				});
-
-				if (record.fields["Discord ID"] == "1049239337319006208") {
-					console.log(record);
-				}
 			}
 
 			let uniqueRecords = Object.values(
@@ -473,6 +469,9 @@ module.exports = {
 			);
 
 			for (const record of uniqueRecords) {
+				if (record.fields["Discord ID"] == "1049239337319006208") {
+					console.log(record);
+				}
 				let response = JSON.parse(
 					await feishu.getRecords(
 						tenantToken,
