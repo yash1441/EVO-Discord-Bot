@@ -180,6 +180,10 @@ client.on("interactionCreate", async (interaction) => {
 						value: "7 Day Survival Challenge",
 					},
 					{
+						label: "Emberland Raider Challenge",
+						value: "Emberland Raider Challenge",
+					},
+					{
 						label: "Other Topics",
 						value: "Other Topics",
 					}
@@ -1068,7 +1072,8 @@ client.on("interactionCreate", async (interaction) => {
 		} else if (
 			interaction.customId.startsWith("Week") ||
 			interaction.customId === "Other Topics" ||
-			interaction.customId.startsWith("7 Day")
+			interaction.customId.startsWith("7 Day") ||
+			interaction.customId.startsWith("Emberland")
 		) {
 			await interaction.deferReply({ ephemeral: true });
 
