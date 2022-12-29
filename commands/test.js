@@ -442,15 +442,10 @@ module.exports = {
 
 			for (const record of response.data.items) {
 				let wviews = 0;
-				if (record.fields.View != undefined) {
+				if (record.fields.Views != undefined) {
 					wviews = parseInt(record.fields.Views);
-					if (record.fields["Discord ID"] == "1049239337319006208") {
-						console.log("---><---");
-					}
 				}
-				if (record.fields["Discord ID"] == "1049239337319006208") {
-					console.log(record.fields.Views);
-				}
+
 				recordsSimplified.push({
 					"Discord ID": record.fields["Discord ID"],
 					"Weekly Valid Views": wviews,
@@ -464,9 +459,6 @@ module.exports = {
 			});
 
 			for (const record of uniqueRecords) {
-				if (record["Discord ID"] == "1049239337319006208") {
-					console.log(record);
-				}
 				let response = JSON.parse(
 					await feishu.getRecords(
 						tenantToken,
@@ -589,20 +581,11 @@ async function mergeRecords(records, keys) {
 		if (existingRecord) {
 			// If it does, add the values of the other keys to the corresponding values in the existing record
 			for (const key of keys.others) {
-				if (id == "1049239337319006208") {
-					console.log(existingRecord[key]);
-				}
 				existingRecord[key] += values[key];
-				if (id == "1049239337319006208") {
-					console.log(existingRecord[key]);
-				}
 			}
 		} else {
 			// If it does not, add a new entry to the array with the ID and the object containing the values of the other keys
 			mergedData.push({ [keys.id]: id, ...values });
-			if (id == "1049239337319006208") {
-				console.log(mergedData[mergedData.length - 1]);
-			}
 		}
 	}
 
