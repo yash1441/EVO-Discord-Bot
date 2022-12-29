@@ -469,7 +469,7 @@ module.exports = {
 			);
 
 			for (const record of uniqueRecords) {
-				if (record.fields["Discord ID"] == "1049239337319006208") {
+				if (record["Discord ID"] == "1049239337319006208") {
 					console.log(record);
 				}
 				let response = JSON.parse(
