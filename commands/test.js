@@ -436,7 +436,7 @@ module.exports = {
 			if (!response.data.total) {
 				console.log("No valid submissions this week.");
 				return;
-			}
+			} else console.log(response);
 
 			let recordsSimplified = [];
 
