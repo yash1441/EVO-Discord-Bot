@@ -439,11 +439,7 @@ module.exports = {
 
 			let dateStart =
 				interaction.options.getString("date-start") ?? "2022,12,15";
-			let dateEnd = interaction.options.getString("date-start") ?? "2022,12,22";
-
-			console.log(
-				`AND(CurrentValue.[Validity] = "VALID", CurrentValue.[Submission Date] >= DATE(${dateStart}), CurrentValue.[Submission Date] < DATE(${dateEnd}), NOT(CurrentValue.[Video Platform] = "TapTap"))`
-			);
+			let dateEnd = interaction.options.getString("date-end") ?? "2022,12,22";
 
 			let response = JSON.parse(
 				await feishu.getRecords(
