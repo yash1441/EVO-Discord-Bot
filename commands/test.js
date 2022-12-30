@@ -18,6 +18,18 @@ module.exports = {
 					{ name: "CCES Weekly Data Calculation", value: "CCESWEEKLYDATA" },
 					{ name: "CCES Weekly Reward Calculation", value: "CCESWEEKLYREWARD" }
 				)
+				.addStringOption((option) =>
+					option
+						.setName("date-start")
+						.setDescription("The date for the function to start.")
+						.setRequired(false)
+				)
+				.addStringOption((option) =>
+					option
+						.setName("date-end")
+						.setDescription("The date for the function to end.")
+						.setRequired(false)
+				)
 		),
 
 	async execute(interaction, client) {
@@ -424,12 +436,17 @@ module.exports = {
 				"cli_a3befa8417f9500d",
 				"II4y9Nn6d7C6RuZUxdOz2fxt4sSo6Rsu"
 			);
+
+			let dateStart =
+				interaction.options.getString("date-start") ?? "2022,12,15";
+			let dateEnd = interaction.options.getString("date-start") ?? "2022,12,22";
+
 			let response = JSON.parse(
 				await feishu.getRecords(
 					tenantToken,
 					"bascnxUOz7DdG9mcOUvFlH7BIPg",
 					"tbl3pXwSxiOrfj7W",
-					'AND(CurrentValue.[Validity] = "VALID", CurrentValue.[Submission Date] >= DATE(2022,12,15), CurrentValue.[Submission Date] < DATE(2022,12,22), NOT(CurrentValue.[Video Platform] = "TapTap"))'
+					`AND(CurrentValue.[Validity] = "VALID", CurrentValue.[Submission Date] >= DATE(${dateStart}), CurrentValue.[Submission Date] < DATE(${dateEnd}), NOT(CurrentValue.[Video Platform] = "TapTap"))`
 				)
 			);
 
