@@ -441,6 +441,10 @@ module.exports = {
 				interaction.options.getString("date-start") ?? "2022,12,15";
 			let dateEnd = interaction.options.getString("date-start") ?? "2022,12,22";
 
+			console.log(
+				`AND(CurrentValue.[Validity] = "VALID", CurrentValue.[Submission Date] >= DATE(${dateStart}), CurrentValue.[Submission Date] < DATE(${dateEnd}), NOT(CurrentValue.[Video Platform] = "TapTap"))`
+			);
+
 			let response = JSON.parse(
 				await feishu.getRecords(
 					tenantToken,
