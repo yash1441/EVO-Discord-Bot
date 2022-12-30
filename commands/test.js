@@ -18,18 +18,18 @@ module.exports = {
 					{ name: "CCES Weekly Data Calculation", value: "CCESWEEKLYDATA" },
 					{ name: "CCES Weekly Reward Calculation", value: "CCESWEEKLYREWARD" }
 				)
-				.addStringOption((option) =>
-					option
-						.setName("date-start")
-						.setDescription("The date for the function to start.")
-						.setRequired(false)
-				)
-				.addStringOption((option) =>
-					option
-						.setName("date-end")
-						.setDescription("The date for the function to end.")
-						.setRequired(false)
-				)
+		)
+		.addStringOption((option) =>
+			option
+				.setName("date-start")
+				.setDescription("The date for the function to start.")
+				.setRequired(false)
+		)
+		.addStringOption((option) =>
+			option
+				.setName("date-end")
+				.setDescription("The date for the function to end.")
+				.setRequired(false)
 		),
 
 	async execute(interaction, client) {
