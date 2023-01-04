@@ -1746,7 +1746,7 @@ client.on("interactionCreate", async (interaction) => {
 
 			await interaction
 				.editReply({
-					content: `Reward selected: **${selection}**`,
+					content: `${interaction.message}\nReward selected: **${selection}**`,
 					components: [],
 				})
 				.then(() => {
