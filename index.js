@@ -1730,7 +1730,7 @@ client.on("interactionCreate", async (interaction) => {
 						process.env.REWARD_BASE,
 						process.env.DELIVERY,
 						recordId,
-						{ fields: { Region: selection, NOTE2: "Asked Reward" } }
+						{ fields: { Region: [selection], NOTE2: "Asked Reward" } }
 					);
 				});
 		} else if (interaction.customId.startsWith("askRewardSelectMenu")) {
