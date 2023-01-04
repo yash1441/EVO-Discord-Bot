@@ -4,7 +4,6 @@ const {
 	ButtonBuilder,
 	ButtonStyle,
 	ChannelType,
-	PermissionsBitField,
 } = require("discord.js");
 const axios = require("axios");
 const feishu = require("../feishu.js");
@@ -30,6 +29,11 @@ module.exports = {
 				.setDescription("Add all Content Creators to the list.")
 		)
 		.addSubcommand((subcommand) =>
+			subcommand
+				.setName("cec-members")
+				.setDescription("Add CEC Member role to accepted users.")
+		)
+		.addSubcommand((subcommand) =>
 			subcommand.setName("cec-data").setDescription("Calculate CEC data.")
 		)
 		.addSubcommand((subcommand) =>
@@ -41,8 +45,8 @@ module.exports = {
 	async execute(interaction, client) {
 		if (
 			interaction.user.id != process.env.MY_ID &&
-			interaction.user.id != "1017641241623679076" &&
-			interaction.user.id != "1049909674465574973"
+			interaction.user.id != process.env.VOID_ID &&
+			interaction.user.id != process.env.ELSON_ID
 		) {
 			return;
 		}
@@ -54,14 +58,14 @@ module.exports = {
 			});
 
 			let tenantToken = await feishu.authorize(
-				"cli_a3befa8417f9500d",
-				"II4y9Nn6d7C6RuZUxdOz2fxt4sSo6Rsu"
+				process.env.FEISHU_ID,
+				process.env.FEISHU_SECRET
 			);
 
 			let response = await feishu.getRecords(
 				tenantToken,
-				"bascnxUOz7DdG9mcOUvFlH7BIPg",
-				"tblAYP1kaNvmCbfJ",
+				process.env.CEP_BASE,
+				process.env.CEp_APP,
 				`CurrentValue.[Status] = "Accepted"`
 			);
 
@@ -77,24 +81,24 @@ module.exports = {
 				}
 
 				for (const creator of creatorList) {
-					const guild = client.guilds.cache.get("951777532003381278");
+					const guild = client.guilds.cache.get(process.env.EVO_SERVER);
 					const member = guild.members.cache.get(creator.discordId);
 					if (member == undefined) {
 						await feishu.updateRecord(
 							tenantToken,
-							"bascnxUOz7DdG9mcOUvFlH7BIPg",
-							"tblAYP1kaNvmCbfJ",
+							process.env.CEP_BASE,
+							process.env.CEp_APP,
 							creator.recordId,
 							{ fields: { Status: "Failed" } }
 						);
 					} else {
 						await member.roles
-							.add("952233385500229703")
+							.add(process.env.CC_ROLE)
 							.catch(() => {
 								feishu.updateRecord(
 									tenantToken,
-									"bascnxUOz7DdG9mcOUvFlH7BIPg",
-									"tblAYP1kaNvmCbfJ",
+									process.env.CEP_BASE,
+									process.env.CEp_APP,
 									creator.recordId,
 									{ fields: { Status: "Failed" } }
 								);
@@ -102,8 +106,8 @@ module.exports = {
 							.then(() => {
 								feishu.updateRecord(
 									tenantToken,
-									"bascnxUOz7DdG9mcOUvFlH7BIPg",
-									"tblAYP1kaNvmCbfJ",
+									process.env.CEP_BASE,
+									process.env.CEP_APP,
 									creator.recordId,
 									{ fields: { Status: "Done" } }
 								);
@@ -124,8 +128,8 @@ module.exports = {
 			});
 
 			let tenantToken = await feishu.authorize(
-				"cli_a3befa8417f9500d",
-				"II4y9Nn6d7C6RuZUxdOz2fxt4sSo6Rsu"
+				process.env.FEISHU_ID,
+				process.env.FEISHU_SECRET
 			);
 
 			const claimButton = new ButtonBuilder()
@@ -138,8 +142,8 @@ module.exports = {
 
 			let response = await feishu.getRecords(
 				tenantToken,
-				"bascnbWD6jH5XOCtphFiiXxC3Ab",
-				"tblE1ARAr7yx7qpL",
+				process.env.REWARD_BASE,
+				process.env.DELIVERY,
 				`AND(CurrentValue.[Status] = "Ready")`
 			);
 
@@ -165,14 +169,14 @@ module.exports = {
 					let message = `Congrats! You have been rewarded a ${creator.reward_type} worth ${creator.reward_value} ${creator.reward_currency}.\n\nCode:\n\`${creator.reward_code}\` \n\nPlease tap **Claim** below to confirm.`;
 					let attachment = "",
 						codes = creator.reward_code;
-					const guild = client.guilds.cache.get("951777532003381278");
+					const guild = client.guilds.cache.get(process.env.EVO_SERVER);
 					const member = guild.members.cache.get(creator.discord_id);
 
 					if (member == undefined) {
 						await feishu.updateRecord(
 							tenantToken,
-							"bascnbWD6jH5XOCtphFiiXxC3Ab",
-							"tblE1ARAr7yx7qpL",
+							process.env.REWARD_BASE,
+							process.env.DELIVERY,
 							creator.record_id,
 							{ fields: { Status: "Failed", NOTE2: "Left Server" } }
 						);
@@ -191,7 +195,6 @@ module.exports = {
 					switch (creator.reward_type) {
 						case "Beta Codes":
 							if (creator.reward_code == undefined) {
-								// Get a code from the database
 								if (creator.number_codes == undefined) {
 									await interaction.followUp({
 										content:
@@ -201,8 +204,8 @@ module.exports = {
 									});
 									await feishu.updateRecord(
 										tenantToken,
-										"bascnbWD6jH5XOCtphFiiXxC3Ab",
-										"tblE1ARAr7yx7qpL",
+										process.env.REWARD_BASE,
+										process.env.DELIVERY,
 										creator.record_id,
 										{ fields: { Status: "Failed" } }
 									);
@@ -213,8 +216,8 @@ module.exports = {
 								let quantity = parseInt(creator.number_codes);
 								let response = await feishu.getRecords(
 									tenantToken,
-									"bascn3hSJ2czkPrZfFKRHqUgDsg",
-									"tblvmhckr64T2tyz",
+									process.env.CODE_BASE,
+									process.env.CODE_DATABASE,
 									`NOT(CurrentValue.[Status] = "Used")`
 								);
 								response = JSON.parse(response).data;
@@ -227,8 +230,8 @@ module.exports = {
 									});
 									await feishu.updateRecord(
 										tenantToken,
-										"bascnbWD6jH5XOCtphFiiXxC3Ab",
-										"tblE1ARAr7yx7qpL",
+										process.env.REWARD_BASE,
+										process.env.DELIVERY,
 										creator.record_id,
 										{ fields: { Status: "Failed" } }
 									);
@@ -249,8 +252,8 @@ module.exports = {
 								for (const record of chosenRecord) {
 									await feishu.updateRecord(
 										tenantToken,
-										"bascn3hSJ2czkPrZfFKRHqUgDsg",
-										"tblvmhckr64T2tyz",
+										process.env.CODE_BASE,
+										process.env.CODE_DATABASE,
 										record.record_id,
 										{
 											fields: {
@@ -264,8 +267,8 @@ module.exports = {
 								codes = codeList.join("\n");
 								await feishu.updateRecord(
 									tenantToken,
-									"bascnbWD6jH5XOCtphFiiXxC3Ab",
-									"tblE1ARAr7yx7qpL",
+									process.env.REWARD_BASE,
+									process.env.DELIVERY,
 									creator.record_id,
 									{ fields: { "Card Code": codes } }
 								);
@@ -300,8 +303,8 @@ module.exports = {
 							});
 							await feishu.updateRecord(
 								tenantToken,
-								"bascnbWD6jH5XOCtphFiiXxC3Ab",
-								"tblE1ARAr7yx7qpL",
+								process.env.REWARD_BASE,
+								process.env.DELIVERY,
 								creator.record_id,
 								{ fields: { Status: "Failed", NOTE2: "Reward Type Empty" } }
 							);
@@ -320,8 +323,8 @@ module.exports = {
 							.then((msg) => {
 								feishu.updateRecord(
 									tenantToken,
-									"bascnbWD6jH5XOCtphFiiXxC3Ab",
-									"tblE1ARAr7yx7qpL",
+									process.env.REWARD_BASE,
+									process.env.DELIVERY,
 									creator.record_id,
 									{ fields: { Status: "Sent" } }
 								);
@@ -329,8 +332,8 @@ module.exports = {
 							.catch((error) => {
 								feishu.updateRecord(
 									tenantToken,
-									"bascnbWD6jH5XOCtphFiiXxC3Ab",
-									"tblE1ARAr7yx7qpL",
+									process.env.REWARD_BASE,
+									process.env.DELIVERY,
 									creator.record_id,
 									{ fields: { Status: "Sent", NOTE2: "Private DM" } }
 								);
@@ -342,8 +345,8 @@ module.exports = {
 							.then((msg) => {
 								feishu.updateRecord(
 									tenantToken,
-									"bascnbWD6jH5XOCtphFiiXxC3Ab",
-									"tblE1ARAr7yx7qpL",
+									process.env.REWARD_BASE,
+									process.env.DELIVERY,
 									creator.record_id,
 									{ fields: { Status: "Sent" } }
 								);
@@ -351,8 +354,8 @@ module.exports = {
 							.catch((error) => {
 								feishu.updateRecord(
 									tenantToken,
-									"bascnbWD6jH5XOCtphFiiXxC3Ab",
-									"tblE1ARAr7yx7qpL",
+									process.env.REWARD_BASE,
+									process.env.DELIVERY,
 									creator.record_id,
 									{ fields: { Status: "Sent", NOTE2: "Private DM" } }
 								);
@@ -378,9 +381,7 @@ module.exports = {
 				(member) => member.user.tag
 			);
 
-			let creatorsList = {
-				records: [],
-			};
+			let creatorsList = [];
 
 			for (let i = 0; i < creatorsIdList.length; i++) {
 				let data = {
@@ -392,41 +393,17 @@ module.exports = {
 				creatorsList.records.push(data);
 			}
 
-			let appAccessToken;
+			let tenantToken = await feishu.authorize(
+				process.env.FEISHU_ID,
+				process.env.FEISHU_SECRET
+			);
 
-			await axios
-				.post(
-					"https://open.feishu.cn/open-apis/auth/v3/app_access_token/internal",
-					{
-						app_id: "cli_a3befa8417f9500d",
-						app_secret: "II4y9Nn6d7C6RuZUxdOz2fxt4sSo6Rsu",
-					}
-				)
-				.then((res) => {
-					appAccessToken = res.data.tenant_access_token;
-				})
-				.catch((err) => {
-					console.log(err);
-				});
-
-			let config = {
-				headers: {
-					Authorization: `Bearer ${appAccessToken}`,
-				},
-			};
-
-			await axios
-				.post(
-					`https://open.feishu.cn/open-apis/bitable/v1/apps/bascnxUOz7DdG9mcOUvFlH7BIPg/tables/tblKiZUk5iEEL3iU/records/batch_create`,
-					creatorsList,
-					config
-				)
-				.then((res) => {
-					return res.data;
-				})
-				.catch((err) => {
-					return err;
-				});
+			await feishu.createRecords(
+				tenantToken,
+				process.env.CEP_BASE,
+				process.env.CEP_CREATOR,
+				{ records: creatorsList }
+			);
 		} else if (subCommand === "cec-data") {
 			await interaction.reply({
 				content: "Calculating CEC Data...",
@@ -434,15 +411,15 @@ module.exports = {
 			});
 
 			let tenantToken = await feishu.authorize(
-				"cli_a3befa8417f9500d",
-				"II4y9Nn6d7C6RuZUxdOz2fxt4sSo6Rsu"
+				process.env.FEISHU_ID,
+				process.env.FEISHU_SECRET
 			);
 
 			let response = JSON.parse(
 				await feishu.getRecords(
 					tenantToken,
-					"bascnxUOz7DdG9mcOUvFlH7BIPg",
-					"tbl3pXwSxiOrfj7W",
+					process.env.CEP_BASE,
+					process.env.CEP_SUBMISSION,
 					`AND(CurrentValue.[CEC Member] = "CEC Member", CurrentValue.[Validity] = "VALID", CurrentValue.[Views] > 999, CurrentValue.[Submission Date] >= DATE(2022,12,1))`
 				)
 			);
@@ -480,24 +457,24 @@ module.exports = {
 				let response = JSON.parse(
 					await feishu.getRecords(
 						tenantToken,
-						"bascnxUOz7DdG9mcOUvFlH7BIPg",
-						"tbl9C9zwcgPWy7GQ",
+						process.env.CEP_BASE,
+						process.env.CEC_DATA,
 						`CurrentValue.[Discord ID] = "${record["Discord ID"]}"`
 					)
 				);
 				if (response.data.total) {
 					await feishu.updateRecord(
 						tenantToken,
-						"bascnxUOz7DdG9mcOUvFlH7BIPg",
-						"tbl9C9zwcgPWy7GQ",
+						process.env.CEP_BASE,
+						process.env.CEC_DATA,
 						response.data.items[0].record_id,
 						{ fields: record }
 					);
 				} else {
 					await feishu.createRecord(
 						tenantToken,
-						"bascnxUOz7DdG9mcOUvFlH7BIPg",
-						"tbl9C9zwcgPWy7GQ",
+						process.env.CEP_BASE,
+						process.env.CEC_DATA,
 						{ fields: record }
 					);
 				}
@@ -506,8 +483,8 @@ module.exports = {
 			response = JSON.parse(
 				await feishu.getRecords(
 					tenantToken,
-					"bascnxUOz7DdG9mcOUvFlH7BIPg",
-					"tbl3pXwSxiOrfj7W",
+					process.env.CEP_BASE,
+					process.env.CEP_SUBMISSION,
 					`AND(CurrentValue.[Validity] = "VALID", CurrentValue.[Views] > 999, CurrentValue.[CEC Special Mission] = "CEC Special Mission", CurrentValue.[Submission Date] >= DATE(2022,12,1))`
 				)
 			);
@@ -544,24 +521,24 @@ module.exports = {
 				let response = JSON.parse(
 					await feishu.getRecords(
 						tenantToken,
-						"bascnxUOz7DdG9mcOUvFlH7BIPg",
-						"tbl9C9zwcgPWy7GQ",
+						process.env.CEP_BASE,
+						process.env.CEC_DATA,
 						`CurrentValue.[Discord ID] = "${record["Discord ID"]}"`
 					)
 				);
 				if (response.data.total) {
 					await feishu.updateRecord(
 						tenantToken,
-						"bascnxUOz7DdG9mcOUvFlH7BIPg",
-						"tbl9C9zwcgPWy7GQ",
+						process.env.CEP_BASE,
+						process.env.CEC_DATA,
 						response.data.items[0].record_id,
 						{ fields: record }
 					);
 				} else {
 					await feishu.createRecord(
 						tenantToken,
-						"bascnxUOz7DdG9mcOUvFlH7BIPg",
-						"tbl9C9zwcgPWy7GQ",
+						process.env.CEP_BASE,
+						process.env.CEC_DATA,
 						{ fields: record }
 					);
 				}
@@ -578,15 +555,15 @@ module.exports = {
 			});
 
 			let tenantToken = await feishu.authorize(
-				"cli_a3befa8417f9500d",
-				"II4y9Nn6d7C6RuZUxdOz2fxt4sSo6Rsu"
+				process.env.FEISHU_ID,
+				process.env.FEISHU_SECRET
 			);
 
 			let response = JSON.parse(
 				await feishu.getRecords(
 					tenantToken,
-					"bascnxUOz7DdG9mcOUvFlH7BIPg",
-					"tbl9C9zwcgPWy7GQ"
+					process.env.CEP_BASE,
+					process.env.CEC_DATA
 				)
 			);
 
@@ -615,8 +592,8 @@ module.exports = {
 				response = JSON.parse(
 					await feishu.getRecords(
 						tenantToken,
-						"bascnxUOz7DdG9mcOUvFlH7BIPg",
-						"tbliYQOP4BRpXquE",
+						process.env.CEP_BASE,
+						process.env.CEC_BENEFIT,
 						`CurrentValue.[Discord ID] = "${record.discordId}"`
 					)
 				);
@@ -628,8 +605,8 @@ module.exports = {
 
 				await feishu.updateRecord(
 					tenantToken,
-					"bascnxUOz7DdG9mcOUvFlH7BIPg",
-					"tbl9C9zwcgPWy7GQ",
+					process.env.CEP_BASE,
+					process.env.CEC_DATA,
 					record.recordId,
 					{ fields: { "BP Amount": bp } }
 				);
@@ -639,12 +616,94 @@ module.exports = {
 				content: "CEC BP Data Calculated.",
 				ephemeral: true,
 			});
+		} else if (subCommand === "cec-members") {
+			await interaction.reply({
+				content: "Updating the list of CEC Members...",
+				ephemeral: true,
+			});
+
+			let tenantToken = await feishu.authorize(
+				process.env.FEISHU_ID,
+				process.env.FEISHU_SECRET
+			);
+
+			let response = JSON.parse(
+				await feishu.getRecords(
+					tenantToken,
+					process.env.CEP_BASE,
+					process.env.CEC_APP,
+					`CurrentValue.[Qualification] = "Accepted"`
+				)
+			);
+
+			if (!response.data.total) {
+				return await interaction.editReply({
+					content: "No accepted records found.",
+					ephemeral: true,
+				});
+			}
+
+			for (const record of response.data.items) {
+				let guild = client.guilds.cache.get(process.env.EVO_SERVER);
+				let member = guild.members.cache.get(record.fields["Discord ID"]);
+
+				response = JSON.parse(
+					await feishu.getRecords(
+						tenantToken,
+						process.env.CEP_BASE,
+						process.env.CEC_BENEFIT,
+						`CurrentValue.[Discord ID] = "${record.fields["Discord ID"]}"`
+					)
+				);
+
+				let benefit_level;
+
+				if (!response.data.total) {
+					benefit_level = "NA";
+				} else benefit_level = response.data.items[0].fields["Benefit Level"];
+
+				let cecInvitationMessage = `**Congratulations! Now you have membership of Creator Evolution Club!**\n\nWe sincerely appreciate your efforts on EVO community and thanks for your love & passion on Project EVO!\n\nNow you get access to the exclusive benefits for club members:\n1. Beta codes for your fans (up to 200 / month)\n2. Earn 1000  Benefit Points and redeem a phone ($800 value)\n3. Official Support & Instructions\n4. And more!\n\nThe amount of benefits that you can enjoy (including how many Benefit Points you can earn) depends on your Benefit Level, which is \`${benefit_level}\`. The benefit level can be updated every month.\n\nPlease join our Club server to finish the membership registration, start to enjoy the benefits and meet more EVO creators! https://discord.gg/bexu5aVyrY`;
+
+				await member.roles
+					.add(process.env.CEC_MEMBER_ROLE)
+					.then(() => {
+						let qualification = "DONE";
+						member
+							.send({ content: cecInvitationMessage })
+							.then(() => {
+								qualification = "DONE";
+							})
+							.catch((error) => {
+								console.log(error);
+								qualification = "DONE (NO DM)";
+							});
+						feishu.updateRecord(
+							tenantToken,
+							process.env.CEP_BASE,
+							process.env.CEC_APP,
+							record.record_id,
+							{ fields: { Qualification: qualification } }
+						);
+					})
+					.catch((error) => {
+						console.log(error);
+						feishu.updateRecord(
+							tenantToken,
+							process.env.CEP_BASE,
+							process.env.CEC_APP,
+							record.record_id,
+							{ fields: { Qualification: "Left Server" } }
+						);
+					});
+			}
 		}
 	},
 };
 
 async function privateChannel(creator, client, message, attachment, button) {
-	const channel = await client.channels.cache.get("1049567353798672435");
+	const channel = await client.channels.cache.get(
+		process.env.COLLECT_REWARDS_CHANNEL
+	);
 	const user = await client.users.cache.get(creator.discord_id);
 
 	await channel.permissionOverwrites.create(user, {
