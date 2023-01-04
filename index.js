@@ -1688,14 +1688,10 @@ client.on("interactionCreate", async (interaction) => {
 					});
 				});
 		} else if (interaction.customId.startsWith("askRegionSelectMenu")) {
-			await interaction.deferReply({ ephemeral: true });
+			await interaction.deferUpdate({ ephemeral: true });
 
 			const selection = interaction.values[0];
 			const recordId = interaction.customId.substring(19);
-
-			await interaction.update({
-				content: `Region selected: **${selection}**`,
-			});
 
 			let tenantToken = await feishu.authorize(
 				process.env.FEISHU_ID,
@@ -1723,45 +1719,51 @@ client.on("interactionCreate", async (interaction) => {
 					)
 			);
 
-			await interaction.reply({ components: [row] }).then(() => {
-				feishu.updateRecord(
-					tenantToken,
-					process.env.REWARD_BASE,
-					process.env.DELIVERY,
-					recordId,
-					{ fields: { Region: selection, NOTE2: "Asked Reward" } }
-				);
-			});
+			await interaction
+				.update({
+					content: `Region selected: **${selection}**`,
+					components: [row],
+				})
+				.then(() => {
+					feishu.updateRecord(
+						tenantToken,
+						process.env.REWARD_BASE,
+						process.env.DELIVERY,
+						recordId,
+						{ fields: { Region: selection, NOTE2: "Asked Reward" } }
+					);
+				});
 		} else if (interaction.customId.startsWith("askRewardSelectMenu")) {
-			await interaction.deferReply({ ephemeral: true });
+			await interaction.deferUpdate({ ephemeral: true });
 
 			const selection = interaction.values[0];
 			const recordId = interaction.customId.substring(19);
-
-			await interaction.update({
-				content: `Reward selected: **${selection}**`,
-			});
 
 			let tenantToken = await feishu.authorize(
 				process.env.FEISHU_ID,
 				process.env.FEISHU_SECRET
 			);
 
-			await interaction.reply({ components: [row] }).then(() => {
-				feishu.updateRecord(
-					tenantToken,
-					process.env.REWARD_BASE,
-					process.env.DELIVERY,
-					recordId,
-					{
-						fields: {
-							"Reward Type": selection,
-							Status: "Hold",
-							NOTE2: "Asked Region & Reward",
-						},
-					}
-				);
-			});
+			await interaction
+				.update({
+					content: `Reward selected: **${selection}**`,
+					components: [],
+				})
+				.then(() => {
+					feishu.updateRecord(
+						tenantToken,
+						process.env.REWARD_BASE,
+						process.env.DELIVERY,
+						recordId,
+						{
+							fields: {
+								"Reward Type": selection,
+								Status: "Hold",
+								NOTE2: "Asked Region & Reward",
+							},
+						}
+					);
+				});
 		}
 	}
 });
