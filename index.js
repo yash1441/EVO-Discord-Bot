@@ -1813,7 +1813,7 @@ client.on("interactionCreate", async (interaction) => {
 
 			await interaction
 				.editReply({
-					content: `Region selected: **${selection}**`,
+					content: `${interaction.message}\nRegion selected: **${selection}**`,
 					components: [row],
 				})
 				.then(() => {
