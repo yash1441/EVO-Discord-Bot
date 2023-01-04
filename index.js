@@ -2332,7 +2332,7 @@ async function CECCheck() {
 
 	if (!response.data.total) {
 		console.log('No entries set to "CHECK" for review.');
-		await CECQualifyCheck(tenantToken);
+		//await CECQualifyCheck(tenantToken);
 		return;
 	}
 
@@ -2375,7 +2375,7 @@ async function CECCheck() {
 		);
 	}
 	console.log("Completed CEC Check.");
-	await CECQualifyCheck(tenantToken);
+	//await CECQualifyCheck(tenantToken);
 }
 
 async function CECQualifyCheck(tenantToken) {
