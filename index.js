@@ -81,6 +81,7 @@ client.on("ready", () => {
 			console.log(newDate + "\nStarting scheduled cronjob...");
 			CCESDataCalculation();
 			CECCheck();
+			checkOldFiles();
 		},
 		{
 			timezone: "Asia/Singapore",
@@ -2545,6 +2546,7 @@ async function checkOldFiles() {
 				const oneHourAgo = new Date(Date.now() - 1000 * 60 * 60);
 				if (stats.mtime < oneHourAgo) {
 					console.log(`${file} is older than 1 hour.`);
+					fs.unlinkSync(file);
 				}
 			});
 		}
