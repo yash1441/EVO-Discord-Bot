@@ -1720,7 +1720,7 @@ client.on("interactionCreate", async (interaction) => {
 			);
 
 			await interaction
-				.update({
+				.editReply({
 					content: `Region selected: **${selection}**`,
 					components: [row],
 				})
@@ -1745,7 +1745,7 @@ client.on("interactionCreate", async (interaction) => {
 			);
 
 			await interaction
-				.update({
+				.editReply({
 					content: `Reward selected: **${selection}**`,
 					components: [],
 				})
