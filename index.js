@@ -87,6 +87,8 @@ client.on("ready", () => {
 		}
 	);
 
+	checkOldFiles();
+
 	// cron.schedule(
 	// 	"0 */30 * * * *",
 	// 	function () {
@@ -2510,4 +2512,41 @@ function checkMemberRole(client, guildId, userId, roleId) {
 	if (member.roles.cache.has(roleId)) {
 		return true;
 	} else return false;
+}
+
+async function checkOldFiles() {
+	// Use __dirname to get the absolute path of the directory that the script is in
+	const rootDir = __dirname;
+
+	// Read all files in the root directory
+	fs.readdir(rootDir, (err, files) => {
+		if (err) {
+			console.error(err);
+			return;
+		}
+
+		// Iterate through each file
+		for (const file of files) {
+			// Get the full path of the file
+			const filePath = path.join(rootDir, file);
+
+			if (!file.endsWith("-bug.jpg")) {
+				continue;
+			}
+
+			// Get the timestamp of when the file was last modified
+			fs.stat(filePath, (err, stats) => {
+				if (err) {
+					console.error(err);
+					return;
+				}
+
+				// Check if the file is older than 1 hour
+				const oneHourAgo = new Date(Date.now() - 1000 * 60 * 60);
+				if (stats.mtime < oneHourAgo) {
+					console.log(`${file} is older than 1 hour.`);
+				}
+			});
+		}
+	});
 }
