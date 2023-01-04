@@ -697,6 +697,11 @@ module.exports = {
 						);
 					});
 			}
+
+			await interaction.editReply({
+				content: "Updated the list of CEC Members!",
+				ephemeral: true,
+			});
 		}
 	},
 };
