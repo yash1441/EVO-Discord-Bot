@@ -740,7 +740,7 @@ module.exports = {
 
 				const row = new ActionRowBuilder().addComponents(
 					new StringSelectMenuBuilder()
-						.setCustomId("regionSelectMenu")
+						.setCustomId("askRegionSelectMenu" + record.record_id)
 						.setPlaceholder("Select your region")
 						.addOptions(
 							{ label: "Brazil", value: "Brazil" },
