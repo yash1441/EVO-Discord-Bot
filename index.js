@@ -1687,6 +1687,80 @@ client.on("interactionCreate", async (interaction) => {
 						ephemeral: true,
 					});
 				});
+		} else if (interaction.customId.startsWith("askRegionSelectMenu")) {
+			await interaction.deferReply({ ephemeral: true });
+
+			const selection = interaction.values[0];
+			const recordId = interaction.customId.substring(19);
+
+			await interaction.update({
+				content: `Region selected: **${selection}**`,
+			});
+
+			let tenantToken = await feishu.authorize(
+				process.env.FEISHU_ID,
+				process.env.FEISHU_SECRET
+			);
+
+			const row = new ActionRowBuilder().addComponents(
+				new StringSelectMenuBuilder()
+					.setCustomId("askRewardSelectMenu" + recordId)
+					.setPlaceholder("Select your reward type")
+					.addOptions(
+						{ label: "Google Play Gift Card", value: "Google Play Gift Card" },
+						{ label: "Amazon Gift Card", value: "Amazon Gift Card" },
+						{ label: "Razer Gold", value: "Razer Gold" },
+						{ label: "Garena Shells", value: "Garena Shells" },
+						{ label: "OZON Gift Card", value: "OZON Gift Card" },
+						{ label: "Steam Wallet Code", value: "Steam Wallet Code" },
+						{ label: "Apple Gift Card", value: "Apple Gift Card" },
+						{
+							label: "PlayStation Netword Card",
+							value: "PlayStation Netword Card",
+						},
+						{ label: "iTunes Gift Card", value: "iTunes Gift Card" },
+						{ label: "Netflix Gift Card", value: "Netflix Gift Card" }
+					)
+			);
+
+			await interaction.reply({ components: [row] }).then(() => {
+				feishu.updateRecord(
+					tenantToken,
+					process.env.REWARD_BASE,
+					process.env.DELIVERY,
+					recordId,
+					{ fields: { Region: selection, NOTE2: "Asked Reward" } }
+				);
+			});
+		} else if (interaction.customId.startsWith("askRewardSelectMenu")) {
+			await interaction.deferReply({ ephemeral: true });
+
+			const selection = interaction.values[0];
+			const recordId = interaction.customId.substring(19);
+
+			await interaction.update({
+				content: `Reward selected: **${selection}**`,
+			});
+
+			let tenantToken = await feishu.authorize(
+				process.env.FEISHU_ID,
+				process.env.FEISHU_SECRET
+			);
+
+			await interaction.reply({ components: [row] }).then(() => {
+				feishu.updateRecord(
+					tenantToken,
+					process.env.REWARD_BASE,
+					process.env.DELIVERY,
+					recordId,
+					{
+						fields: {
+							"Reward Type": selection,
+							NOTE2: "Asked Region & Reward",
+						},
+					}
+				);
+			});
 		}
 	}
 });
