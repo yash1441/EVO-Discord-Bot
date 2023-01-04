@@ -4,6 +4,7 @@ const {
 	ButtonBuilder,
 	ButtonStyle,
 	ChannelType,
+	StringSelectMenuBuilder,
 } = require("discord.js");
 const axios = require("axios");
 const feishu = require("../feishu.js");
@@ -40,6 +41,11 @@ module.exports = {
 			subcommand
 				.setName("cec-bp")
 				.setDescription("Calculate BP Amount in CEC data.")
+		)
+		.addSubcommand((subcommand) =>
+			subcommand
+				.setName("ask-reward")
+				.setDescription("Ask winners their region and reward type.")
 		),
 
 	async execute(interaction, client) {
@@ -702,6 +708,81 @@ module.exports = {
 				content: "Updated the list of CEC Members!",
 				ephemeral: true,
 			});
+		} else if (subCommand === "ask-reward") {
+			await interaction.reply({
+				content: "Checking for records marked **Ask**...",
+			});
+
+			let tenantToken = await feishu.authorize(
+				process.env.FEISHU_ID,
+				process.env.FEISHU_SECRET
+			);
+
+			let response = JSON.parse(
+				await feishu.getRecords(
+					tenantToken,
+					process.env.REWARD_BASE,
+					process.env.DELIVERY,
+					`CurrentValue.[Status] = "Ask"`
+				)
+			);
+
+			if (!response.data.total) {
+				return await interaction.editReply({
+					content: "No records marked **Ask** found.",
+					ephemeral: true,
+				});
+			}
+
+			for (const record of response.data.items) {
+				let guild = client.guilds.cache.get(process.env.EVO_SERVER);
+				let member = guild.members.cache.get(record.fields["Discord ID"]);
+
+				const row = new ActionRowBuilder().addComponents(
+					new StringSelectMenuBuilder()
+						.setCustomId("regionSelectMenu")
+						.setPlaceholder("Select your region")
+						.addOptions(
+							{ label: "Brazil", value: "Brazil" },
+							{ label: "Mexico", value: "Mexico" },
+							{ label: "United States", value: "United States" },
+							{ label: "Canada", value: "Canada" },
+							{ label: "Australia", value: "Australia" },
+							{ label: "Thailand", value: "Thailand" },
+							{ label: "Philippines", value: "Philippines" },
+							{ label: "Russia", value: "Russia" },
+							{ label: "Ukraine", value: "Ukraine" },
+							{ label: "EU", value: "EU" },
+							{ label: "Others", value: "Others" },
+							{ label: "Indonesia", value: "Indonesia" }
+						)
+				);
+
+				await member
+					.send({
+						content: "**Please answer these questions carefully**",
+						components: [row],
+					})
+					.then(() => {
+						feishu.updateRecord(
+							tenantToken,
+							process.env.REWARD_BASE,
+							process.env.DELIVERY,
+							record.record_id,
+							{ fields: { NOTE2: "Asked Region" } }
+						);
+					})
+					.catch((error) => {
+						console.log(error);
+						feishu.updateRecord(
+							tenantToken,
+							process.env.REWARD_BASE,
+							process.env.DELIVERY,
+							record.record_id,
+							{ fields: { Status: "Failed", NOTE2: "Private DM" } }
+						);
+					});
+			}
 		}
 	},
 };
