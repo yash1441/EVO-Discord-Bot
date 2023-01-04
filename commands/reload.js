@@ -761,7 +761,8 @@ module.exports = {
 
 				await member
 					.send({
-						content: "**Please answer these questions carefully**",
+						content:
+							"**Please answer these questions carefully**\n*If you can't find your region or reward, please contact **Cosmos#4776**.*",
 						components: [row],
 					})
 					.then(() => {
