@@ -1702,7 +1702,98 @@ client.on("interactionCreate", async (interaction) => {
 				new StringSelectMenuBuilder()
 					.setCustomId("askRewardSelectMenu" + recordId)
 					.setPlaceholder("Select your reward type")
-					.addOptions(
+			);
+
+			switch (selection) {
+				case "Brazil":
+					row.addOptions(
+						{ label: "Google Play Gift Card", value: "Google Play Gift Card" },
+						{ label: "Razer Gold", value: "Razer Gold" },
+						{ label: "Netflix Gift Card", value: "Netflix Gift Card" }
+					);
+					break;
+				case "Mexico":
+					row.addOptions(
+						{ label: "Google Play Gift Card", value: "Google Play Gift Card" },
+						{ label: "Amazon Gift Card", value: "Amazon Gift Card" },
+						{ label: "iTunes Gift Card", value: "iTunes Gift Card" }
+					);
+					break;
+				case "United States":
+					row.addOptions(
+						{ label: "Amazon Gift Card", value: "Amazon Gift Card" },
+						{ label: "Apple Gift Card", value: "Apple Gift Card" },
+						{ label: "eBay Gift Card", value: "eBay Gift Card" }
+					);
+					break;
+				case "Canada":
+					row.addOptions(
+						{ label: "Google Play Gift Card", value: "Google Play Gift Card" },
+						{ label: "Amazon Gift Card", value: "Amazon Gift Card" },
+						{ label: "iTunes Gift Card", value: "iTunes Gift Card" }
+					);
+					break;
+				case "Australia":
+					row.addOptions(
+						{ label: "Google Play Gift Card", value: "Google Play Gift Card" },
+						{ label: "Amazon Gift Card", value: "Amazon Gift Card" },
+						{ label: "iTunes Gift Card", value: "iTunes Gift Card" }
+					);
+					break;
+				case "Thailand":
+					row.addOptions(
+						{ label: "Razer Gold", value: "Razer Gold" },
+						{
+							label: "PlayStation Netword Card",
+							value: "PlayStation Netword Card",
+						},
+						{ label: "Netflix Gift Card", value: "Netflix Gift Card" }
+					);
+					break;
+				case "Philippines":
+					row.addOptions(
+						{ label: "Garena Shells", value: "Garena Shells" },
+						{ label: "Razer Gold", value: "Razer Gold" }
+					);
+					break;
+				case "Russia":
+					row.addOptions(
+						{ label: "OZON Gift Card", value: "OZON Gift Card" },
+						{ label: "iTunes Gift Card", value: "iTunes Gift Card" },
+						{
+							label: "PlayStation Netword Card",
+							value: "PlayStation Netword Card",
+						},
+						{ label: "Steam Wallet Code", value: "Steam Wallet Code" }
+					);
+					break;
+				case "Ukraine":
+					row.addOptions({
+						label: "Steam Wallet Code",
+						value: "Steam Wallet Code",
+					});
+					break;
+				case "EU":
+					row.addOptions({
+						label: "Google Play Gift Card",
+						value: "Google Play Gift Card",
+					});
+					break;
+				case "Others":
+					row.addOptions(
+						{ label: "Razer Gold", value: "Razer Gold" },
+						{ label: "Google Play Gift Card", value: "Google Play Gift Card" },
+						{ label: "iTunes Gift Card", value: "iTunes Gift Card" }
+					);
+					break;
+				case "Indonesia":
+					row.addOptions({
+						label: "Steam Wallet Code",
+						value: "Steam Wallet Code",
+					});
+					break;
+				default:
+					row.addOptions(
 						{ label: "Google Play Gift Card", value: "Google Play Gift Card" },
 						{ label: "Amazon Gift Card", value: "Amazon Gift Card" },
 						{ label: "Razer Gold", value: "Razer Gold" },
@@ -1716,8 +1807,9 @@ client.on("interactionCreate", async (interaction) => {
 						},
 						{ label: "iTunes Gift Card", value: "iTunes Gift Card" },
 						{ label: "Netflix Gift Card", value: "Netflix Gift Card" }
-					)
-			);
+					);
+					break;
+			}
 
 			await interaction
 				.editReply({
