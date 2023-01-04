@@ -711,6 +711,7 @@ module.exports = {
 		} else if (subCommand === "ask-reward") {
 			await interaction.reply({
 				content: "Checking for records marked **Ask**...",
+				ephemeral: true,
 			});
 
 			let tenantToken = await feishu.authorize(
@@ -783,6 +784,11 @@ module.exports = {
 						);
 					});
 			}
+
+			await interaction.reply({
+				content: "Records marked with **Ask** have been sent the form.",
+				ephemeral: true,
+			});
 		}
 	},
 };
