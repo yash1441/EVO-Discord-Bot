@@ -785,7 +785,7 @@ module.exports = {
 					});
 			}
 
-			await interaction.reply({
+			await interaction.editReply({
 				content: "Records marked with **Ask** have been sent the form.",
 				ephemeral: true,
 			});
