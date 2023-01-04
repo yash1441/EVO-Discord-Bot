@@ -51,7 +51,7 @@ module.exports = {
 			return;
 		}
 		const subCommand = interaction.options.getSubcommand();
-		console.log(subCommand);
+
 		if (subCommand === "creators") {
 			await interaction.reply({
 				content: "Updating the list of creators...",
