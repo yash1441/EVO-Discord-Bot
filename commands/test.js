@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
 const feishu = require("../feishu.js");
+require("dotenv").config();
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -33,7 +34,7 @@ module.exports = {
 		),
 
 	async execute(interaction, client) {
-		if (interaction.user.id != "132784173311197184") {
+		if (interaction.user.id != process.env.MY_ID) {
 			return;
 		}
 

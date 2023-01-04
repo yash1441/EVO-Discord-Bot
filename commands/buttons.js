@@ -5,6 +5,7 @@ const {
 	ButtonStyle,
 	EmbedBuilder,
 } = require("discord.js");
+require("dotenv").config();
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -144,7 +145,7 @@ module.exports = {
 		),
 	async execute(interaction, client) {
 		await interaction.deferReply();
-		if (interaction.user.id != "132784173311197184") {
+		if (interaction.user.id != process.env.MY_ID) {
 			interaction.deleteReply();
 			return;
 		}
@@ -445,7 +446,7 @@ module.exports = {
 						value:
 							"Mission 2: Raid for embers.\n<:ember:993888291218784286> Among **10** youtubers, whoever gets **the most embers** earns an extra **100** Gold.\n<:ember:993888291218784286> Whoever gets **the most embers in a single raid** earns an extra **50** Gold.",
 					},
-                    {
+					{
 						name: "\u200B",
 						value:
 							"Mission 3: Kill The Rest.\n<:ember:993888291218784286> Whenever you meet other Youtuber participants, kill them and you get **100** Gold.",
@@ -489,7 +490,9 @@ module.exports = {
 
 			const sdEmbed2 = new EmbedBuilder()
 				.setTitle(`7 DAY SURVIVAL CHALLENGE`)
-				.setDescription(`**Please enter the relevant info about the challenge**\nYou need to fill in the region, role name, role id, session id carefully and accurately.\nPlease do not fill in the form before 18:00 17 Dec (UTC+8)`)
+				.setDescription(
+					`**Please enter the relevant info about the challenge**\nYou need to fill in the region, role name, role id, session id carefully and accurately.\nPlease do not fill in the form before 18:00 17 Dec (UTC+8)`
+				)
 				.setColor(`C04946`);
 
 			const sdRow2 = new ActionRowBuilder().addComponents([sdButton2]);
@@ -499,7 +502,7 @@ module.exports = {
 				.then((channel) =>
 					channel.send({ embeds: [sdEmbed2], components: [sdRow2] })
 				);
-		} 
+		}
 		await interaction.deleteReply();
 	},
 };

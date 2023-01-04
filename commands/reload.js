@@ -8,6 +8,7 @@ const {
 } = require("discord.js");
 const axios = require("axios");
 const feishu = require("../feishu.js");
+require("dotenv").config();
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -39,7 +40,7 @@ module.exports = {
 
 	async execute(interaction, client) {
 		if (
-			interaction.user.id != "132784173311197184" &&
+			interaction.user.id != process.env.MY_ID &&
 			interaction.user.id != "1017641241623679076" &&
 			interaction.user.id != "1049909674465574973"
 		) {
@@ -367,7 +368,7 @@ module.exports = {
 				});
 			}
 		} else if (subCommand === "creators-list") {
-			if (interaction.user.id != "132784173311197184") return;
+			if (interaction.user.id != process.env.MY_ID) return;
 			await interaction.guild.members.fetch();
 			const creatorRole = interaction.guild.roles.cache.find(
 				(role) => role.name === "Content Creator"

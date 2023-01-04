@@ -5,6 +5,7 @@ const {
 } = require("discord.js");
 const fs = require("fs");
 const feishu = require("../feishu.js");
+require("dotenv").config();
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -26,7 +27,7 @@ module.exports = {
 		// let currentDay = new Date(date).getDate();
 
 		if (interaction.options.getUser("user")) {
-			if (interaction.user.id != "132784173311197184") {
+			if (interaction.user.id != process.env.MY_ID) {
 				return await interaction.editReply({
 					content: "You are not allowed to check other people's inventory!",
 				});

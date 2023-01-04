@@ -34,11 +34,6 @@ module.exports = {
 		),
 
 	async execute(interaction, client) {
-		/*if (interaction.user.id != "132784173311197184") {
-            interaction.deferReply({ ephemeral: true });
-            interaction.deleteReply();
-            return;
-        }*/
 		let attachment = interaction.options.getAttachment("attachment", true);
 		let tempName = "bug_" + interaction.options.getString("category");
 
