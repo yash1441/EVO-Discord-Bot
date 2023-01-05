@@ -762,6 +762,8 @@ module.exports = {
 						)
 				);
 
+				let error = false;
+
 				await member
 					.send({
 						content:
@@ -778,7 +780,7 @@ module.exports = {
 						);
 					})
 					.catch((error) => {
-						console.log(error);
+						error = true;
 						feishu.updateRecord(
 							tenantToken,
 							process.env.REWARD_BASE,
@@ -787,6 +789,33 @@ module.exports = {
 							{ fields: { Status: "Failed", NOTE2: "Private DM" } }
 						);
 					});
+
+				if (error) {
+					const channel = await client.channels.cache.get(
+						process.env.COLLECT_REWARDS_CHANNEL
+					);
+					const user = await client.users.cache.get(
+						record.fields["Discord ID"]
+					);
+
+					await channel.permissionOverwrites.create(user, {
+						ViewChannel: true,
+					});
+
+					const thread = await channel.threads.create({
+						name: user.id,
+						reason: `${user.username} has private DMs`,
+						type: ChannelType.PrivateThread,
+					});
+
+					await thread.members.add(user.id);
+
+					await thread.send({
+						content:
+							"**Please fill in two options to complete the information collection.**\n*If you can't find your region or reward, please contact **Cosmos#4776**.*",
+						components: [row],
+					});
+				}
 			}
 
 			await interaction.editReply({
