@@ -69,14 +69,15 @@ module.exports = {
 				process.env.FEISHU_SECRET
 			);
 
-			let response = await feishu.getRecords(
-				tenantToken,
-				process.env.CEP_BASE,
-				process.env.CEp_APP,
-				`CurrentValue.[Status] = "Accepted"`
+			let response = JSON.parse(
+				await feishu.getRecords(
+					tenantToken,
+					process.env.CEP_BASE,
+					process.env.CEP_APP,
+					`CurrentValue.[Status] = "Accepted"`
+				)
 			);
 
-			response = JSON.parse(response);
 			let creatorList = [];
 
 			if (response.data.total) {
@@ -94,7 +95,7 @@ module.exports = {
 						await feishu.updateRecord(
 							tenantToken,
 							process.env.CEP_BASE,
-							process.env.CEp_APP,
+							process.env.CEP_APP,
 							creator.recordId,
 							{ fields: { Status: "Failed" } }
 						);
@@ -105,7 +106,7 @@ module.exports = {
 								feishu.updateRecord(
 									tenantToken,
 									process.env.CEP_BASE,
-									process.env.CEp_APP,
+									process.env.CEP_APP,
 									creator.recordId,
 									{ fields: { Status: "Failed" } }
 								);
