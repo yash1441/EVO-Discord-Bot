@@ -317,12 +317,14 @@ client.on("interactionCreate", async (interaction) => {
 				const thread = interaction.channel;
 				await thread.members.remove(interaction.user.id);
 				await thread.setArchived(true);
-				await client.channels.fetch("1049567353798672435").then((channel) => {
-					channel.permissionOverwrites.delete(
-						interaction.user,
-						"Claimed Reward"
-					);
-				});
+				await client.channels
+					.fetch(process.env.COLLECT_REWARDS_CHANNEL)
+					.then((channel) => {
+						channel.permissionOverwrites.delete(
+							interaction.user,
+							"Claimed Reward"
+						);
+					});
 			}
 
 			return;
@@ -1839,6 +1841,13 @@ client.on("interactionCreate", async (interaction) => {
 		} else if (interaction.customId.startsWith("askRewardSelectMenu")) {
 			await interaction.deferUpdate({ ephemeral: true });
 
+			let dm;
+			if (interaction.channel.type === ChannelType.DM) {
+				dm = true;
+			} else {
+				dm = false;
+			}
+
 			const selection = interaction.values[0];
 			const recordId = interaction.customId.substring(19);
 
@@ -1867,6 +1876,20 @@ client.on("interactionCreate", async (interaction) => {
 						}
 					);
 				});
+
+			if (!dm) {
+				const thread = interaction.channel;
+				await thread.members.remove(interaction.user.id);
+				await thread.setArchived(true);
+				await client.channels
+					.fetch(process.env.COLLECT_REWARDS_CHANNEL)
+					.then((channel) => {
+						channel.permissionOverwrites.delete(
+							interaction.user,
+							"Chose Region and Reward"
+						);
+					});
+			}
 		}
 	}
 });
