@@ -750,13 +750,15 @@ module.exports = {
 							{ label: "United States", value: "United States" },
 							{ label: "Canada", value: "Canada" },
 							{ label: "Australia", value: "Australia" },
+							{ label: "India", value: "India" },
 							{ label: "Thailand", value: "Thailand" },
 							{ label: "Philippines", value: "Philippines" },
+							{ label: "Turkey", value: "Turkey" },
 							{ label: "Russia", value: "Russia" },
 							{ label: "Ukraine", value: "Ukraine" },
+							{ label: "Indonesia", value: "Indonesia" },
 							{ label: "EU", value: "EU" },
-							{ label: "Others", value: "Others" },
-							{ label: "Indonesia", value: "Indonesia" }
+							{ label: "United Arab Emirates", value: "United Arab Emirates" }
 						)
 				);
 

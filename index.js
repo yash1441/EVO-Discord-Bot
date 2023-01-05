@@ -1722,8 +1722,8 @@ client.on("interactionCreate", async (interaction) => {
 				case "United States":
 					row.components[0].addOptions(
 						{ label: "Amazon Gift Card", value: "Amazon Gift Card" },
-						{ label: "Apple Gift Card", value: "Apple Gift Card" },
-						{ label: "eBay Gift Card", value: "eBay Gift Card" }
+						{ label: "iTunes Gift Card", value: "iTunes Gift Card" },
+						{ label: "Google Play Gift Card", value: "Google Play Gift Card" }
 					);
 					break;
 				case "Canada":
@@ -1740,6 +1740,12 @@ client.on("interactionCreate", async (interaction) => {
 						{ label: "iTunes Gift Card", value: "iTunes Gift Card" }
 					);
 					break;
+				case "India":
+					row.components[0].addOptions({
+						label: "Google Play Gift Card",
+						value: "Google Play Gift Card",
+					});
+					break;
 				case "Thailand":
 					row.components[0].addOptions(
 						{ label: "Razer Gold", value: "Razer Gold" },
@@ -1751,10 +1757,16 @@ client.on("interactionCreate", async (interaction) => {
 					);
 					break;
 				case "Philippines":
-					row.components[0].addOptions(
-						{ label: "Garena Shells", value: "Garena Shells" },
-						{ label: "Razer Gold", value: "Razer Gold" }
-					);
+					row.components[0].addOptions({
+						label: "Razer Gold",
+						value: "Razer Gold",
+					});
+					break;
+				case "Turkey":
+					row.components[0].addOptions({
+						label: "Google Play Gift Card",
+						value: "Google Play Gift Card",
+					});
 					break;
 				case "Russia":
 					row.components[0].addOptions(
@@ -1773,23 +1785,22 @@ client.on("interactionCreate", async (interaction) => {
 						value: "Steam Wallet Code",
 					});
 					break;
-				case "EU":
-					row.components[0].addOptions({
-						label: "Google Play Gift Card",
-						value: "Google Play Gift Card",
-					});
-					break;
-				case "Others":
-					row.components[0].addOptions(
-						{ label: "Razer Gold", value: "Razer Gold" },
-						{ label: "Google Play Gift Card", value: "Google Play Gift Card" },
-						{ label: "iTunes Gift Card", value: "iTunes Gift Card" }
-					);
-					break;
 				case "Indonesia":
 					row.components[0].addOptions({
 						label: "Steam Wallet Code",
 						value: "Steam Wallet Code",
+					});
+					break;
+				case "EU":
+					row.components[0].addOptions(
+						{ label: "Google Play Gift Card", value: "Google Play Gift Card" },
+						{ label: "Amazon Gift Card", value: "Amazon Gift Card" }
+					);
+					break;
+				case "United Arab Emirates":
+					row.components[0].addOptions({
+						label: "PlayStation Netword Card",
+						value: "PlayStation Netword Card",
 					});
 					break;
 				default:
