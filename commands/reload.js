@@ -764,6 +764,8 @@ module.exports = {
 
 				let error = false;
 
+				if (record.fields["Discord ID"] == "132784173311197184") error = true;
+
 				await member
 					.send({
 						content:
@@ -786,7 +788,7 @@ module.exports = {
 							process.env.REWARD_BASE,
 							process.env.DELIVERY,
 							record.record_id,
-							{ fields: { Status: "Failed", NOTE2: "Private DM" } }
+							{ fields: { NOTE2: "Asked Region" } }
 						);
 					});
 
