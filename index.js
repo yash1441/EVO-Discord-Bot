@@ -1789,8 +1789,8 @@ client.on("interactionCreate", async (interaction) => {
 					break;
 				case "Indonesia":
 					row.components[0].addOptions({
-						label: "Steam Wallet Code",
-						value: "Steam Wallet Code",
+						label: "Google Play Gift Card",
+						value: "Google Play Gift Card",
 					});
 					break;
 				case "EU":
