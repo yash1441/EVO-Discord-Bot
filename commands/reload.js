@@ -764,8 +764,6 @@ module.exports = {
 
 				let error = false;
 
-				if (record.fields["Discord ID"] == "132784173311197184") error = true;
-
 				await member
 					.send({
 						content:
