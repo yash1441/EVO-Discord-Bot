@@ -428,13 +428,20 @@ module.exports = {
 					tenantToken,
 					process.env.CEP_BASE,
 					process.env.CEP_SUBMISSION,
-					`AND(CurrentValue.[CEC Member] = "CEC Member", CurrentValue.[Validity] = "VALID", CurrentValue.[Views] > 999, CurrentValue.[Submission Date] >= DATE(2022,12,1))`
+					`AND(CurrentValue.[Validity] = "VALID", CurrentValue.[Views] > 999, CurrentValue.[Submission Date] >= DATE(2022,12,1))`
 				)
 			);
 
 			let records = [];
 
 			for (const record of response.data.items) {
+				const guild = client.guilds.cache.get(process.env.EVO_SERVER);
+				const member = guild.members.cache.get(record.fields["Discord ID"]);
+				if (
+					member == undefined ||
+					!member.roles.cache.has(process.env.CEC_MEMBER_ROLE)
+				)
+					continue;
 				records.push({
 					"Discord ID": record.fields["Discord ID"],
 					"Discord Name": record.fields["Discord Name"],
