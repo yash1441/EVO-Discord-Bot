@@ -2232,6 +2232,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
 		);
 
 		let details = message.embeds[0].fields[0].value;
+		details = details.replace(/"/g, '\\"');
 
 		let count = message.reactions.cache.get("🔼").count;
 
@@ -2249,9 +2250,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
 			return console.log(
 				`Could not find - ${details}\nUNDEFINED RESPONSE\n${response}`
 			);
-		}
-
-		if (!response.data.total) {
+		} else if (!response.data.total) {
 			return console.log(`Could not find - ${details}`);
 		}
 
@@ -2272,6 +2271,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
 		);
 
 		let details = message.embeds[0].fields[0].value;
+		details = details.replace(/"/g, '\\"');
 
 		let count = message.reactions.cache.get("🔽").count;
 
@@ -2284,7 +2284,12 @@ client.on("messageReactionAdd", async (reaction, user) => {
 			)
 		);
 
-		if (!response.data.total) {
+		if (response.data == undefined) {
+			response = JSON.stringify(response);
+			return console.log(
+				`Could not find - ${details}\nUNDEFINED RESPONSE\n${response}`
+			);
+		} else if (!response.data.total) {
 			return console.log(`Could not find - ${details}`);
 		}
 
@@ -2322,6 +2327,7 @@ client.on("messageReactionRemove", async (reaction, user) => {
 		);
 
 		let details = message.embeds[0].fields[0].value;
+		details = details.replace(/"/g, '\\"');
 
 		let count = message.reactions.cache.get("🔼").count;
 
@@ -2338,9 +2344,7 @@ client.on("messageReactionRemove", async (reaction, user) => {
 			return console.log(
 				`Could not find - ${details}\nUNDEFINED RESPONSE\n${response}`
 			);
-		}
-
-		if (!response.data.total) {
+		} else if (!response.data.total) {
 			return console.log(`Could not find - ${details}`);
 		}
 
@@ -2361,6 +2365,7 @@ client.on("messageReactionRemove", async (reaction, user) => {
 		);
 
 		let details = message.embeds[0].fields[0].value;
+		details = details.replace(/"/g, '\\"');
 
 		let count = message.reactions.cache.get("🔽").count;
 
@@ -2373,7 +2378,12 @@ client.on("messageReactionRemove", async (reaction, user) => {
 			)
 		);
 
-		if (!response.data.total) {
+		if (response.data == undefined) {
+			response = JSON.stringify(response);
+			return console.log(
+				`Could not find - ${details}\nUNDEFINED RESPONSE\n${response}`
+			);
+		} else if (!response.data.total) {
 			return console.log(`Could not find - ${details}`);
 		}
 
