@@ -2245,6 +2245,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
 		);
 
 		if (response.data == undefined) {
+			response = JSON.stringify(response);
 			return console.log(
 				`Could not find - ${details}\nUNDEFINED RESPONSE\n${response}`
 			);
