@@ -2222,6 +2222,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
 			.edit({ content: `❌❌ **REJECTED BY ${user}** ❌❌` })
 			.then(message.reactions.removeAll());
 	} else if (reaction.emoji.name === "🔼") {
+		console.log("🔼");
 		let tenantToken = await feishu.authorize(
 			process.env.FEISHU_ID,
 			process.env.FEISHU_SECRET
