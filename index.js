@@ -2226,7 +2226,6 @@ client.on("messageReactionAdd", async (reaction, user) => {
 		reaction.emoji.name === "🔼" &&
 		channel == process.env.VOTE_SUGGESTION_CHANNEL
 	) {
-		console.log("🔼");
 		let tenantToken = await feishu.authorize(
 			process.env.FEISHU_ID,
 			process.env.FEISHU_SECRET
