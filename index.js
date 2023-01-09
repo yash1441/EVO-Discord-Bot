@@ -2167,13 +2167,11 @@ client.on("messageReactionAdd", async (reaction, user) => {
 	let message = reaction.message;
 	let channel = reaction.message.channelId;
 
-	if (
-		channel != process.env.SUGGESTION_DECISION_CHANNEL ||
-		channel != process.env.VOTE_SUGGESTION_CHANNEL
-	)
-		return;
 	if (user == client.user) return;
-	if (reaction.emoji.name === "✅") {
+	if (
+		reaction.emoji.name === "✅" &&
+		channel == process.env.SUGGESTION_DECISION_CHANNEL
+	) {
 		let discord_id = message.embeds[0].description;
 		let category = message.embeds[0].title;
 		let username = message.embeds[0].author.name.slice(14);
@@ -2217,11 +2215,17 @@ client.on("messageReactionAdd", async (reaction, user) => {
 			.then((sentMessage) => {
 				sentMessage.react("🔼").then(() => sentMessage.react("🔽"));
 			});
-	} else if (reaction.emoji.name === "❌") {
+	} else if (
+		reaction.emoji.name === "❌" &&
+		channel == process.env.SUGGESTION_DECISION_CHANNEL
+	) {
 		await message
 			.edit({ content: `❌❌ **REJECTED BY ${user}** ❌❌` })
 			.then(message.reactions.removeAll());
-	} else if (reaction.emoji.name === "🔼") {
+	} else if (
+		reaction.emoji.name === "🔼" &&
+		channel == process.env.VOTE_SUGGESTION_CHANNEL
+	) {
 		console.log("🔼");
 		let tenantToken = await feishu.authorize(
 			process.env.FEISHU_ID,
@@ -2252,7 +2256,10 @@ client.on("messageReactionAdd", async (reaction, user) => {
 			response.data.items[0].record_id,
 			{ fields: { "🔼": count } }
 		);
-	} else if (reaction.emoji.name === "🔽") {
+	} else if (
+		reaction.emoji.name === "🔽" &&
+		channel == process.env.VOTE_SUGGESTION_CHANNEL
+	) {
 		let tenantToken = await feishu.authorize(
 			process.env.FEISHU_ID,
 			process.env.FEISHU_SECRET
@@ -2298,9 +2305,11 @@ client.on("messageReactionRemove", async (reaction, user) => {
 	let message = reaction.message;
 	let channel = reaction.message.channelId;
 
-	if (channel != process.env.VOTE_SUGGESTION_CHANNEL) return;
 	if (user == client.user) return;
-	if (reaction.emoji.name === "🔼") {
+	if (
+		reaction.emoji.name === "🔼" &&
+		channel == process.env.VOTE_SUGGESTION_CHANNEL
+	) {
 		let tenantToken = await feishu.authorize(
 			process.env.FEISHU_ID,
 			process.env.FEISHU_SECRET
@@ -2330,7 +2339,10 @@ client.on("messageReactionRemove", async (reaction, user) => {
 			response.data.items[0].record_id,
 			{ fields: { "🔼": count } }
 		);
-	} else if (reaction.emoji.name === "🔽") {
+	} else if (
+		reaction.emoji.name === "🔽" &&
+		channel == process.env.VOTE_SUGGESTION_CHANNEL
+	) {
 		let tenantToken = await feishu.authorize(
 			process.env.FEISHU_ID,
 			process.env.FEISHU_SECRET
