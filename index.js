@@ -2167,14 +2167,19 @@ client.on("messageReactionAdd", async (reaction, user) => {
 	let message = reaction.message;
 	let channel = reaction.message.channelId;
 
-	if (channel != "1039229404892647545" || user == client.user) return;
-	let discord_id = message.embeds[0].description;
-	let category = message.embeds[0].title;
-	let username = message.embeds[0].author.name.slice(14);
-	let details = message.embeds[0].fields[0].value;
-	let region = message.embeds[0].fields[1].value;
-
+	if (
+		channel != process.env.SUGGESTION_DECISION_CHANNEL ||
+		channel != process.env.VOTE_SUGGESTION_CHANNEL
+	)
+		return;
+	if (user == client.user) return;
 	if (reaction.emoji.name === "✅") {
+		let discord_id = message.embeds[0].description;
+		let category = message.embeds[0].title;
+		let username = message.embeds[0].author.name.slice(14);
+		let details = message.embeds[0].fields[0].value;
+		let region = message.embeds[0].fields[1].value;
+
 		let sugs = {
 			fields: {
 				"Discord ID": discord_id,
@@ -2197,7 +2202,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
 		);
 
 		await message
-			.edit({ content: "✅✅ **ACCEPTED** ✅✅" })
+			.edit({ content: `✅✅ **ACCEPTED BY ${user}** ✅✅` })
 			.then(message.reactions.removeAll());
 
 		const suggestionEmbed = new EmbedBuilder()
@@ -2214,9 +2219,147 @@ client.on("messageReactionAdd", async (reaction, user) => {
 			});
 	} else if (reaction.emoji.name === "❌") {
 		await message
-			.edit({ content: "❌❌ **REJECTED** ❌❌" })
+			.edit({ content: `❌❌ **REJECTED BY ${user}** ❌❌` })
 			.then(message.reactions.removeAll());
-	} else return;
+	} else if (reaction.emoji.name === "🔼") {
+		let tenantToken = await feishu.authorize(
+			process.env.FEISHU_ID,
+			process.env.FEISHU_SECRET
+		);
+
+		let details = message.embeds[0].fields[0].value;
+
+		let count = message.reactions.cache.get("🔼").count;
+
+		let response = JSON.parse(
+			await feishu.getRecords(
+				tenantToken,
+				process.env.FEEDBACK_BASE,
+				process.env.FEEDBACK,
+				`CurrentValue.[Feedback details] = "${details}"`
+			)
+		);
+
+		if (!response.data.total) {
+			return console.log(`Could not find - ${details}`);
+		}
+
+		await feishu.updateRecord(
+			tenantToken,
+			process.env.FEEDBACK_BASE,
+			process.env.FEEDBACK,
+			response.data.items[0].record_id,
+			{ fields: { "🔼": count } }
+		);
+	} else if (reaction.emoji.name === "🔽") {
+		let tenantToken = await feishu.authorize(
+			process.env.FEISHU_ID,
+			process.env.FEISHU_SECRET
+		);
+
+		let details = message.embeds[0].fields[0].value;
+
+		let count = message.reactions.cache.get("🔽").count;
+
+		let response = JSON.parse(
+			await feishu.getRecords(
+				tenantToken,
+				process.env.FEEDBACK_BASE,
+				process.env.FEEDBACK,
+				`CurrentValue.[Feedback details] = "${details}"`
+			)
+		);
+
+		if (!response.data.total) {
+			return console.log(`Could not find - ${details}`);
+		}
+
+		await feishu.updateRecord(
+			tenantToken,
+			process.env.FEEDBACK_BASE,
+			process.env.FEEDBACK,
+			response.data.items[0].record_id,
+			{ fields: { "🔽": count } }
+		);
+	}
+});
+
+client.on("messageReactionRemove", async (reaction, user) => {
+	if (reaction.partial) {
+		try {
+			await reaction.fetch();
+		} catch (error) {
+			console.error("Something went wrong when fetching the message:", error);
+			return;
+		}
+	}
+
+	let message = reaction.message;
+	let channel = reaction.message.channelId;
+
+	if (channel != process.env.VOTE_SUGGESTION_CHANNEL) return;
+	if (user == client.user) return;
+	if (reaction.emoji.name === "🔼") {
+		let tenantToken = await feishu.authorize(
+			process.env.FEISHU_ID,
+			process.env.FEISHU_SECRET
+		);
+
+		let details = message.embeds[0].fields[0].value;
+
+		let count = message.reactions.cache.get("🔼").count;
+
+		let response = JSON.parse(
+			await feishu.getRecords(
+				tenantToken,
+				process.env.FEEDBACK_BASE,
+				process.env.FEEDBACK,
+				`CurrentValue.[Feedback details] = "${details}"`
+			)
+		);
+
+		if (!response.data.total) {
+			return console.log(`Could not find - ${details}`);
+		}
+
+		await feishu.updateRecord(
+			tenantToken,
+			process.env.FEEDBACK_BASE,
+			process.env.FEEDBACK,
+			response.data.items[0].record_id,
+			{ fields: { "🔼": count } }
+		);
+	} else if (reaction.emoji.name === "🔽") {
+		let tenantToken = await feishu.authorize(
+			process.env.FEISHU_ID,
+			process.env.FEISHU_SECRET
+		);
+
+		let details = message.embeds[0].fields[0].value;
+
+		let count = message.reactions.cache.get("🔽").count;
+
+		let response = JSON.parse(
+			await feishu.getRecords(
+				tenantToken,
+				process.env.FEEDBACK_BASE,
+				process.env.FEEDBACK,
+				`CurrentValue.[Feedback details] = "${details}"`
+			)
+		);
+
+		if (!response.data.total) {
+			return console.log(`Could not find - ${details}`);
+		}
+
+		await feishu.updateRecord(
+			tenantToken,
+			process.env.FEEDBACK_BASE,
+			process.env.FEEDBACK,
+			response.data.items[0].record_id,
+			{ fields: { "🔽": count } }
+		);
+	}
 });
 
 client.login(process.env.DISCORD_TOKEN);
