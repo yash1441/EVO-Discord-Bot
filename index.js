@@ -2244,6 +2244,10 @@ client.on("messageReactionAdd", async (reaction, user) => {
 			)
 		);
 
+		if (response == undefined) {
+			return console.log(`Could not find - ${details}\nUNDEFINED RESPONSE`);
+		}
+
 		if (!response.data.total) {
 			return console.log(`Could not find - ${details}`);
 		}
@@ -2326,6 +2330,10 @@ client.on("messageReactionRemove", async (reaction, user) => {
 				`CurrentValue.[Feedback details] = "${details}"`
 			)
 		);
+
+		if (response == undefined) {
+			return console.log(`Could not find - ${details}\nUNDEFINED RESPONSE`);
+		}
 
 		if (!response.data.total) {
 			return console.log(`Could not find - ${details}`);
