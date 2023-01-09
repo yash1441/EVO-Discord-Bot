@@ -2244,7 +2244,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
 			)
 		);
 
-		if (response == undefined) {
+		if (response.data == undefined) {
 			return console.log(`Could not find - ${details}\nUNDEFINED RESPONSE`);
 		}
 
@@ -2331,7 +2331,7 @@ client.on("messageReactionRemove", async (reaction, user) => {
 			)
 		);
 
-		if (response == undefined) {
+		if (response.data == undefined) {
 			return console.log(`Could not find - ${details}\nUNDEFINED RESPONSE`);
 		}
 
