@@ -596,7 +596,6 @@ client.on("interactionCreate", async (interaction) => {
 				},
 				Subscribers: 0,
 				"Benefit Level": "NA",
-				"Total BP": 0,
 				"Valid Views": 0,
 				"Valid Videos": 0,
 			};
@@ -650,27 +649,11 @@ client.on("interactionCreate", async (interaction) => {
 				);
 			}
 
-			response = JSON.parse(
-				await feishu.getRecords(
-					tenantToken,
-					process.env.CEP_BASE,
-					process.env.CEC_DATA,
-					`CurrentValue.[Discord ID] = "${finalData["Discord ID"]}"`
-				)
-			);
-			if (parseInt(response.data.total)) {
-				if (response.data.items[0].fields["Total BP"] != undefined)
-					finalData["Total BP"] = parseInt(
-						response.data.items[0].fields["Total BP"]
-					);
-			}
-
 			let success = await feishu.createRecord(
 				tenantToken,
 				process.env.CEP_BASE,
 				process.env.CEC_CODE,
-				{ fields: finalData },
-				true
+				{ fields: finalData }
 			);
 			if (success)
 				await interaction.editReply({
