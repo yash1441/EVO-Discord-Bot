@@ -1,9 +1,4 @@
-const {
-	SlashCommandBuilder,
-	PermissionFlagsBits,
-	EmbedBuilder,
-} = require("discord.js");
-const fs = require("fs");
+const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
 const feishu = require("../feishu.js");
 require("dotenv").config();
 
