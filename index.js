@@ -670,7 +670,7 @@ client.on("interactionCreate", async (interaction) => {
 				process.env.CEP_BASE,
 				process.env.CEC_CODE,
 				{ fields: finalData },
-				true;
+				true
 			);
 			if (success)
 				await interaction.editReply({
