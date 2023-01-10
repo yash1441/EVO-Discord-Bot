@@ -524,13 +524,14 @@ client.on("interactionCreate", async (interaction) => {
 					content: `Your unique link is:\n\`${response.data.items[0].fields.Link}\``,
 				});
 			} else {
-				response = await feishu.getRecords(
-					tenantToken,
-					process.env.CEP_BASE,
-					process.env.CEC_LINK,
-					`NOT(CurrentValue.[Status] = "Claimed")`
+				response = JSON.parse(
+					await feishu.getRecords(
+						tenantToken,
+						process.env.CEP_BASE,
+						process.env.CEC_LINK,
+						`NOT(CurrentValue.[Status] = "Claimed")`
+					)
 				);
-				response = JSON.parse(response);
 
 				if (parseInt(response.data.total)) {
 					await feishu.updateRecord(
