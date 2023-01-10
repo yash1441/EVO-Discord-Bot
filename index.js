@@ -669,7 +669,8 @@ client.on("interactionCreate", async (interaction) => {
 				tenantToken,
 				process.env.CEP_BASE,
 				process.env.CEC_CODE,
-				{ fields: finalData }
+				{ fields: finalData },
+				true;
 			);
 			if (success)
 				await interaction.editReply({
