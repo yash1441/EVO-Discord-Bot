@@ -163,6 +163,18 @@ client.on("interactionCreate", async (interaction) => {
 				.setPlaceholder("Select a content type")
 				.addOptions(
 					{
+						label: "Building Expert",
+						value: "sc_Building Expert",
+					},
+					{
+						label: "Become The Richest",
+						value: "sc_Become The Richest",
+					},
+					{
+						label: "Conquer Kane",
+						value: "sc_Conquer Kane",
+					},
+					{
 						label: "Highlight / Funny Moment",
 						value: "sc_Highlight / Funny Moment",
 					},
