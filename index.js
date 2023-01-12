@@ -163,32 +163,16 @@ client.on("interactionCreate", async (interaction) => {
 				.setPlaceholder("Select a content type")
 				.addOptions(
 					{
-						label: "Week 1 - Topic 1",
-						value: "Week 1 - Topic 1",
-					},
-					{
-						label: "Week 2 - Topic 1: Building Expert",
-						value: "Week 2 - Topic 1: Building Expert",
-					},
-					{
-						label: "Week 2 - Topic 2: Become The Richest",
-						value: "Week 2 - Topic 2: Become The Richest",
-					},
-					{
-						label: "Week 3 - Topic 1: Conquer Kane",
-						value: "Week 3 - Topic 1: Conquer Kane",
-					},
-					{
-						label: "7 Day Survival Challenge",
-						value: "7 Day Survival Challenge",
+						label: "Highlight / Funny Moment",
+						value: "sc_Highlight / Funny Moment",
 					},
 					{
 						label: "Emberland Raider Challenge",
-						value: "Emberland Raider Challenge",
+						value: "sc_Emberland Raider Challenge",
 					},
 					{
 						label: "Other Topics",
-						value: "Other Topics",
+						value: "sc_Other Topics",
 					}
 				);
 
@@ -1057,17 +1041,12 @@ client.on("interactionCreate", async (interaction) => {
 						"An error occurred. Please try again later or contact **Simon#0988**.",
 				});
 			}
-		} else if (
-			interaction.customId.startsWith("Week") ||
-			interaction.customId === "Other Topics" ||
-			interaction.customId.startsWith("7 Day") ||
-			interaction.customId.startsWith("Emberland")
-		) {
+		} else if (interaction.customId.startsWith("sc_")) {
 			await interaction.deferReply({ ephemeral: true });
 
 			let s1 = interaction.fields.getTextInputValue("submitVideo");
 			let s2 = interaction.fields.getTextInputValue("submitTheme");
-			let s3 = interaction.customId;
+			let s3 = interaction.customId.substring(3);
 
 			if (!checkURL(s1)) {
 				return await interaction.editReply({
