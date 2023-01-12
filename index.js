@@ -1599,7 +1599,7 @@ client.on("interactionCreate", async (interaction) => {
 			let selection = interaction.values[0];
 			const submitModal = new ModalBuilder()
 				.setCustomId(selection)
-				.setTitle(selection);
+				.setTitle(selection.substring(3));
 			const submitVideo = new TextInputBuilder()
 				.setCustomId("submitVideo")
 				.setLabel("Video Link")
