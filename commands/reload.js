@@ -6,7 +6,6 @@ const {
 	ChannelType,
 	StringSelectMenuBuilder,
 } = require("discord.js");
-const axios = require("axios");
 const feishu = require("../feishu.js");
 require("dotenv").config();
 
