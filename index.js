@@ -908,6 +908,15 @@ client.on("interactionCreate", async (interaction) => {
 					`AND(CurrentValue.[Codes] = "${activationCode}",NOT(CurrentValue.[Status] = "Binded"))`
 				)
 			);
+			
+			let records4 = JSON.parse(
+				await feishu.getRecords(
+					tenantToken,
+					process.env.CODE_BASE,
+					process.env.BETA_TESTER_FOUR,
+					`AND(CurrentValue.[Codes] = "${activationCode}",NOT(CurrentValue.[Status] = "Binded"))`
+				)
+			);
 
 			if (parseInt(records.data.total)) {
 				let recordId = records.data.items[0].record_id;
@@ -955,6 +964,26 @@ client.on("interactionCreate", async (interaction) => {
 					tenantToken,
 					process.env.CODE_BASE,
 					process.env.BETA_TESTER_THREE,
+					recordId,
+					{
+						fields: {
+							"Discord ID": interaction.user.id,
+							Status: "Binded",
+						},
+					}
+				);
+
+				await interaction.member.roles.add("1032238398829768735").then(() => {
+					interaction.editReply({
+						content: "Congrats! <#1018243733373866004> channels are unlocked!",
+					});
+				});
+			} else if (parseInt(records4.data.total)) {
+				let recordId = records4.data.items[0].record_id;
+				await feishu.updateRecord(
+					tenantToken,
+					process.env.CODE_BASE,
+					process.env.BETA_TESTER_FOUR,
 					recordId,
 					{
 						fields: {
