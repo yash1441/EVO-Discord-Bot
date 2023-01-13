@@ -908,7 +908,7 @@ client.on("interactionCreate", async (interaction) => {
 					`AND(CurrentValue.[Codes] = "${activationCode}",NOT(CurrentValue.[Status] = "Binded"))`
 				)
 			);
-			
+
 			let records4 = JSON.parse(
 				await feishu.getRecords(
 					tenantToken,
@@ -919,6 +919,7 @@ client.on("interactionCreate", async (interaction) => {
 			);
 
 			if (parseInt(records.data.total)) {
+				console.log("Beta 1");
 				let recordId = records.data.items[0].record_id;
 				await feishu.updateRecord(
 					tenantToken,
@@ -939,6 +940,7 @@ client.on("interactionCreate", async (interaction) => {
 					});
 				});
 			} else if (parseInt(records2.data.total)) {
+				console.log("Beta 2");
 				let recordId = records2.data.items[0].record_id;
 				await feishu.updateRecord(
 					tenantToken,
@@ -959,6 +961,7 @@ client.on("interactionCreate", async (interaction) => {
 					});
 				});
 			} else if (parseInt(records3.data.total)) {
+				console.log("Beta 3");
 				let recordId = records3.data.items[0].record_id;
 				await feishu.updateRecord(
 					tenantToken,
@@ -979,6 +982,7 @@ client.on("interactionCreate", async (interaction) => {
 					});
 				});
 			} else if (parseInt(records4.data.total)) {
+				console.log("Beta 4");
 				let recordId = records4.data.items[0].record_id;
 				await feishu.updateRecord(
 					tenantToken,
