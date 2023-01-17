@@ -158,10 +158,6 @@ client.on("interactionCreate", async (interaction) => {
 			creatorModal.addComponents(firstQuestion, secondQuestion, thirdQuestion);
 
 			await interaction.showModal(creatorModal);
-
-			logger.info(
-				`${interaction.user.tag} (${interaction.user.id}) opened the ${creatorModal.customId} modal.`
-			);
 		} else if (interaction.customId === "submitContent") {
 			await interaction.deferReply({ ephemeral: true });
 			const submitContentSelectMenu = new StringSelectMenuBuilder()
