@@ -7,6 +7,7 @@ const {
 	StringSelectMenuBuilder,
 } = require("discord.js");
 const feishu = require("../feishu.js");
+const logger = require("../logging/logger.js");
 require("dotenv").config();
 
 module.exports = {
@@ -58,10 +59,14 @@ module.exports = {
 		const subCommand = interaction.options.getSubcommand();
 
 		if (subCommand === "creators") {
-			await interaction.reply({
-				content: "Updating the list of creators...",
-				ephemeral: true,
-			});
+			await interaction
+				.reply({
+					content: "Updating the list of creators...",
+					ephemeral: true,
+				})
+				.then(() => {
+					logger.info("Updating the list of creators.");
+				});
 
 			let tenantToken = await feishu.authorize(
 				process.env.FEISHU_ID,
@@ -76,6 +81,8 @@ module.exports = {
 					`CurrentValue.[Status] = "Accepted"`
 				)
 			);
+
+			logger.info(`Found ${response.data.total} accepted creators.`);
 
 			let creatorList = [];
 
@@ -98,6 +105,7 @@ module.exports = {
 							creator.recordId,
 							{ fields: { Status: "Failed" } }
 						);
+						logger.error(`Failed to find member ${creator.discordId}.`);
 					} else {
 						await member.roles
 							.add(process.env.CC_ROLE)
@@ -109,6 +117,7 @@ module.exports = {
 									creator.recordId,
 									{ fields: { Status: "Failed" } }
 								);
+								logger.error(`Failed to add CC role to ${creator.discordId}.`);
 							})
 							.then(() => {
 								feishu.updateRecord(
@@ -118,21 +127,34 @@ module.exports = {
 									creator.recordId,
 									{ fields: { Status: "Done" } }
 								);
+								logger.info(`Added CC role to ${creator.discordId}.`);
 							});
 					}
 				}
-				interaction.editReply({ content: "Updated!", ephemeral: true });
+				await interaction
+					.editReply({ content: "Updated!", ephemeral: true })
+					.then(() => {
+						logger.info("Updated the list of creators.");
+					});
 			} else {
-				interaction.editReply({
-					content: "No creators accepted yet.",
-					ephemeral: true,
-				});
+				await interaction
+					.editReply({
+						content: "No creators accepted yet.",
+						ephemeral: true,
+					})
+					.then(() => {
+						logger.info("No creators accepted yet.");
+					});
 			}
 		} else if (subCommand === "rewards") {
-			await interaction.reply({
-				content: "Updating the list of rewards...",
-				ephemeral: true,
-			});
+			await interaction
+				.reply({
+					content: "Updating the list of rewards...",
+					ephemeral: true,
+				})
+				.then(() => {
+					logger.info(`Updating the list of rewards.`);
+				});
 
 			let tenantToken = await feishu.authorize(
 				process.env.FEISHU_ID,
@@ -147,18 +169,21 @@ module.exports = {
 
 			const claimRow = new ActionRowBuilder().addComponents(claimButton);
 
-			let response = await feishu.getRecords(
-				tenantToken,
-				process.env.REWARD_BASE,
-				process.env.DELIVERY,
-				`AND(CurrentValue.[Status] = "Ready")`
+			let response = JSON.parse(
+				await feishu.getRecords(
+					tenantToken,
+					process.env.REWARD_BASE,
+					process.env.DELIVERY,
+					`AND(CurrentValue.[Status] = "Ready")`
+				)
 			);
 
-			let creators = JSON.parse(response).data;
+			logger.info(`Found ${response.data.total} rewards ready to be sent.`);
+
 			let creatorList = [];
 
 			if (creators.total) {
-				for (const creator of creators.items) {
+				for (const creator of response.data.items) {
 					creatorList.push({
 						discord_id: creator.fields["Discord ID"],
 						winner_type: creator.fields["Winner Type"],
@@ -186,6 +211,9 @@ module.exports = {
 							process.env.DELIVERY,
 							creator.record_id,
 							{ fields: { Status: "Failed", NOTE2: "Left Server" } }
+						);
+						logger.error(
+							`Failed to send reward to ${creator.discord_id}. Left Server.`
 						);
 						continue;
 					}
@@ -216,20 +244,27 @@ module.exports = {
 										creator.record_id,
 										{ fields: { Status: "Failed" } }
 									);
-									console.error("Number of Codes is undefined.");
+									logger.error(
+										`${creator.discord_id} - Number of Codes is undefined.`
+									);
 									continue;
 								}
 
 								let quantity = parseInt(creator.number_codes);
-								let response = await feishu.getRecords(
-									tenantToken,
-									process.env.CODE_BASE,
-									process.env.CODE_DATABASE,
-									`NOT(CurrentValue.[Status] = "Used")`
+								let response = JSON.parse(
+									await feishu.getRecords(
+										tenantToken,
+										process.env.CODE_BASE,
+										process.env.CODE_DATABASE,
+										`NOT(CurrentValue.[Status] = "Used")`
+									)
 								);
-								response = JSON.parse(response).data;
 
-								if (response.total < quantity) {
+								logger.info(
+									`Codes available: ${response.data.total}.\nCodes needed: ${quantity}.`
+								);
+
+								if (response.data.total < quantity) {
 									await interaction.followUp({
 										content:
 											creator.discord_id + " - Not enough codes available.",
@@ -242,7 +277,9 @@ module.exports = {
 										creator.record_id,
 										{ fields: { Status: "Failed" } }
 									);
-									console.error("Not enough codes available.");
+									logger.error(
+										`${creator.discord_id} - Not enough codes available.`
+									);
 									continue;
 								}
 
@@ -251,8 +288,8 @@ module.exports = {
 
 								for (let i = 0; i < quantity; i++) {
 									chosenRecord.push({
-										record_id: response.items[i].record_id,
-										code: response.items[i].fields["Beta Codes"],
+										record_id: response.data.items[i].record_id,
+										code: response.data.items[i].fields["Beta Codes"],
 									});
 								}
 
@@ -279,6 +316,7 @@ module.exports = {
 									creator.record_id,
 									{ fields: { "Card Code": codes } }
 								);
+								logger.info(`${creator.discord_id} - Codes generated.`);
 							} else codes = creator.reward_code.replace(/ /g, "\n");
 							if (creator.winner_type == "Player") {
 								message = `**BETA CODES ARE HERE!**\nHey! Dear players!\nYou have earned ${creator.number_codes} code(s) from Discord events. Thanks for your partcipation! The codes are below:\n\n\`${codes}\`\n\nThe beta will open on 1 Dec 2022. Please stay tuned to the official announcement on Discord and download the game in advance. This is the download link: http://bit.ly/3ESJHhS\n\nIf you encounter problems when downloading the game, please reach out to our staff on #support channel in our official Discord: https://discord.gg/projectevogame`;
@@ -315,6 +353,7 @@ module.exports = {
 								creator.record_id,
 								{ fields: { Status: "Failed", NOTE2: "Reward Type Empty" } }
 							);
+							logger.error(`${creator.discord_id} - Reward Type is undefined.`);
 							continue;
 						default:
 							break;
@@ -327,7 +366,7 @@ module.exports = {
 								components: [claimRow],
 								files: [attachment],
 							})
-							.then((msg) => {
+							.then(() => {
 								feishu.updateRecord(
 									tenantToken,
 									process.env.REWARD_BASE,
@@ -335,21 +374,27 @@ module.exports = {
 									creator.record_id,
 									{ fields: { Status: "Sent" } }
 								);
+								logger.info(
+									`${creator.discord_id} - Sent reward successfully.\nMESSAGE: ${message}\nATTACHMENT: Yes`
+								);
 							})
-							.catch((error) => {
+							.catch(() => {
 								feishu.updateRecord(
 									tenantToken,
 									process.env.REWARD_BASE,
 									process.env.DELIVERY,
 									creator.record_id,
 									{ fields: { Status: "Sent", NOTE2: "Private DM" } }
+								);
+								logger.error(
+									`${creator.discord_id} - Reward sending failed. Private DM. Creating a private channel.`
 								);
 								privateChannel(creator, client, message, attachment, claimRow);
 							});
 					} else {
 						member
 							.send({ content: message, components: [claimRow] })
-							.then((msg) => {
+							.then(() => {
 								feishu.updateRecord(
 									tenantToken,
 									process.env.REWARD_BASE,
@@ -357,8 +402,11 @@ module.exports = {
 									creator.record_id,
 									{ fields: { Status: "Sent" } }
 								);
+								logger.info(
+									`${creator.discord_id} - Sent reward successfully.\nMESSAGE: ${message}\nATTACHMENT: No`
+								);
 							})
-							.catch((error) => {
+							.catch(() => {
 								feishu.updateRecord(
 									tenantToken,
 									process.env.REWARD_BASE,
@@ -366,16 +414,29 @@ module.exports = {
 									creator.record_id,
 									{ fields: { Status: "Sent", NOTE2: "Private DM" } }
 								);
+								logger.error(
+									`${creator.discord_id} - Reward sending failed. Private DM. Creating a private channel.`
+								);
 								privateChannel(creator, client, message, attachment, claimRow);
 							});
 					}
 				}
-				interaction.editReply({ content: "Updated!", ephemeral: true });
+				interaction
+					.editReply({ content: "Updated!", ephemeral: true })
+					.then(() => {
+						logger.info(
+							`Reward sending finished. ${creators.length} rewards sent.`
+						);
+					});
 			} else {
-				await interaction.editReply({
-					content: "No rewards ready yet.",
-					ephemeral: true,
-				});
+				await interaction
+					.editReply({
+						content: "No rewards ready yet.",
+						ephemeral: true,
+					})
+					.then(() => {
+						logger.info(`No rewards ready yet.`);
+					});
 			}
 		} else if (subCommand === "creators-list") {
 			if (interaction.user.id != process.env.MY_ID) return;
