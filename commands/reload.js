@@ -182,7 +182,7 @@ module.exports = {
 
 			let creatorList = [];
 
-			if (creators.total) {
+			if (response.data.total) {
 				for (const creator of response.data.items) {
 					creatorList.push({
 						discord_id: creator.fields["Discord ID"],
