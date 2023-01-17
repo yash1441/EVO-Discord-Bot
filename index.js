@@ -19,6 +19,7 @@ const path = require("path");
 const request = require("request-promise");
 const cron = require("node-cron");
 const feishu = require("./feishu.js");
+const logger = require("./logging/logger.js");
 require("dotenv").config();
 
 const client = new Client({
@@ -61,7 +62,7 @@ for (const file of commandFiles) {
 let alreadyPressed = [];
 
 client.on("ready", () => {
-	console.log("* Discord bot connected. *");
+	logger.info(`Discord bot went online. Username: ${client.user.tag}`);
 	client.user.setPresence({
 		activities: [
 			{
@@ -75,10 +76,7 @@ client.on("ready", () => {
 	cron.schedule(
 		"0 0 0,12 * * *",
 		function () {
-			let newDate = new Date().toLocaleString("en-US", {
-				timeZone: "Asia/Singapore",
-			});
-			console.log(newDate + "\nStarting scheduled cronjob...");
+			logger.info(`Starting scheduled cronjob. (Every 12 hours)`);
 			CCESDataCalculation();
 			CECCheck();
 			checkOldFiles();
@@ -88,6 +86,7 @@ client.on("ready", () => {
 		}
 	);
 
+	logger.info(`Deleting old bug reports.`);
 	checkOldFiles();
 
 	// cron.schedule(
@@ -120,6 +119,9 @@ client.on("interactionCreate", async (interaction) => {
 			});
 		}
 	} else if (interaction.isButton()) {
+		logger.info(
+			`${interaction.user.tag} (${interaction.user.id}) pressed ${interaction.customId} button.}`
+		);
 		if (interaction.customId === "creatorApply") {
 			const creatorModal = new ModalBuilder()
 				.setCustomId("creatorModal")
@@ -156,6 +158,10 @@ client.on("interactionCreate", async (interaction) => {
 			creatorModal.addComponents(firstQuestion, secondQuestion, thirdQuestion);
 
 			await interaction.showModal(creatorModal);
+
+			logger.info(
+				`${interaction.user.tag} (${interaction.user.id}) opened the ${creatorModal.customId} modal.`
+			);
 		} else if (interaction.customId === "submitContent") {
 			await interaction.deferReply({ ephemeral: true });
 			const submitContentSelectMenu = new StringSelectMenuBuilder()
@@ -2869,10 +2875,6 @@ function interactionRegionRole(interaction) {
 	});
 
 	return regions;
-}
-
-function sleep(ms) {
-	return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 function checkURL(text) {
