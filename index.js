@@ -119,9 +119,6 @@ client.on("interactionCreate", async (interaction) => {
 			});
 		}
 	} else if (interaction.isButton()) {
-		logger.info(
-			`${interaction.user.tag} (${interaction.user.id}) pressed ${interaction.customId} button.}`
-		);
 		if (interaction.customId === "creatorApply") {
 			const creatorModal = new ModalBuilder()
 				.setCustomId("creatorModal")
