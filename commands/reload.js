@@ -425,7 +425,7 @@ module.exports = {
 					.editReply({ content: "Updated!", ephemeral: true })
 					.then(() => {
 						logger.info(
-							`Reward sending finished. ${creators.length} rewards sent.`
+							`Reward sending finished. ${response.data.total} rewards sent.`
 						);
 					});
 			} else {
