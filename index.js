@@ -454,19 +454,19 @@ client.on("interactionCreate", async (interaction) => {
 			if (
 				checkMemberRole(
 					client,
-					"951777532003381278",
+					process.env.EVO_SERVER,
 					interaction.user.id,
 					lfgNARole
 				) ||
 				checkMemberRole(
 					client,
-					"951777532003381278",
+					process.env.EVO_SERVER,
 					interaction.user.id,
 					lfgEURole
 				) ||
 				checkMemberRole(
 					client,
-					"951777532003381278",
+					process.env.EVO_SERVER,
 					interaction.user.id,
 					lfgSEARole
 				)
@@ -1121,7 +1121,7 @@ client.on("interactionCreate", async (interaction) => {
 				interaction.guild.id == "1042081538784903278" ||
 				checkMemberRole(
 					client,
-					"951777532003381278",
+					process.env.EVO_SERVER,
 					interaction.user.id,
 					"1042700294603145257"
 				)
@@ -1657,7 +1657,7 @@ client.on("interactionCreate", async (interaction) => {
 				interaction.guild.id == "1042081538784903278" ||
 				checkMemberRole(
 					client,
-					"951777532003381278",
+					process.env.EVO_SERVER,
 					interaction.user.id,
 					"1042700294603145257"
 				)
@@ -1906,7 +1906,7 @@ client.on("messageCreate", async (message) => {
 		if (
 			!checkMemberRole(
 				client,
-				"951777532003381278",
+				process.env.EVO_SERVER,
 				message.author.id,
 				"990812565892386867"
 			)
@@ -2056,8 +2056,8 @@ client.on("guildMemberUpdate", async (oldMember, newMember) => {
 				) {
 					// EN
 					reactEmbed.setTitle(`YOU ARE ALL SET! 🎉 The server is unlocked!`);
-				} else if (newRole.id == "952233385500229703") {
-					// Conent Creators
+				} else if (newRole.id == process.env.CC_ROLE) {
+					// Content Creators
 
 					let creator = {
 						fields: {
@@ -2090,7 +2090,7 @@ client.on("guildMemberUpdate", async (oldMember, newMember) => {
 						creator
 					);
 
-					const guild = client.guilds.cache.get("951777532003381278");
+					const guild = client.guilds.cache.get(process.env.EVO_SERVER);
 					const member = guild.members.cache.get(newMember.user.id);
 					member
 						.send({
@@ -2101,12 +2101,17 @@ client.on("guildMemberUpdate", async (oldMember, newMember) => {
 					return;
 				} else return;
 
-				const guild = client.guilds.cache.get("951777532003381278");
+				const guild = client.guilds.cache.get(process.env.EVO_SERVER);
 				const member = guild.members.cache.get(newMember.user.id);
 				await member
 					.send({
 						content: `${newMember.user}`,
 						embeds: [reactEmbed],
+					})
+					.then(() => {
+						logger.debug(
+							`Sent welcome embed to ${newMember.user.tag} (${newMember.user.id})`
+						);
 					})
 					.catch(() => {
 						client.channels.fetch("1017550771052617860").then((channel) => {
@@ -2132,7 +2137,7 @@ client.on("guildMemberAdd", async (member) => {
 			if (
 				checkMemberRole(
 					client,
-					"951777532003381278",
+					process.env.EVO_SERVER,
 					member.user.id,
 					"1042700294603145257"
 				)
@@ -2566,7 +2571,7 @@ async function CCESDataCalculation() {
 		if (
 			checkMemberRole(
 				client,
-				"951777532003381278",
+				process.env.EVO_SERVER,
 				userId,
 				"952233385500229703"
 			)
@@ -2579,7 +2584,7 @@ async function CCESDataCalculation() {
 		if (
 			checkMemberRole(
 				client,
-				"951777532003381278",
+				process.env.EVO_SERVER,
 				userId,
 				"1042700294603145257"
 			)
@@ -2782,7 +2787,7 @@ async function CECQualifyCheck(tenantToken) {
 
 	let records = response.data.items;
 	for (const record of records) {
-		let guild = client.guilds.cache.get("951777532003381278");
+		let guild = client.guilds.cache.get(process.env.EVO_SERVER);
 		let member = guild.members.cache.get(record.fields["Discord ID"]);
 		let cecEmbed = new EmbedBuilder()
 			.setTitle("Congrats! You become members of Creator Evolution Club!")
