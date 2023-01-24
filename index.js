@@ -2252,10 +2252,10 @@ client.on("messageReactionAdd", async (reaction, user) => {
 		if (response.data == undefined) {
 			response = JSON.stringify(response);
 			return logger.warn(
-				`Could not 🔼\n${details}\nUNDEFINED RESPONSE\n${response}`
+				`Could not add 🔼\n${details}\nUNDEFINED RESPONSE\n${response}`
 			);
 		} else if (!response.data.total) {
-			return logger.warn(`Could not 🔼\n${details}`);
+			return logger.warn(`Could not add 🔼\n${details}`);
 		}
 
 		await feishu.updateRecord(
@@ -2291,10 +2291,10 @@ client.on("messageReactionAdd", async (reaction, user) => {
 		if (response.data == undefined) {
 			response = JSON.stringify(response);
 			return logger.warn(
-				`Could not 🔽\n${details}\nUNDEFINED RESPONSE\n${response}`
+				`Could not add 🔽\n${details}\nUNDEFINED RESPONSE\n${response}`
 			);
 		} else if (!response.data.total) {
-			return logger.warn(`Could not 🔽\n${details}`);
+			return logger.warn(`Could not add 🔽\n${details}`);
 		}
 
 		await feishu.updateRecord(
@@ -2345,11 +2345,11 @@ client.on("messageReactionRemove", async (reaction, user) => {
 		);
 
 		if (response.data == undefined) {
-			return console.log(
-				`Could not find - ${details}\nUNDEFINED RESPONSE\n${response}`
+			return logger.warn(
+				`Could not remove 🔼\n${details}\nUNDEFINED RESPONSE\n${response}`
 			);
 		} else if (!response.data.total) {
-			return console.log(`Could not find - ${details}`);
+			return logger.warn(`Could not remove 🔼\n${details}`);
 		}
 
 		await feishu.updateRecord(
@@ -2384,11 +2384,11 @@ client.on("messageReactionRemove", async (reaction, user) => {
 
 		if (response.data == undefined) {
 			response = JSON.stringify(response);
-			return console.log(
-				`Could not find - ${details}\nUNDEFINED RESPONSE\n${response}`
+			return logger.warn(
+				`Could not remove 🔽\n${details}\nUNDEFINED RESPONSE\n${response}`
 			);
 		} else if (!response.data.total) {
-			return console.log(`Could not find - ${details}`);
+			return logger.warn(`Could not remove 🔽\n${details}`);
 		}
 
 		await feishu.updateRecord(
