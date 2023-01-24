@@ -2024,20 +2024,20 @@ client.on("guildMemberUpdate", async (oldMember, newMember) => {
 					"https://media.discordapp.net/attachments/360776228199727105/1024621626970615818/20220928-152953.jpg"
 				);
 
-				if (newRole.id == "973278649698648135") {
+				if (newRole.id == process.env.CIS_ROLE) {
 					// CIS
 					reactEmbed.setTitle(`У нас всё готово! 🎉 Сервер открыт.`);
-				} else if (newRole.id == "972350401863122974") {
+				} else if (newRole.id == process.env.PT_ROLE) {
 					// PT
 					reactEmbed.setTitle(
 						`ESTÁS PRONTO!  🎉 O servidor está desbloqueado!`
 					);
-				} else if (newRole.id == "972350282455453756") {
+				} else if (newRole.id == process.env.ES_ROLE) {
 					// ES
 					reactEmbed.setTitle(
 						`¡ESTAS LISTO! 🎉 ¡El servidor está desbloqueado!`
 					);
-				} else if (newRole.id == "972375372660346910") {
+				} else if (newRole.id == process.env.TH_ROLE) {
 					// TH
 					reactEmbed.setTitle(`คุณพร้อมแล้ว! 🎉 เซิร์ฟเวอร์ถูกล็อก`);
 				} else if (
@@ -2109,9 +2109,9 @@ client.on("guildMemberUpdate", async (oldMember, newMember) => {
 						embeds: [reactEmbed],
 					})
 					.then(() => {
-						logger.debug(
-							`Sent welcome embed to ${newMember.user.tag} (${newMember.user.id})`
-						);
+						// logger.debug(
+						// 	`Sent welcome embed to ${newMember.user.tag} (${newMember.user.id})`
+						// );
 					})
 					.catch(() => {
 						client.channels.fetch("1017550771052617860").then((channel) => {
@@ -2835,14 +2835,11 @@ async function CECQualifyCheck(tenantToken) {
 function interactionRegionRole(interaction) {
 	let roles = [],
 		regions = "";
-	if (interaction.member.roles.cache.has("973278649698648135"))
+	if (interaction.member.roles.cache.has(process.env.CIS_ROLE))
 		roles.push("CIS");
-	if (interaction.member.roles.cache.has("972350401863122974"))
-		roles.push("PT");
-	if (interaction.member.roles.cache.has("972350282455453756"))
-		roles.push("ES");
-	if (interaction.member.roles.cache.has("972375372660346910"))
-		roles.push("TH");
+	if (interaction.member.roles.cache.has(process.env.PT_ROLE)) roles.push("PT");
+	if (interaction.member.roles.cache.has(process.env.ES_ROLE)) roles.push("ES");
+	if (interaction.member.roles.cache.has(process.env.TH_ROLE)) roles.push("TH");
 	if (interaction.member.roles.cache.has("972375574406385705"))
 		roles.push("FR");
 	if (interaction.member.roles.cache.has("973040050063417376"))
