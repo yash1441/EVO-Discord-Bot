@@ -354,9 +354,11 @@ client.on("interactionCreate", async (interaction) => {
 			);
 
 			let bp_amount = 0;
+			let bp_costed = 0;
 
 			if (response.data.total != 0) {
-				bp_amount = parseInt(response.data.items[0].fields["BP Amount"]);
+				bp_amount = parseInt(response.data.items[0].fields["Final BP Amount"]);
+				bp_costed = parseInt(response.data.items[0].fields["BP Costed"]);
 			}
 
 			response = JSON.parse(
@@ -382,7 +384,7 @@ client.on("interactionCreate", async (interaction) => {
 			}
 
 			await interaction.editReply({
-				content: `**Benefit Level** ${benefit_level}\n**Total Views** ${total_views}\n**Total Videos** ${total_videos}\n**Invalid Videos** ${total_invalid}\n**BP Amount** ${bp_amount}\n\n*The data will be updated on 15 Dec. Don't worry if your data shows a lot of "0"*`,
+				content: `**Benefit Level** ${benefit_level}\n**Total Views** ${total_views}\n**Total Videos** ${total_videos}\n**Invalid Videos** ${total_invalid}\n**BP Amount** ${bp_amount}\n**BP Costed** ${bp_costed}\n\n*The data will be updated on 15 Dec. Don't worry if your data shows a lot of "0"*`,
 			});
 		} else if (interaction.customId === "cecButton") {
 			const cecModal = new ModalBuilder()
