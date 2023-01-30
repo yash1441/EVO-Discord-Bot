@@ -384,7 +384,7 @@ client.on("interactionCreate", async (interaction) => {
 			}
 
 			await interaction.editReply({
-				content: `**Benefit Level** ${benefit_level}\n**Total Views** ${total_views}\n**Total Videos** ${total_videos}\n**Invalid Videos** ${total_invalid}\n**BP Amount** ${bp_amount}\n**BP Costed** ${bp_costed}\n\n*The data will be updated on 15 Dec. Don't worry if your data shows a lot of "0"*`,
+				content: `**Benefit Level** ${benefit_level}\n**Total Views** ${total_views}\n**Total Videos** ${total_videos}\n**Invalid Videos** ${total_invalid}\n**BP Amount** ${bp_amount}\n**BP Costed** ${bp_costed}`,
 			});
 		} else if (interaction.customId === "cecButton") {
 			const cecModal = new ModalBuilder()
