@@ -497,13 +497,15 @@ module.exports = {
 			for (const record of response.data.items) {
 				const guild = client.guilds.cache.get(process.env.EVO_SERVER);
 				const member = guild.members.cache.get(record.fields["Discord ID"]);
+
+				if (member == undefined) logger.debug("Member is undefined");
+
 				if (
 					member == undefined ||
 					!member.roles.cache.has(process.env.CEC_MEMBER_ROLE)
 				)
 					continue;
 
-				logger.debug("Member is a CEC member");
 				let tempRecord = {
 					"Discord ID": record.fields["Discord ID"],
 					"Discord Name": record.fields["Discord Name"],
