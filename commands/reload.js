@@ -97,7 +97,7 @@ module.exports = {
 
 				for (const creator of creatorList) {
 					const guild = client.guilds.cache.get(process.env.EVO_SERVER);
-					const member = guild.members.cache.get(creator.discordId);
+					const member = await guild.members.fetch(creator.discordId);
 					if (member == undefined) {
 						await feishu.updateRecord(
 							tenantToken,
@@ -497,7 +497,7 @@ module.exports = {
 			await interaction.guild.members.fetch();
 
 			for (const record of response.data.items) {
-				const member = interaction.guild.members.cache.get(
+				const member = await interaction.guild.members.fetch(
 					record.fields["Discord ID"]
 				);
 
@@ -730,7 +730,7 @@ module.exports = {
 
 			for (const record of response.data.items) {
 				let guild = client.guilds.cache.get(process.env.EVO_SERVER);
-				let member = guild.members.cache.get(record.fields["Discord ID"]);
+				let member = await guild.members.fetch(record.fields["Discord ID"]);
 
 				response = JSON.parse(
 					await feishu.getRecords(
@@ -815,7 +815,7 @@ module.exports = {
 
 			for (const record of response.data.items) {
 				let guild = client.guilds.cache.get(process.env.EVO_SERVER);
-				let member = guild.members.cache.get(record.fields["Discord ID"]);
+				let member = await guild.members.fetch(record.fields["Discord ID"]);
 
 				const row = new ActionRowBuilder().addComponents(
 					new StringSelectMenuBuilder()
