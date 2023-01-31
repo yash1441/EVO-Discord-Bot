@@ -493,12 +493,11 @@ module.exports = {
 			);
 
 			let records = [];
+			const guild = client.guilds.cache.get(process.env.EVO_SERVER);
+			logger.debug(guild);
 
 			for (const record of response.data.items) {
-				const guild = client.guilds.cache.get(process.env.EVO_SERVER);
 				const member = guild.members.cache.get(record.fields["Discord ID"]);
-
-				if (member == undefined) logger.debug("Member is undefined");
 
 				if (
 					member == undefined ||
