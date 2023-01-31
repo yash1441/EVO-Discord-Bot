@@ -494,8 +494,6 @@ module.exports = {
 
 			let records = [];
 
-			logger.debug(JSON.stringify(response.data.items[275]));
-
 			for (const record of response.data.items) {
 				const guild = client.guilds.cache.get(process.env.EVO_SERVER);
 				const member = guild.members.cache.get(record.fields["Discord ID"]);
@@ -505,6 +503,7 @@ module.exports = {
 				)
 					continue;
 
+				logger.debug("Member is a CEC member");
 				let tempRecord = {
 					"Discord ID": record.fields["Discord ID"],
 					"Discord Name": record.fields["Discord Name"],
