@@ -494,7 +494,7 @@ module.exports = {
 
 			let records = [];
 			const guild = client.guilds.cache.get(process.env.EVO_SERVER);
-			let test = await guild.members.cache.get("481584916853948416");
+			let test = await guild.members.cache.get("858582657260716073");
 			logger.debug(test);
 
 			for (const record of response.data.items) {
