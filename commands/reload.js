@@ -360,7 +360,7 @@ module.exports = {
 							break;
 					}
 
-					if (message == undefined) {
+					if (codes == undefined) {
 						logger.info(`${creator.discord_id} - Message is undefined.`);
 						await interaction.followUp({
 							content:
