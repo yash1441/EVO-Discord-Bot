@@ -90,7 +90,7 @@ client.on("ready", () => {
 	checkOldFiles();
 
 	const guild = client.guilds.cache.get(process.env.EVO_SERVER);
-	let test = guild.members.cache.get("858582657260716073");
+	let test = guild.members.cache.get(process.env.MY_ID);
 	logger.debug(test);
 
 	// cron.schedule(
