@@ -91,7 +91,7 @@ client.on("ready", () => {
 
 	const guild = client.guilds.cache.get(process.env.EVO_SERVER);
 	let test = guild.members.cache.get(process.env.MY_ID);
-	logger.debug(guild);
+	console.log({ guild });
 	logger.debug(test);
 
 	// cron.schedule(
