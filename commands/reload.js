@@ -203,7 +203,7 @@ module.exports = {
 					let attachment = "",
 						codes = creator.reward_code;
 					const guild = client.guilds.cache.get(process.env.EVO_SERVER);
-					const member = guild.members.cache.get(creator.discord_id);
+					const member = await guild.members.fetch(creator.discord_id);
 
 					if (member == undefined) {
 						await feishu.updateRecord(
