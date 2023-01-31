@@ -494,7 +494,7 @@ module.exports = {
 
 			let records = [];
 
-			logger.debug(response.data.items[275]);
+			logger.debug(JSON.stringify(response.data.items[275]));
 
 			for (const record of response.data.items) {
 				const guild = client.guilds.cache.get(process.env.EVO_SERVER);
