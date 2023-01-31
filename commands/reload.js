@@ -14,6 +14,7 @@ module.exports = {
 	data: new SlashCommandBuilder()
 		.setName("reload")
 		.setDescription("Reload data from the database.")
+		.setDMPermission(false)
 		.addSubcommand((subcommand) =>
 			subcommand
 				.setName("creators")
@@ -35,10 +36,7 @@ module.exports = {
 				.setDescription("Add CEC Member role to accepted users.")
 		)
 		.addSubcommand((subcommand) =>
-			subcommand
-				.setName("cec-data")
-				.setDescription("Calculate CEC data.")
-				.setDMPermission(false)
+			subcommand.setName("cec-data").setDescription("Calculate CEC data.")
 		)
 		.addSubcommand((subcommand) =>
 			subcommand
