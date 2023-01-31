@@ -528,6 +528,8 @@ module.exports = {
 				}, {})
 			);
 
+			console.log({ uniqueRecords });
+
 			for (const record of uniqueRecords) {
 				let response = JSON.parse(
 					await feishu.getRecords(
