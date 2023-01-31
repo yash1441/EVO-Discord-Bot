@@ -89,10 +89,6 @@ client.on("ready", () => {
 	logger.info(`Deleting old bug reports.`);
 	checkOldFiles();
 
-	const guild = client.guilds.cache.get(process.env.EVO_SERVER);
-	let test = guild.members;
-	logger.debug(JSON.stringify(test));
-
 	// cron.schedule(
 	// 	"0 */30 * * * *",
 	// 	function () {
