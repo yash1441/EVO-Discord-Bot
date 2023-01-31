@@ -528,7 +528,7 @@ module.exports = {
 				}, {})
 			);
 
-			logger.debug(uniqueRecords);
+			console.log(uniqueRecords);
 
 			for (const record of uniqueRecords) {
 				let response = JSON.parse(
