@@ -35,7 +35,10 @@ module.exports = {
 				.setDescription("Add CEC Member role to accepted users.")
 		)
 		.addSubcommand((subcommand) =>
-			subcommand.setName("cec-data").setDescription("Calculate CEC data.")
+			subcommand
+				.setName("cec-data")
+				.setDescription("Calculate CEC data.")
+				.setDMPermission(false)
 		)
 		.addSubcommand((subcommand) =>
 			subcommand
