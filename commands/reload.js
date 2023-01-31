@@ -494,6 +494,8 @@ module.exports = {
 
 			let records = [];
 
+			logger.debug(response.data.items.length);
+
 			for (const record of response.data.items) {
 				const guild = client.guilds.cache.get(process.env.EVO_SERVER);
 				const member = guild.members.cache.get(record.fields["Discord ID"]);
@@ -502,14 +504,17 @@ module.exports = {
 					!member.roles.cache.has(process.env.CEC_MEMBER_ROLE)
 				)
 					continue;
-				records.push({
+
+				let tempRecord = {
 					"Discord ID": record.fields["Discord ID"],
 					"Discord Name": record.fields["Discord Name"],
 					"CEC Total Views": parseInt(record.fields["Views"]),
 					"CEC Videos": 1,
 					"Mission Videos": 0,
 					"Mission Views": 0,
-				});
+				};
+				records.push(tempRecord);
+				logger.debug(tempRecord);
 			}
 
 			let uniqueRecords = Object.values(
@@ -528,7 +533,7 @@ module.exports = {
 				}, {})
 			);
 
-			console.log(uniqueRecords);
+			logger.debug(uniqueRecords);
 
 			for (const record of uniqueRecords) {
 				let response = JSON.parse(
