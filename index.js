@@ -90,7 +90,7 @@ client.on("ready", () => {
 	checkOldFiles();
 
 	const guild = client.guilds.cache.get(process.env.EVO_SERVER);
-	let test = guild.members.cache.get(process.env.MY_ID);
+	let test = guild.members;
 	console.log({ guild });
 	logger.debug(test);
 
