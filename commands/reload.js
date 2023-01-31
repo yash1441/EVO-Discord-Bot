@@ -494,10 +494,11 @@ module.exports = {
 
 			let records = [];
 			await interaction.guild.members.fetch();
-			const guild = client.guilds.cache.get(process.env.EVO_SERVER);
 
 			for (const record of response.data.items) {
-				const member = guild.members.cache.get(record.fields["Discord ID"]);
+				const member = interaction.guild.members.cache.get(
+					record.fields["Discord ID"]
+				);
 
 				if (
 					member == undefined ||
