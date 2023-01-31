@@ -92,7 +92,7 @@ client.on("ready", () => {
 	const guild = client.guilds.cache.get(process.env.EVO_SERVER);
 	let test = guild.members;
 	console.log({ guild });
-	logger.debug({ test });
+	logger.debug(JSON.parse(test));
 
 	// cron.schedule(
 	// 	"0 */30 * * * *",
