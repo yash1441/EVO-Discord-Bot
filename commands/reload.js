@@ -494,7 +494,7 @@ module.exports = {
 
 			let records = [];
 			const guild = client.guilds.cache.get(process.env.EVO_SERVER);
-			let test = guild.members.cache.get(
+			let test = await guild.members.cache.get(
 				response.data.items[0].fields["Discord ID"]
 			);
 			logger.debug(test);
