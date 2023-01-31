@@ -520,8 +520,6 @@ module.exports = {
 				records.push(tempRecord);
 			}
 
-			console.log(records);
-
 			let uniqueRecords = Object.values(
 				records.reduce((acc, item) => {
 					acc[item["Discord ID"]] = acc[item["Discord ID"]]
