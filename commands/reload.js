@@ -497,7 +497,7 @@ module.exports = {
 			let test = await guild.members.cache.get(
 				response.data.items[0].fields["Discord ID"]
 			);
-			logger.debug(test);
+			logger.debug(response.data.items[0].fields["Discord ID"]);
 
 			for (const record of response.data.items) {
 				const member = guild.members.cache.get(record.fields["Discord ID"]);
