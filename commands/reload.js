@@ -545,6 +545,8 @@ module.exports = {
 						response.data.items[0].record_id,
 						{ fields: record }
 					);
+					if (record["Discord ID"] == "858582657260716073")
+						console.log({ record });
 				} else {
 					await feishu.createRecord(
 						tenantToken,
