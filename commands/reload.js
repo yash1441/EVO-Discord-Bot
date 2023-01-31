@@ -494,7 +494,7 @@ module.exports = {
 
 			let records = [];
 
-			logger.debug(response.data.items.length);
+			logger.debug(response.data.items);
 
 			for (const record of response.data.items) {
 				const guild = client.guilds.cache.get(process.env.EVO_SERVER);
@@ -514,8 +514,9 @@ module.exports = {
 					"Mission Views": 0,
 				};
 				records.push(tempRecord);
-				logger.debug(tempRecord);
 			}
+
+			logger.debug(records);
 
 			let uniqueRecords = Object.values(
 				records.reduce((acc, item) => {
