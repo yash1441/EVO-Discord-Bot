@@ -360,6 +360,17 @@ module.exports = {
 							break;
 					}
 
+					if (message == undefined) {
+						logger.info(`${creator.discord_id} - Message is undefined.`);
+						await interaction.followUp({
+							content:
+								creator.discord_id +
+								" - Message could not be sent but the reward has been generated. Please use </reload rewards:1042047871102505036> command again.",
+							ephemeral: true,
+						});
+						continue;
+					}
+
 					if (attachment.length > 1) {
 						member
 							.send({
