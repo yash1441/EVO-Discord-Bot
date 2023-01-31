@@ -493,6 +493,7 @@ module.exports = {
 			);
 
 			let records = [];
+			await interaction.guild.members.fetch();
 			const guild = client.guilds.cache.get(process.env.EVO_SERVER);
 
 			for (const record of response.data.items) {
