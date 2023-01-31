@@ -494,7 +494,7 @@ module.exports = {
 
 			let records = [];
 			const guild = client.guilds.cache.get(process.env.EVO_SERVER);
-			let test = guild.members.cache.get("132784173311197184");
+			let test = interaction.guild.members.get(interaction.user.id);
 			logger.debug(test);
 
 			for (const record of response.data.items) {
