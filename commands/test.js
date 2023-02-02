@@ -486,7 +486,6 @@ module.exports = {
 					)
 				);
 				if (!response.data.total) {
-					console.log({ record, recordId: response.data.items[0].record_id });
 					continue;
 				}
 				await feishu.updateRecord(
