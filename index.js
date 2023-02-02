@@ -2018,6 +2018,9 @@ client.on("messageCreate", async (message) => {
 client.on("guildMemberUpdate", async (oldMember, newMember) => {
 	if (oldMember.roles.cache.size >= newMember.roles.cache.size) return;
 
+	const guild = client.guilds.cache.get(process.env.EVO_SERVER);
+	const member = await guild.members.fetch(newMember.user.id);
+
 	let newRole;
 	newMember.roles.cache.forEach(async (role) => {
 		if (!oldMember.roles.cache.has(role.id)) {
@@ -2089,8 +2092,6 @@ client.on("guildMemberUpdate", async (oldMember, newMember) => {
 					creator
 				);
 
-				const guild = client.guilds.cache.get(process.env.EVO_SERVER);
-				const member = guild.members.cache.get(newMember.user.id);
 				member
 					.send({
 						content:
@@ -2100,12 +2101,8 @@ client.on("guildMemberUpdate", async (oldMember, newMember) => {
 				return;
 			} else return;
 
-			if (newMember.user.id == "739540787255312435")
-				logger.debug(JSON.stringify(oldMember.roles));
-			if (oldMember.roles.cache.size > 1) return;
+			if (oldMember.roles.cache.size > 2) return;
 
-			const guild = client.guilds.cache.get(process.env.EVO_SERVER);
-			const member = await guild.members.fetch(newMember.user.id);
 			await member
 				.send({
 					content: `${newMember.user}`,
