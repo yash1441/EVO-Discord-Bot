@@ -2103,6 +2103,13 @@ client.on("guildMemberUpdate", async (oldMember, newMember) => {
 					return;
 				} else return;
 
+				logger.debug(
+					oldMember.roles.cache.size +
+						" - " +
+						newMember.roles.cache.size +
+						" - " +
+						newMember.user.tag
+				);
 				if (oldMember.roles.cache.size > 1) return;
 
 				const member = await interaction.guild.members.fetch(newMember.user.id);
