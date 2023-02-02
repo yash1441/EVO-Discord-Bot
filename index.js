@@ -2112,7 +2112,8 @@ client.on("guildMemberUpdate", async (oldMember, newMember) => {
 				);
 				if (oldMember.roles.cache.size > 1) return;
 
-				const member = await interaction.guild.members.fetch(newMember.user.id);
+				const guild = client.guilds.cache.get(process.env.EVO_SERVER);
+				const member = await guild.members.fetch(newMember.user.id);
 				await member
 					.send({
 						content: `${newMember.user}`,
