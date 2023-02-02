@@ -2101,7 +2101,7 @@ client.on("guildMemberUpdate", async (oldMember, newMember) => {
 			} else return;
 
 			if (newMember.user.id == "739540787255312435")
-				logger.debug(oldMember.roles);
+				logger.debug(JSON.stringify(oldMember.roles));
 			if (oldMember.roles.cache.size > 1) return;
 
 			const guild = client.guilds.cache.get(process.env.EVO_SERVER);
