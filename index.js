@@ -162,6 +162,10 @@ client.on("interactionCreate", async (interaction) => {
 				.setPlaceholder("Select a content type")
 				.addOptions(
 					{
+						label: "God of Guns",
+						value: "sc_God of Guns",
+					},
+					{
 						label: "Building Expert",
 						value: "sc_Building Expert",
 					},
