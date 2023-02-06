@@ -2060,6 +2060,8 @@ client.on("guildMemberUpdate", async (oldMember, newMember) => {
 		"1017922224776286269": "YOU ARE ALL SET! 🎉 The server is unlocked!",
 	};
 
+	logger.debug("guildMemberUpdate - " + newMember.user.tag);
+
 	for (let roleID of rolesToCheck) {
 		let role = newMember.guild.roles.cache.get(roleID);
 		if (
@@ -2067,6 +2069,7 @@ client.on("guildMemberUpdate", async (oldMember, newMember) => {
 			!oldMember.roles.cache.has(role.id) &&
 			newMember.roles.cache.has(role.id)
 		) {
+			logger.debug("Role added - " + role.name);
 			if (role.id == process.env.CC_ROLE) {
 				let creator = {
 					fields: {
