@@ -2060,8 +2060,6 @@ client.on("guildMemberUpdate", async (oldMember, newMember) => {
 		"1017922224776286269": "YOU ARE ALL SET! 🎉 The server is unlocked!",
 	};
 
-	logger.debug("guildMemberUpdate - " + newMember.user.tag);
-
 	for (let roleID of rolesToCheck) {
 		let role = newMember.guild.roles.cache.get(roleID);
 		if (
@@ -2069,7 +2067,6 @@ client.on("guildMemberUpdate", async (oldMember, newMember) => {
 			!oldMember.roles.cache.has(role.id) &&
 			newMember.roles.cache.has(role.id)
 		) {
-			logger.debug("Role added - " + role.name);
 			if (role.id == process.env.CC_ROLE) {
 				let creator = {
 					fields: {
@@ -2123,9 +2120,9 @@ client.on("guildMemberUpdate", async (oldMember, newMember) => {
 						embeds: [reactEmbed],
 					})
 					.then(() => {
-						logger.debug(
-							`Sent welcome embed to ${newMember.user.tag} (${newMember.user.id})`
-						);
+						// logger.debug(
+						// 	`Sent welcome embed to ${newMember.user.tag} (${newMember.user.id})`
+						// );
 					})
 					.catch(() => {
 						client.channels.fetch("1017550771052617860").then((channel) => {
