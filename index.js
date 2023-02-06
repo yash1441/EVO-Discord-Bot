@@ -2958,8 +2958,10 @@ async function checkOldFiles() {
 
 async function loadWelcomeMessages() {
 	try {
-		sentMessages = new Map(JSON.parse(fs.readFileSync("welcomeMessages.json")));
+		welcomeMessages = new Map(
+			JSON.parse(fs.readFileSync("welcomeMessages.json"))
+		);
 	} catch (err) {
-		sentMessages = new Map();
+		welcomeMessages = new Map();
 	}
 }
