@@ -60,6 +60,7 @@ for (const file of commandFiles) {
 }
 
 let alreadyPressed = [];
+let welcomeMessages;
 
 client.on("ready", () => {
 	logger.info(`Discord bot went online. Username: ${client.user.tag}`);
@@ -88,6 +89,8 @@ client.on("ready", () => {
 
 	logger.info(`Deleting old bug reports.`);
 	checkOldFiles();
+
+	loadWelcomeMessages();
 
 	// cron.schedule(
 	// 	"0 */30 * * * *",
@@ -2020,51 +2023,34 @@ client.on("messageCreate", async (message) => {
 });
 
 client.on("guildMemberUpdate", async (oldMember, newMember) => {
-	if (oldMember.roles.cache.size >= newMember.roles.cache.size) return;
+	let rolesToCheck = ["973278649698648135"];
+	let messages = {
+		"973278649698648135": "У нас всё готово! 🎉 Сервер открыт.",
+		"972350401863122974": "ESTÁS PRONTO!  🎉 O servidor está desbloqueado!",
+		"972350282455453756": "¡ESTAS LISTO! 🎉 ¡El servidor está desbloqueado!",
+		"972350282455453756": "คุณพร้อมแล้ว! 🎉 เซิร์ฟเวอร์ถูกล็อก",
+		"972375574406385705": "YOU ARE ALL SET! 🎉 The server is unlocked!",
+		"973040050063417376": "YOU ARE ALL SET! 🎉 The server is unlocked!",
+		"973040245119524915": "YOU ARE ALL SET! 🎉 The server is unlocked!",
+		"973042080823783464": "YOU ARE ALL SET! 🎉 The server is unlocked!",
+		"976940106961272994": "YOU ARE ALL SET! 🎉 The server is unlocked!",
+		"976940260200169502": "YOU ARE ALL SET! 🎉 The server is unlocked!",
+		"984111719292993628": "YOU ARE ALL SET! 🎉 The server is unlocked!",
+		"989240355071348746": "YOU ARE ALL SET! 🎉 The server is unlocked!",
+		"996876611926364250": "YOU ARE ALL SET! 🎉 The server is unlocked!",
+		"996882291945111602": "YOU ARE ALL SET! 🎉 The server is unlocked!",
+		"972350125844336680": "YOU ARE ALL SET! 🎉 The server is unlocked!",
+		"1017922224776286269": "YOU ARE ALL SET! 🎉 The server is unlocked!",
+	};
 
-	const guild = client.guilds.cache.get(process.env.EVO_SERVER);
-	const member = await guild.members.fetch(newMember.user.id);
-
-	let newRole;
-	newMember.roles.cache.forEach(async (role) => {
-		if (!oldMember.roles.cache.has(role.id)) {
-			newRole = role;
-
-			let reactEmbed = new EmbedBuilder().setImage(
-				"https://media.discordapp.net/attachments/360776228199727105/1024621626970615818/20220928-152953.jpg"
-			);
-
-			if (newRole.id == process.env.CIS_ROLE) {
-				// CIS
-				reactEmbed.setTitle(`У нас всё готово! 🎉 Сервер открыт.`);
-			} else if (newRole.id == process.env.PT_ROLE) {
-				// PT
-				reactEmbed.setTitle(`ESTÁS PRONTO!  🎉 O servidor está desbloqueado!`);
-			} else if (newRole.id == process.env.ES_ROLE) {
-				// ES
-				reactEmbed.setTitle(`¡ESTAS LISTO! 🎉 ¡El servidor está desbloqueado!`);
-			} else if (newRole.id == process.env.TH_ROLE) {
-				// TH
-				reactEmbed.setTitle(`คุณพร้อมแล้ว! 🎉 เซิร์ฟเวอร์ถูกล็อก`);
-			} else if (
-				newRole.id == "972375574406385705" ||
-				newRole.id == "973040050063417376" ||
-				newRole.id == "973040245119524915" ||
-				newRole.id == "973042080823783464" ||
-				newRole.id == "976940106961272994" ||
-				newRole.id == "976940260200169502" ||
-				newRole.id == "984111719292993628" ||
-				newRole.id == "989240355071348746" ||
-				newRole.id == "996876611926364250" ||
-				newRole.id == "996882291945111602" ||
-				newRole.id == "972350125844336680" ||
-				newRole.id == "1017922224776286269"
-			) {
-				// EN
-				reactEmbed.setTitle(`YOU ARE ALL SET! 🎉 The server is unlocked!`);
-			} else if (newRole.id == process.env.CC_ROLE) {
-				// Content Creators
-
+	for (let roleID of rolesToCheck) {
+		let role = newMember.guild.roles.cache.get(roleID);
+		if (
+			role &&
+			!oldMember.roles.cache.has(role.id) &&
+			newMember.roles.cache.has(role.id)
+		) {
+			if (role.id == process.env.CC_ROLE) {
 				let creator = {
 					fields: {
 						"Discord ID": newMember.user.id,
@@ -2080,7 +2066,7 @@ client.on("guildMemberUpdate", async (oldMember, newMember) => {
 					await feishu.getRecords(
 						tenantToken,
 						process.env.CEP_BASE,
-						"tblKiZUk5iEEL3iU",
+						process.env.CEP_CREATOR,
 						`CurrentValue.[Discord ID] = "${newMember.user.id}"`
 					)
 				);
@@ -2092,7 +2078,7 @@ client.on("guildMemberUpdate", async (oldMember, newMember) => {
 				await feishu.createRecord(
 					tenantToken,
 					process.env.CEP_BASE,
-					"tblKiZUk5iEEL3iU",
+					process.env.CEP_CREATOR,
 					creator
 				);
 
@@ -2102,36 +2088,20 @@ client.on("guildMemberUpdate", async (oldMember, newMember) => {
 							"Congrats! You have become the content creator of Project EVO 🎉\nHere's how to get beta codes. Please submit the link of the video related to Project EVO via __#submit-content__ and if it has more than 1000 views, 2 beta codes will be granted and sent to you on Nov 29 via the EVO bot.",
 					})
 					.catch((error) => console.error(error));
-				return;
-			} else return;
-
-			if (oldMember.roles.cache.size > 2) return;
-
-			await member
-				.send({
-					content: `${newMember.user}`,
-					embeds: [reactEmbed],
-				})
-				.then(() => {
-					// logger.debug(
-					// 	`Sent welcome embed to ${newMember.user.tag} (${newMember.user.id})`
-					// );
-				})
-				.catch(() => {
-					client.channels.fetch("1017550771052617860").then((channel) => {
-						channel
-							.send({
-								content: `${newMember.user}`,
-								embeds: [reactEmbed],
-							})
-							.then((msg) => {
-								setTimeout(() => msg.delete(), 5000);
-							})
-							.catch(console.error);
-					});
-				});
+				break;
+			}
+			let userID = newMember.user.id;
+			if (!welcomeMessages.has(userID)) {
+				newMember.send(messages[roleID]);
+				welcomeMessages.set(userID, true);
+				fs.writeFileSync(
+					"welcomeMessages.json",
+					JSON.stringify([...welcomeMessages])
+				);
+			}
+			break;
 		}
-	});
+	}
 });
 
 client.on("guildMemberAdd", async (member) => {
@@ -2937,4 +2907,12 @@ async function checkOldFiles() {
 			});
 		}
 	});
+}
+
+async function loadWelcomeMessages() {
+	try {
+		sentMessages = new Map(JSON.parse(fs.readFileSync("welcomeMessages.json")));
+	} catch (err) {
+		sentMessages = new Map();
+	}
 }
