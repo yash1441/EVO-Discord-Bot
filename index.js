@@ -2092,7 +2092,34 @@ client.on("guildMemberUpdate", async (oldMember, newMember) => {
 			}
 			let userID = newMember.user.id;
 			if (!welcomeMessages.has(userID)) {
-				newMember.send(messages[roleID]);
+				let reactEmbed = new EmbedBuilder()
+					.setImage(
+						"https://media.discordapp.net/attachments/360776228199727105/1024621626970615818/20220928-152953.jpg"
+					)
+					.setTitle(messages[roleID]);
+				await newMember
+					.send({
+						content: `${newMember.user}`,
+						embeds: [reactEmbed],
+					})
+					.then(() => {
+						logger.debug(
+							`Sent welcome embed to ${newMember.user.tag} (${newMember.user.id})`
+						);
+					})
+					.catch(() => {
+						client.channels.fetch("1017550771052617860").then((channel) => {
+							channel
+								.send({
+									content: `${newMember.user}`,
+									embeds: [reactEmbed],
+								})
+								.then((msg) => {
+									setTimeout(() => msg.delete(), 5000);
+								})
+								.catch(console.error);
+						});
+					});
 				welcomeMessages.set(userID, true);
 				fs.writeFileSync(
 					"welcomeMessages.json",
