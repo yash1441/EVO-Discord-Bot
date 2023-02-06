@@ -199,13 +199,26 @@ module.exports = {
 				}
 
 				for (const creator of creatorList) {
+					let skip = false;
 					let message = `Congrats! You have been rewarded a ${creator.reward_type} worth ${creator.reward_value} ${creator.reward_currency}.\n\nCode:\n\`${creator.reward_code}\` \n\nPlease tap **Claim** below to confirm.`;
 					let attachment = "",
 						codes = creator.reward_code;
 					const guild = client.guilds.cache.get(process.env.EVO_SERVER);
-					const member = await guild.members.fetch(creator.discord_id);
+					const member = await guild.members
+						.fetch(creator.discord_id)
+						.catch(() => {
+							logger.error(`Failed to fetch ${creator.discord_id}.`);
+							feishu.updateRecord(
+								tenantToken,
+								process.env.REWARD_BASE,
+								process.env.DELIVERY,
+								creator.record_id,
+								{ fields: { Status: "Failed", NOTE2: "Left Server" } }
+							);
+							skip = true;
+						});
 
-					logger.debug(JSON.stringify(member));
+					if (skip) continue;
 
 					if (member == undefined) {
 						await feishu.updateRecord(
