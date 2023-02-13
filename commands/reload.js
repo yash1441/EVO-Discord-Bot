@@ -6,6 +6,7 @@ const {
 	ChannelType,
 	StringSelectMenuBuilder,
 } = require("discord.js");
+const Discord = require("discord.js");
 const feishu = require("../feishu.js");
 const logger = require("../logging/logger.js");
 require("dotenv").config();
