@@ -527,6 +527,8 @@ module.exports = {
 					record.fields["Discord ID"]
 				);
 
+				logger.debug(member);
+
 				if (
 					member == undefined ||
 					!member.roles.cache.has(process.env.CEC_MEMBER_ROLE)
