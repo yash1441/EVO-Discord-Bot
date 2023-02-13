@@ -524,9 +524,17 @@ module.exports = {
 			await interaction.guild.members.fetch();
 
 			for (const record of response.data.items) {
-				const member = await interaction.guild.members.fetch(
-					record.fields["Discord ID"]
-				);
+				let shouldContinue = false;
+				const member = await interaction.guild.members
+					.fetch(record.fields["Discord ID"])
+					.catch((error) => {
+						logger.error(
+							`Error fetching member ${record.fields["Discord ID"]}. ${error}`
+						);
+						shouldContinue = true;
+					});
+
+				if (shouldContinue) continue;
 
 				if (
 					member &&
@@ -761,7 +769,7 @@ module.exports = {
 				const member = await interaction.guild.members
 					.fetch(record.fields["Discord ID"])
 					.catch((error) => {
-						console.log(error);
+						logger.error(error);
 						shouldContinue = true;
 					});
 
