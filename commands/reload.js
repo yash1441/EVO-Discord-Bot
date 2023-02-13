@@ -527,9 +527,11 @@ module.exports = {
 					record.fields["Discord ID"]
 				);
 
-				logger.debug(JSON.stringify(member));
-
-				if (member && !member.roles.cache.has(process.env.CEC_MEMBER_ROLE))
+				if (
+					member &&
+					member instanceof Discord.GuildMember &&
+					!member.roles.cache.has(process.env.CEC_MEMBER_ROLE)
+				)
 					continue;
 
 				let tempRecord = {
