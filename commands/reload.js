@@ -755,8 +755,15 @@ module.exports = {
 			}
 
 			for (const record of response.data.items) {
-				let guild = client.guilds.cache.get(process.env.EVO_SERVER);
-				let member = await guild.members.fetch(record.fields["Discord ID"]);
+				let shouldContinue = false;
+				const member = await interaction.guild.members
+					.fetch(record.fields["Discord ID"])
+					.catch((error) => {
+						console.log(error);
+						shouldContinue = true;
+					});
+
+				if (shouldContinue) continue;
 
 				response = JSON.parse(
 					await feishu.getRecords(
