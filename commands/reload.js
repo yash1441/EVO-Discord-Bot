@@ -570,8 +570,6 @@ module.exports = {
 				}, {})
 			);
 
-			logger.debug(uniqueRecords);
-
 			for (const record of uniqueRecords) {
 				let response = JSON.parse(
 					await feishu.getRecords(
@@ -589,8 +587,6 @@ module.exports = {
 						response.data.items[0].record_id,
 						{ fields: record }
 					);
-					if (record["Discord ID"] == "858582657260716073")
-						logger.debug({ record });
 				} else {
 					await feishu.createRecord(
 						tenantToken,
