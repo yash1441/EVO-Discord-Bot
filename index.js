@@ -1132,7 +1132,7 @@ client.on("interactionCreate", async (interaction) => {
 					client,
 					process.env.EVO_SERVER,
 					interaction.user.id,
-					"1042700294603145257"
+					process.env.CEC_MEMBER_ROLE
 				)
 			) {
 				let s4 = interaction.fields.getTextInputValue("submitSpecial");
@@ -1663,12 +1663,12 @@ client.on("interactionCreate", async (interaction) => {
 				.setRequired(true);
 
 			if (
-				interaction.guild.id == "1042081538784903278" ||
+				interaction.guild.id == process.env.EVO_CEC_SERVER ||
 				checkMemberRole(
 					client,
 					process.env.EVO_SERVER,
 					interaction.user.id,
-					"1042700294603145257"
+					process.env.CEC_MEMBER_ROLE
 				)
 			) {
 				const submitSpecial = new TextInputBuilder()
@@ -2149,14 +2149,14 @@ client.on("guildMemberUpdate", async (oldMember, newMember) => {
 });
 
 client.on("guildMemberAdd", async (member) => {
-	if (member.guild.id == "1042081538784903278") {
+	if (member.guild.id == process.env.EVO_CEC_SERVER) {
 		setTimeout(() => {
 			if (
 				checkMemberRole(
 					client,
 					process.env.EVO_SERVER,
 					member.user.id,
-					"1042700294603145257"
+					process.env.CEC_MEMBER_ROLE
 				)
 			) {
 				member.roles
@@ -2603,7 +2603,7 @@ async function CCESDataCalculation() {
 				client,
 				process.env.EVO_SERVER,
 				userId,
-				"1042700294603145257"
+				process.env.CEC_MEMBER_ROLE
 			)
 		) {
 			finalData.records[i].fields["CEC Member"] = "CEC Member";
@@ -2813,7 +2813,7 @@ async function CECQualifyCheck(tenantToken) {
 			);
 
 		await member.roles
-			.add("1042700294603145257")
+			.add(process.env.CEC_MEMBER_ROLE)
 			.then(() => {
 				console.log(`Added role to ${member.user.tag}`);
 				let qualification = "DONE";
@@ -2906,9 +2906,9 @@ function onlyDigits(string) {
 	return string.replace(/\D/g, "");
 }
 
-function checkMemberRole(client, guildId, userId, roleId) {
-	let guild = client.guilds.cache.get(guildId);
-	let member = guild.members.cache.get(userId);
+async function checkMemberRole(client, guildId, userId, roleId) {
+	const guild = client.guilds.cache.get(guildId);
+	const member = await guild.members.fetch(userId);
 	if (member == undefined) return false;
 	if (member.roles.cache.has(roleId)) {
 		return true;
