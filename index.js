@@ -1912,16 +1912,14 @@ client.on("messageCreate", async (message) => {
 		let msg = message.content;
 		let msgAuthor = message.author.username;
 
-		if (
-			!checkMemberRole(
-				client,
-				process.env.EVO_SERVER,
-				message.author.id,
-				"990812565892386867"
-			)
-		) {
-			return;
-		}
+		let hasLionRole = await checkMemberRole(
+			client,
+			process.env.EVO_SERVER,
+			message.author.id,
+			"990812565892386867"
+		);
+
+		if (!hasLionRole) return;
 
 		let body = {
 			msg_type: "interactive",
