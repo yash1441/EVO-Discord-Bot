@@ -460,26 +460,28 @@ client.on("interactionCreate", async (interaction) => {
 					break;
 			}
 
-			if (
-				checkMemberRole(
-					client,
-					process.env.EVO_SERVER,
-					interaction.user.id,
-					lfgNARole
-				) ||
-				checkMemberRole(
-					client,
-					process.env.EVO_SERVER,
-					interaction.user.id,
-					lfgEURole
-				) ||
-				checkMemberRole(
-					client,
-					process.env.EVO_SERVER,
-					interaction.user.id,
-					lfgSEARole
-				)
-			) {
+			let haslfgNARole = await checkMemberRole(
+				client,
+				process.env.EVO_SERVER,
+				interaction.user.id,
+				lfgNARole
+			);
+
+			let haslfgEURole = await checkMemberRole(
+				client,
+				process.env.EVO_SERVER,
+				interaction.user.id,
+				lfgEURole
+			);
+
+			let haslfgSEARole = await checkMemberRole(
+				client,
+				process.env.EVO_SERVER,
+				interaction.user.id,
+				lfgSEARole
+			);
+
+			if (haslfgNARole || haslfgEURole || haslfgSEARole) {
 				await interaction.member.roles.remove(
 					lfgNARole,
 					"User requested different LFG role."
@@ -1126,15 +1128,14 @@ client.on("interactionCreate", async (interaction) => {
 				},
 			};
 
-			if (
-				interaction.guild.id == "1042081538784903278" ||
-				checkMemberRole(
-					client,
-					process.env.EVO_SERVER,
-					interaction.user.id,
-					process.env.CEC_MEMBER_ROLE
-				)
-			) {
+			let hasCECRole = await checkMemberRole(
+				client,
+				process.env.EVO_SERVER,
+				interaction.user.id,
+				process.env.CEC_MEMBER_ROLE
+			);
+
+			if (interaction.guild.id == "1042081538784903278" || hasCECRole) {
 				let s4 = interaction.fields.getTextInputValue("submitSpecial");
 				content.fields["CEC Member"] = "CEC Member";
 				if (s4.toLowerCase() === "yes")
@@ -1662,15 +1663,14 @@ client.on("interactionCreate", async (interaction) => {
 				.setStyle(TextInputStyle.Short)
 				.setRequired(true);
 
-			if (
-				interaction.guild.id == process.env.EVO_CEC_SERVER ||
-				checkMemberRole(
-					client,
-					process.env.EVO_SERVER,
-					interaction.user.id,
-					process.env.CEC_MEMBER_ROLE
-				)
-			) {
+			let hasCECRole = await checkMemberRole(
+				client,
+				process.env.EVO_SERVER,
+				interaction.user.id,
+				process.env.CEC_MEMBER_ROLE
+			);
+
+			if (interaction.guild.id == process.env.EVO_CEC_SERVER || hasCECRole) {
 				const submitSpecial = new TextInputBuilder()
 					.setCustomId("submitSpecial")
 					.setLabel("Is the video related to CEC Special Mission?")
@@ -2148,15 +2148,14 @@ client.on("guildMemberUpdate", async (oldMember, newMember) => {
 
 client.on("guildMemberAdd", async (member) => {
 	if (member.guild.id == process.env.EVO_CEC_SERVER) {
+		let hasCECRole = await checkMemberRole(
+			client,
+			process.env.EVO_SERVER,
+			member.user.id,
+			process.env.CEC_MEMBER_ROLE
+		);
 		setTimeout(() => {
-			if (
-				checkMemberRole(
-					client,
-					process.env.EVO_SERVER,
-					member.user.id,
-					process.env.CEC_MEMBER_ROLE
-				)
-			) {
+			if (hasCECRole) {
 				member.roles
 					.add(["1049918980627906590"])
 					.catch((error) => console.error(error));
@@ -2583,27 +2582,27 @@ async function CCESDataCalculation() {
 	for (let i = 0; i < finalData.records.length; i++) {
 		let userId = finalData.records[i].fields["Discord ID"];
 
-		if (
-			checkMemberRole(
-				client,
-				process.env.EVO_SERVER,
-				userId,
-				"952233385500229703"
-			)
-		) {
+		let hasCCRole = await checkMemberRole(
+			client,
+			process.env.EVO_SERVER,
+			userId,
+			process.env.CC_ROLE
+		);
+
+		let hasCECRole = await checkMemberRole(
+			client,
+			process.env.EVO_SERVER,
+			userId,
+			process.env.CEC_MEMBER_ROLE
+		);
+
+		if (hasCCRole) {
 			finalData.records[i].fields["Content Creators"] = "Content Creators";
 		} else {
 			finalData.records[i].fields["Content Creators"] = "NO";
 		}
 
-		if (
-			checkMemberRole(
-				client,
-				process.env.EVO_SERVER,
-				userId,
-				process.env.CEC_MEMBER_ROLE
-			)
-		) {
+		if (hasCECRole) {
 			finalData.records[i].fields["CEC Member"] = "CEC Member";
 		} else {
 			finalData.records[i].fields["CEC Member"] = "NO";
