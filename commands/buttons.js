@@ -321,7 +321,7 @@ module.exports = {
 		} else if (subCommand === "beta-access") {
 			const submitButton = new ButtonBuilder()
 				.setCustomId("betaAccess")
-				.setLabel("Beta Access")
+				.setLabel("Unlock Beta Tester Channel")
 				.setStyle(ButtonStyle.Success)
 				.setEmoji("📱");
 
