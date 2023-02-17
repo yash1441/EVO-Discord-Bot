@@ -348,9 +348,9 @@ module.exports = {
 				.setEmoji("📺");
 
 			const submitEmbed = new EmbedBuilder()
-				.setTitle(`SUBMIT CONTENT FOR CREATOR EVOLUTION PROJECT(CEP)`)
+				.setTitle("SUBMIT CONTENT")
 				.setDescription(
-					`This is the channel where you submit the content for Content Creation Event!\n\n**IMPORTANT!** If you are going to join the event, the video you submit must be created after 1 December 2022.\n\nPlease read the rules in <#1048166138900660264>.`
+					`If you wanna join content creation events, let the dev team see your work or win BP as a Creator Evolution Club member, please submit content here.\n\nCheck <#1018235728515321996> often to get updates for content creation events\nCheck <#1018239078094880908> to learn about benefits for EVO Creators\nCheck <#1076037107300184125> if you need some high quality materials`
 				)
 				.setColor(`C04946`)
 				.setImage(
