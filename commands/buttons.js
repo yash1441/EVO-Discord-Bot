@@ -4,7 +4,6 @@ const {
 	ButtonBuilder,
 	ButtonStyle,
 	EmbedBuilder,
-	StringSelectMenuBuilder,
 } = require("discord.js");
 require("dotenv").config();
 
