@@ -4,6 +4,7 @@ const {
 	ButtonBuilder,
 	ButtonStyle,
 	EmbedBuilder,
+	StringSelectMenuBuilder,
 } = require("discord.js");
 require("dotenv").config();
 
@@ -341,6 +342,42 @@ module.exports = {
 					channel.send({ embeds: [submitEmbed], components: [submitRow] })
 				);
 		} else if (subCommand === "submit-content") {
+			const platformSelectMenu = new StringSelectMenuBuilder()
+				.setCustomId("platformSelectMenu")
+				.setPlaceholder("Select your platform")
+				.addOptions(
+					{
+						label: "YouTube",
+						value: "YouTube",
+					},
+					{
+						label: "YouTube Shorts",
+						value: "YouTube Shorts",
+					},
+					{
+						label: "TikTok",
+						value: "TikTok",
+					},
+					{
+						label: "TapTap",
+						value: "TapTap",
+					},
+					{
+						label: "Twitch",
+						value: "Twitch",
+					},
+					{
+						label: "Twitter",
+						value: "Twitter",
+					},
+					{
+						label: "Instagram",
+						value: "Instagram",
+					}
+				);
+
+			let row = new ActionRowBuilder().addComponents(platformSelectMenu);
+
 			const submitButton = new ButtonBuilder()
 				.setCustomId("submitContent")
 				.setLabel("Submit Content")
@@ -362,7 +399,7 @@ module.exports = {
 			client.channels
 				.fetch(channel.id)
 				.then((channel) =>
-					channel.send({ embeds: [submitEmbed], components: [submitRow] })
+					channel.send({ embeds: [submitEmbed], components: [row] })
 				);
 		} else if (subCommand === "submit-suggestion") {
 			const submitButton = new ButtonBuilder()
