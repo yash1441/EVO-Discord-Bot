@@ -2891,7 +2891,7 @@ function checkURL(text) {
 		text = text.replace("www.", "");
 	}
 	const expression =
-		/^(https?\:\/\/)?((www\.)?youtube\.com|youtu\.be|tiktok.com|taptap.io)\/.+$/;
+		/^(https?\:\/\/)?((www\.)?youtube\.com|youtu\.be|tiktok.com|taptap.io|twitter.com|instagram.com|twitch.com)\/.+$/;
 	const regex = new RegExp(expression);
 
 	if (text.match(regex)) {
