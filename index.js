@@ -160,46 +160,86 @@ client.on("interactionCreate", async (interaction) => {
 			await interaction.showModal(creatorModal);
 		} else if (interaction.customId === "submitContent") {
 			await interaction.deferReply({ ephemeral: true });
-			const submitContentSelectMenu = new StringSelectMenuBuilder()
-				.setCustomId("submitContentSelectMenu")
-				.setPlaceholder("Select a content type")
+			const platformSelectMenu = new StringSelectMenuBuilder()
+				.setCustomId("platformSelectMenu")
+				.setPlaceholder("Select your platform")
 				.addOptions(
 					{
-						label: "God of Guns",
-						value: "sc_God of Guns",
+						label: "YouTube",
+						value: "YouTube",
 					},
 					{
-						label: "Building Expert",
-						value: "sc_Building Expert",
+						label: "YouTube Shorts",
+						value: "YouTube Shorts",
 					},
 					{
-						label: "Become The Richest",
-						value: "sc_Become The Richest",
+						label: "TikTok",
+						value: "TikTok",
 					},
 					{
-						label: "Conquer Kane",
-						value: "sc_Conquer Kane",
+						label: "TapTap",
+						value: "TapTap",
 					},
 					{
-						label: "Highlight / Funny Moment",
-						value: "sc_Highlight / Funny Moment",
+						label: "Twitch",
+						value: "Twitch",
 					},
 					{
-						label: "Emberland Raider Challenge",
-						value: "sc_Emberland Raider Challenge",
+						label: "Twitter",
+						value: "Twitter",
 					},
 					{
-						label: "Other Topics",
-						value: "sc_Other Topics",
+						label: "Instagram",
+						value: "Instagram",
 					}
 				);
 
-			let row = new ActionRowBuilder().addComponents(submitContentSelectMenu);
-
+			let row = new ActionRowBuilder().addComponents(platformSelectMenu);
 			await interaction.editReply({
-				content: `**Please choose the topic that your content is relevant to**`,
+				content: `**Where do you publish the content?**`,
 				components: [row],
 			});
+
+			// const submitContentSelectMenu = new StringSelectMenuBuilder()
+			// 	.setCustomId("submitContentSelectMenu")
+			// 	.setPlaceholder("Select a content type")
+			// 	.addOptions(
+			// 		{
+			// 			label: "God of Guns",
+			// 			value: "sc_God of Guns",
+			// 		},
+			// 		{
+			// 			label: "Building Expert",
+			// 			value: "sc_Building Expert",
+			// 		},
+			// 		{
+			// 			label: "Become The Richest",
+			// 			value: "sc_Become The Richest",
+			// 		},
+			// 		{
+			// 			label: "Conquer Kane",
+			// 			value: "sc_Conquer Kane",
+			// 		},
+			// 		{
+			// 			label: "Highlight / Funny Moment",
+			// 			value: "sc_Highlight / Funny Moment",
+			// 		},
+			// 		{
+			// 			label: "Emberland Raider Challenge",
+			// 			value: "sc_Emberland Raider Challenge",
+			// 		},
+			// 		{
+			// 			label: "Other Topics",
+			// 			value: "sc_Other Topics",
+			// 		}
+			// 	);
+
+			// let row = new ActionRowBuilder().addComponents(submitContentSelectMenu);
+
+			// await interaction.editReply({
+			// 	content: `**Please choose the topic that your content is relevant to**`,
+			// 	components: [row],
+			// });
 		} else if (interaction.customId === "suggestionSubmit") {
 			await interaction.deferReply({ ephemeral: true });
 			const suggestionSelectMenu = new StringSelectMenuBuilder()
