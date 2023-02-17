@@ -255,33 +255,35 @@ module.exports = {
 					channel.send({ embeds: [lfgEmbed], components: [row] })
 				);
 		} else if (subCommand === "creator-application") {
-			let creatorPoster = new EmbedBuilder()
-				.setImage("https://i.ibb.co/1MjDfN2/20221201-114500.png")
-				.setColor(`C04946`);
+			// let creatorPoster = new EmbedBuilder()
+			// 	.setImage("https://i.ibb.co/sJfH3Qj/20221201-114500-1.png")
+			// 	.setColor(`C04946`);
 			let creatorEmbed = new EmbedBuilder()
-				.setTitle("**EVO CONTENT CREATOR APPLICATION**")
-				.setDescription("Hi, <@&952233385500229703>! Glad you are here!")
+				.setTitle("BECOME EVO CREATOR NOW!")
+				.setDescription(
+					"We have launched **Creator Evolution Project(CEP)** to help potentials create better. Welcome to join us. Let's evolve together!"
+				)
 				.addFields(
 					{
 						name: "\u200B",
 						value:
-							"**Apply for __<@&952233385500229703>__ role to get access to:**\n<:diamond:993888292498055208> Beta codes!\n<:diamond:993888292498055208> Video-making support and topic suggestions from the dev team\n<:diamond:993888292498055208> Access to future creator plans and ways to rank up!",
+							"**We Help All EVO Creators Do Their Best:**\n<:diamond:993888292498055208> Sneak Peeks into the latest version\n<:diamond:993888292498055208> Provide beta codes for you & your fans\n<:diamond:993888292498055208> Chances to win mobile phones or more devices\n<:diamond:993888292498055208> Chances to become sponsored channels and more!",
 						inline: false,
 					},
 					{
 						name: "\u200B",
 						value:
-							"**Requirements:**\n<:ember:993888291218784286> Minimum 1000 subscribers on YouTube or other social media platforms\n<:ember:993888291218784286> At least 1 video with >1000 views about Project EVO\n<:ember:993888291218784286> You can get the role if you reach the first requirement but you can only get beta codes reaching the second one\n<:ember:993888291218784286> Very few exceptions can be made for potential EVO creators beginners",
+							"**Requirements:**\n<:ember:993888291218784286> Shooter Game Content Creators\n<:ember:993888291218784286> At least 1 content update per month\n<:ember:993888291218784286> Creators who have made EVO content are preferred\n<:ember:993888291218784286> 1000+ subscribers on Youtube (Shorts included), TikTok, TapTap, Twitch, Twitter, Instagram",
 						inline: false,
 					},
 					{
 						name: "\u200B",
 						value:
-							"**News:**\nCreator Evolution Project is upgraded! (Check details here: <#1047446400566312990>)\nCreator Evolution Club is launched! The club is found to provide the best support to help you grow as an outstanding EVO content creator. Check details here <#1042753136701476884>",
+							"**Note:**\n<:ember:993888291218784286> Reach out to <@1017641241623679076> if you want to discuss collaboration opportunities\n<:ember:993888291218784286> Don't meet the requirement? No worries. Take your first step by joining content creation events here <#1018235728515321996>. We help winners to grow faster!",
 					}
 				)
 				.setColor(`C04946`)
-				.setImage("https://i.ibb.co/tHT12nP/20221201-114509.jpg");
+				.setImage("https://i.ibb.co/sJfH3Qj/20221201-114500-1.png");
 
 			const creatorButton = new ButtonBuilder()
 				.setCustomId("creatorApply")
@@ -293,7 +295,7 @@ module.exports = {
 
 			client.channels.fetch(channel.id).then((channel) =>
 				channel.send({
-					embeds: [creatorPoster, creatorEmbed],
+					embeds: [creatorEmbed],
 					components: [row],
 				})
 			);
