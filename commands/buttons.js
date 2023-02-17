@@ -255,9 +255,9 @@ module.exports = {
 					channel.send({ embeds: [lfgEmbed], components: [row] })
 				);
 		} else if (subCommand === "creator-application") {
-			// let creatorPoster = new EmbedBuilder()
-			// 	.setImage("https://i.ibb.co/sJfH3Qj/20221201-114500-1.png")
-			// 	.setColor(`C04946`);
+			let creatorPoster = new EmbedBuilder()
+				.setImage("https://i.ibb.co/sJfH3Qj/20221201-114500-1.png")
+				.setColor(`C04946`);
 			let creatorEmbed = new EmbedBuilder()
 				.setTitle("BECOME EVO CREATOR NOW!")
 				.setDescription(
@@ -282,8 +282,7 @@ module.exports = {
 							"**Note:**\n<:ember:993888291218784286> Reach out to <@1017641241623679076> if you want to discuss collaboration opportunities\n<:ember:993888291218784286> Don't meet the requirement? No worries. Take your first step by joining content creation events here <#1018235728515321996>. We help winners to grow faster!",
 					}
 				)
-				.setColor(`C04946`)
-				.setImage("https://i.ibb.co/sJfH3Qj/20221201-114500-1.png");
+				.setColor(`C04946`);
 
 			const creatorButton = new ButtonBuilder()
 				.setCustomId("creatorApply")
@@ -295,7 +294,7 @@ module.exports = {
 
 			client.channels.fetch(channel.id).then((channel) =>
 				channel.send({
-					embeds: [creatorEmbed],
+					embeds: [creatorPoster, creatorEmbed],
 					components: [row],
 				})
 			);
