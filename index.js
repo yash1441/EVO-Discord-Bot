@@ -1875,6 +1875,7 @@ client.on("interactionCreate", async (interaction) => {
 					});
 			}
 		} else if (interaction.customId === "platformSelectMenu") {
+			await interaction.deferReply({ ephemeral: true });
 			const selection = interaction.values[0];
 			const formatSelection = "sc" + selection;
 
