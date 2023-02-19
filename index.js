@@ -1877,7 +1877,7 @@ client.on("interactionCreate", async (interaction) => {
 		} else if (interaction.customId === "platformSelectMenu") {
 			const selection = interaction.values[0];
 			const platform = checkPlatform(selection);
-			await interaction.edit({
+			await interaction.update({
 				content: `**Platform** ${platform}`,
 				components: [],
 				ephemeral: true,
@@ -1920,7 +1920,7 @@ client.on("interactionCreate", async (interaction) => {
 
 			let row = new ActionRowBuilder().addComponents(submitContentSelectMenu);
 
-			await interaction.followUp({
+			await interaction.reply({
 				content: `**What topic your content is about?**`,
 				components: [row],
 			});
