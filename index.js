@@ -160,84 +160,43 @@ client.on("interactionCreate", async (interaction) => {
 			await interaction.showModal(creatorModal);
 		} else if (interaction.customId === "submitContent") {
 			await interaction.deferReply({ ephemeral: true });
-			// const platformSelectMenu = new StringSelectMenuBuilder()
-			// 	.setCustomId("platformSelectMenu")
-			// 	.setPlaceholder("Select your platform")
-			// 	.addOptions(
-			// 		{
-			// 			label: "YouTube",
-			// 			value: "YouTube",
-			// 		},
-			// 		{
-			// 			label: "YouTube Shorts",
-			// 			value: "YouTube Shorts",
-			// 		},
-			// 		{
-			// 			label: "TikTok",
-			// 			value: "TikTok",
-			// 		},
-			// 		{
-			// 			label: "TapTap",
-			// 			value: "TapTap",
-			// 		},
-			// 		{
-			// 			label: "Twitch",
-			// 			value: "Twitch",
-			// 		},
-			// 		{
-			// 			label: "Twitter",
-			// 			value: "Twitter",
-			// 		},
-			// 		{
-			// 			label: "Instagram",
-			// 			value: "Instagram",
-			// 		}
-			// 	);
-
-			// let row = new ActionRowBuilder().addComponents(platformSelectMenu);
-			// await interaction.editReply({
-			// 	content: `**Where do you publish the content?**`,
-			// 	components: [row],
-			// });
-
-			const submitContentSelectMenu = new StringSelectMenuBuilder()
-				.setCustomId("submitContentSelectMenu")
-				.setPlaceholder("Select a content type")
+			const platformSelectMenu = new StringSelectMenuBuilder()
+				.setCustomId("platformSelectMenu")
+				.setPlaceholder("Select your platform")
 				.addOptions(
 					{
-						label: "God of Guns",
-						value: "sc_God of Guns",
+						label: "YouTube",
+						value: "YT",
 					},
 					{
-						label: "Building Expert",
-						value: "sc_Building Expert",
+						label: "YouTube Shorts",
+						value: "SH",
 					},
 					{
-						label: "Become The Richest",
-						value: "sc_Become The Richest",
+						label: "TikTok",
+						value: "TK",
 					},
 					{
-						label: "Conquer Kane",
-						value: "sc_Conquer Kane",
+						label: "TapTap",
+						value: "TP",
 					},
 					{
-						label: "Highlight / Funny Moment",
-						value: "sc_Highlight / Funny Moment",
+						label: "Twitch",
+						value: "TW",
 					},
 					{
-						label: "Emberland Raider Challenge",
-						value: "sc_Emberland Raider Challenge",
+						label: "Twitter",
+						value: "TT",
 					},
 					{
-						label: "Other Topics",
-						value: "sc_Other Topics",
+						label: "Instagram",
+						value: "IG",
 					}
 				);
 
-			let row = new ActionRowBuilder().addComponents(submitContentSelectMenu);
-
+			let row = new ActionRowBuilder().addComponents(platformSelectMenu);
 			await interaction.editReply({
-				content: `**Please choose the topic that your content is relevant to**`,
+				content: `**Where do you publish the content?**`,
 				components: [row],
 			});
 		} else if (interaction.customId === "suggestionSubmit") {
@@ -1132,26 +1091,27 @@ client.on("interactionCreate", async (interaction) => {
 						"An error occurred. Please try again later or contact **Simon#0988**.",
 				});
 			}
-		} else if (interaction.customId.startsWith("sc_")) {
+		} else if (interaction.customId.startsWith("sc")) {
 			await interaction.deferReply({ ephemeral: true });
 
-			let s1 = interaction.fields.getTextInputValue("submitVideo");
-			let s2 = interaction.fields.getTextInputValue("submitTheme");
-			let s3 = interaction.customId.substring(3);
+			let videoURL = interaction.fields.getTextInputValue("submitVideo");
+			const theme = interaction.fields.getTextInputValue("submitTheme");
+			const platform = checkPlatform(interaction.customId.substring(2, 4));
+			const topic = interaction.customId.substring(4);
 
-			if (!checkURL(s1)) {
+			if (!checkURL(videoURL)) {
 				return await interaction.editReply({
-					content: `\`${s1}\`\nPlease enter a valid **YouTube**\**TapTap** link. If you have \`www\` in your link, please remove it.`,
+					content: `\`${videoURL}\`\nPlease enter a valid link. If you have \`www\` in your link, please remove it.`,
 				});
-			} else if (s1.includes("youtube")) {
-				let url = new URL(s1);
+			} else if (videoURL.includes("youtube")) {
+				let url = new URL(videoURL);
 				let videoId = url.searchParams.get("v");
 				let modifiedUrl = `https://www.youtube.com/watch?v=${videoId}`;
-				s1 = modifiedUrl;
-			} else if (s1.includes("youtu.be")) {
-				let videoId = s1.split("/").pop().split("?")[0];
+				videoURL = modifiedUrl;
+			} else if (videoURL.includes("youtu.be")) {
+				let videoId = videoURL.split("/").pop().split("?")[0];
 				let modifiedUrl = `https://youtu.be/${videoId}`;
-				s1 = modifiedUrl;
+				videoURL = modifiedUrl;
 			}
 
 			let content = {
@@ -1159,11 +1119,12 @@ client.on("interactionCreate", async (interaction) => {
 					"Discord ID": interaction.user.id,
 					"Discord Name": interaction.user.tag,
 					Video: {
-						text: s1,
-						link: s1,
+						text: videoURL,
+						link: videoURL,
 					},
-					Theme: s2,
-					Topic: s3,
+					"Video Platform": platform,
+					Theme: theme,
+					Topic: topic,
 					"Submission Date": Date.now(),
 				},
 			};
@@ -1176,17 +1137,7 @@ client.on("interactionCreate", async (interaction) => {
 			);
 
 			if (interaction.guild.id == "1042081538784903278" || hasCECRole) {
-				let s4 = interaction.fields.getTextInputValue("submitSpecial");
 				content.fields["CEC Member"] = "CEC Member";
-				if (s4.toLowerCase() === "yes")
-					content.fields["CEC Special Mission"] = "CEC Special Mission";
-				else if (s4.toLowerCase() === "no")
-					content.fields["CEC Special Mission"] = "NO";
-				else {
-					return await interaction.editReply({
-						content: `\`${s4}\`\nPlease only enter a **Yes** or a **No** in this field.`,
-					});
-				}
 			} else {
 				content.fields["CEC Member"] = "NO";
 			}
@@ -1199,7 +1150,7 @@ client.on("interactionCreate", async (interaction) => {
 				tenantToken,
 				process.env.CEP_BASE,
 				process.env.CEP_SUBMISSION,
-				`CurrentValue.[Video] = "${s1}"`
+				`CurrentValue.[Video] = "${videoURL}"`
 			);
 			submissions = JSON.parse(submissions);
 			if (submissions.data.total)
@@ -1663,7 +1614,7 @@ client.on("interactionCreate", async (interaction) => {
 			});
 		}
 	} else if (interaction.isStringSelectMenu()) {
-		if (interaction.customId === "suggestionSelectMenu") {
+		if (interaction.customId.startsWith("suggestionSelectMenu")) {
 			let selection = interaction.values[0];
 			const suggestionModal = new ModalBuilder().setCustomId(selection);
 			suggestionModal.setTitle(selection);
@@ -1686,14 +1637,16 @@ client.on("interactionCreate", async (interaction) => {
 				ephemeral: true,
 			});
 		} else if (interaction.customId === "submitContentSelectMenu") {
-			let selection = interaction.values[0];
+			const selection = interaction.values[0];
+			const platform = checkPlatform(selection.substring(2, 4));
+			const topic = selection.substring(4);
+
 			const submitModal = new ModalBuilder()
 				.setCustomId(selection)
-				.setTitle(selection.substring(3));
+				.setTitle("Submit Content: " + platform);
 			const submitVideo = new TextInputBuilder()
 				.setCustomId("submitVideo")
-				.setLabel("Video Link")
-				.setPlaceholder("https://www.youtube.com/watch?v=kwxWyhu1Oog")
+				.setLabel("Your " + platform + " Link")
 				.setStyle(TextInputStyle.Short)
 				.setRequired(true);
 			const submitTheme = new TextInputBuilder()
@@ -1703,32 +1656,10 @@ client.on("interactionCreate", async (interaction) => {
 				.setStyle(TextInputStyle.Short)
 				.setRequired(true);
 
-			let hasCECRole = await checkMemberRole(
-				client,
-				process.env.EVO_SERVER,
-				interaction.user.id,
-				process.env.CEC_MEMBER_ROLE
-			);
+			let firstQuestion = new ActionRowBuilder().addComponents(submitVideo);
+			let secondQuestion = new ActionRowBuilder().addComponents(submitTheme);
 
-			if (interaction.guild.id == process.env.EVO_CEC_SERVER || hasCECRole) {
-				const submitSpecial = new TextInputBuilder()
-					.setCustomId("submitSpecial")
-					.setLabel("Is the video related to CEC Special Mission?")
-					.setPlaceholder("Yes or No only.")
-					.setStyle(TextInputStyle.Short)
-					.setRequired(true);
-
-				let firstQuestion = new ActionRowBuilder().addComponents(submitVideo);
-				let secondQuestion = new ActionRowBuilder().addComponents(submitTheme);
-				let thirdQuestion = new ActionRowBuilder().addComponents(submitSpecial);
-
-				submitModal.addComponents(firstQuestion, secondQuestion, thirdQuestion);
-			} else {
-				let firstQuestion = new ActionRowBuilder().addComponents(submitVideo);
-				let secondQuestion = new ActionRowBuilder().addComponents(submitTheme);
-
-				submitModal.addComponents(firstQuestion, secondQuestion);
-			}
+			submitModal.addComponents(firstQuestion, secondQuestion);
 
 			await interaction
 				.showModal(submitModal)
@@ -1737,7 +1668,7 @@ client.on("interactionCreate", async (interaction) => {
 				})
 				.then(() => {
 					interaction.followUp({
-						content: `Selected **${selection}**.`,
+						content: `**Platform** ${platform}\n**Topic** ${topic}`,
 						components: [],
 						ephemeral: true,
 					});
@@ -1943,6 +1874,50 @@ client.on("interactionCreate", async (interaction) => {
 						);
 					});
 			}
+		} else if (interaction.customId === "platformSelectMenu") {
+			const selection = interaction.values[0];
+			const formatSelection = "sc" + selection;
+
+			const submitContentSelectMenu = new StringSelectMenuBuilder()
+				.setCustomId("submitContentSelectMenu")
+				.setPlaceholder("Select a topic")
+				.addOptions(
+					{
+						label: "God of Guns",
+						value: formatSelection + "God of Guns",
+					},
+					{
+						label: "Building Expert",
+						value: formatSelection + "Building Expert",
+					},
+					{
+						label: "Become The Richest",
+						value: formatSelection + "Become The Richest",
+					},
+					{
+						label: "Conquer Kane",
+						value: formatSelection + "Conquer Kane",
+					},
+					{
+						label: "Highlight / Funny Moment",
+						value: formatSelection + "Highlight / Funny Moment",
+					},
+					{
+						label: "Emberland Raider Challenge",
+						value: formatSelection + "Emberland Raider Challenge",
+					},
+					{
+						label: "Other Topics",
+						value: formatSelection + "Other Topics",
+					}
+				);
+
+			let row = new ActionRowBuilder().addComponents(submitContentSelectMenu);
+
+			await interaction.editReply({
+				content: `**What topic your content is about?**`,
+				components: [row],
+			});
 		}
 	}
 });
@@ -3006,4 +2981,35 @@ async function loadWelcomeMessages() {
 	} catch (err) {
 		welcomeMessages = new Map();
 	}
+}
+
+function checkPlatform(code) {
+	let platform = "";
+	switch (code) {
+		case "YT":
+			platform = "YouTube";
+			break;
+		case "SH":
+			platform = "YouTube Shorts";
+			break;
+		case "TK":
+			platform = "TikTok";
+			break;
+		case "TP":
+			platform = "TapTap";
+			break;
+		case "TW":
+			platform = "Twitch";
+			break;
+		case "TT":
+			platform = "Twitter";
+			break;
+		case "IG":
+			platform = "Instagram";
+			break;
+		default:
+			platform = "YouTube";
+			break;
+	}
+	return platform;
 }
