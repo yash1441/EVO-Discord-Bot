@@ -1875,13 +1875,9 @@ client.on("interactionCreate", async (interaction) => {
 					});
 			}
 		} else if (interaction.customId === "platformSelectMenu") {
+			await interaction.deferUpdate({ ephemeral: true });
 			const selection = interaction.values[0];
 			const platform = checkPlatform(selection);
-			await interaction.update({
-				content: `**Platform** ${platform}`,
-				components: [],
-				ephemeral: true,
-			});
 			const formatSelection = "sc" + selection;
 
 			const submitContentSelectMenu = new StringSelectMenuBuilder()
@@ -1920,8 +1916,8 @@ client.on("interactionCreate", async (interaction) => {
 
 			let row = new ActionRowBuilder().addComponents(submitContentSelectMenu);
 
-			await interaction.reply({
-				content: `**What topic your content is about?**`,
+			await interaction.editReply({
+				content: `**What topic your content is about?**\n\n**Platform** ${platform}`,
 				components: [row],
 			});
 		}
