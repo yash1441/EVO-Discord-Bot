@@ -308,7 +308,7 @@ module.exports = {
 			const bpEmbed = new EmbedBuilder()
 				.setTitle(`CHECK YOUR STATUS`)
 				.setDescription(
-					`The following data can be checked:\n1. Benefit level\n2. Total Views of video you submit\n3. Total number of videos you submit\n4. How many videos submitted are not valid\n5. The amount of BP`
+					`The following data can be checked:\n1. Benefit level\n2. Total Views of video you submit\n3. Total number of videos you submit\n4. How many videos submitted are not valid\n5. The amount of BP\n\n*The views of your video will be recorded only once. Every Monday we check all the new videos submitted last week and record their views.*`
 				)
 				.setColor(`C04946`);
 
