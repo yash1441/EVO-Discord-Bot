@@ -1854,7 +1854,7 @@ client.on("interactionCreate", async (interaction) => {
 						{
 							fields: {
 								"Reward Type": selection,
-								Status: "Hold",
+								Status: "To Be Purchased",
 								NOTE2: "Asked Region & Reward",
 							},
 						}
