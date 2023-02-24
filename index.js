@@ -1054,7 +1054,7 @@ client.on("interactionCreate", async (interaction) => {
 			);
 			const subs = interaction.fields.getTextInputValue("creatorModalSubs");
 			const subCount = parseInt(onlyDigits(subs));
-			const platform = interaction.customId.substring(2);
+			const platform = checkPlatform(interaction.customId.substring(2));
 
 			if (!checkURL(channel)) {
 				return await interaction.editReply({
