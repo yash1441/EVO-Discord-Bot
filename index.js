@@ -3061,6 +3061,10 @@ async function showSubmitModal(interaction) {
 		.setPlaceholder("Select a topic")
 		.addOptions(
 			{
+				label: "Beta 1.3 Update",
+				value: formatSelection + "Beta 1.3 Update",
+			},
+			{
 				label: "God of Guns",
 				value: formatSelection + "God of Guns",
 			},
