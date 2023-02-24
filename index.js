@@ -1910,7 +1910,7 @@ client.on("interactionCreate", async (interaction) => {
 						);
 					});
 			}
-		} else if ((interaction.customId, startsWith("platformSelectMenu"))) {
+		} else if (interaction.customId.startsWith("platformSelectMenu")) {
 			const type = interaction.customId.substring(18);
 			switch (type) {
 				case "Apply":
