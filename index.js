@@ -1078,7 +1078,6 @@ client.on("interactionCreate", async (interaction) => {
 						link: channel,
 					},
 					Subscribers: subCount,
-					Motivation: c3,
 				},
 			};
 
