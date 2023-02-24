@@ -123,45 +123,50 @@ client.on("interactionCreate", async (interaction) => {
 		}
 	} else if (interaction.isButton()) {
 		if (interaction.customId === "creatorApply") {
-			const creatorModal = new ModalBuilder()
-				.setCustomId("creatorModal")
-				.setTitle("Content Creator");
-			const creatorModalChannel = new TextInputBuilder()
-				.setCustomId("creatorModalChannel")
-				.setLabel("YouTube Channel Link")
-				.setPlaceholder("http://youtube.com/c/PROJECTEVOGAME")
-				.setStyle(TextInputStyle.Short)
-				.setRequired(true);
-			const creatorModalSubs = new TextInputBuilder()
-				.setCustomId("creatorModalSubs")
-				.setLabel("How many subscribers do you have?")
-				.setPlaceholder("1000+")
-				.setStyle(TextInputStyle.Short)
-				.setRequired(true);
-			const creatorModalMotivation = new TextInputBuilder()
-				.setCustomId("creatorModalMotivation")
-				.setLabel("What motivates you to be an EVO creator?")
-				.setPlaceholder("Beta Access, Video Kit, In-Game CD Keys, etc.")
-				.setStyle(TextInputStyle.Paragraph)
-				.setRequired(true);
+			await interaction.deferReply({ ephemeral: true });
+			const platformSelectMenu = new StringSelectMenuBuilder()
+				.setCustomId("platformSelectMenuApply")
+				.setPlaceholder("Select your platform")
+				.addOptions(
+					{
+						label: "YouTube",
+						value: "YT",
+					},
+					{
+						label: "YouTube Shorts",
+						value: "SH",
+					},
+					{
+						label: "TikTok",
+						value: "TK",
+					},
+					{
+						label: "TapTap",
+						value: "TP",
+					},
+					{
+						label: "Twitch",
+						value: "TW",
+					},
+					{
+						label: "Twitter",
+						value: "TT",
+					},
+					{
+						label: "Instagram",
+						value: "IG",
+					}
+				);
 
-			let firstQuestion = new ActionRowBuilder().addComponents(
-				creatorModalChannel
-			);
-			let secondQuestion = new ActionRowBuilder().addComponents(
-				creatorModalSubs
-			);
-			let thirdQuestion = new ActionRowBuilder().addComponents(
-				creatorModalMotivation
-			);
-
-			creatorModal.addComponents(firstQuestion, secondQuestion, thirdQuestion);
-
-			await interaction.showModal(creatorModal);
+			let row = new ActionRowBuilder().addComponents(platformSelectMenu);
+			await interaction.editReply({
+				content: `**In which social media do you publish content?**`,
+				components: [row],
+			});
 		} else if (interaction.customId === "submitContent") {
 			await interaction.deferReply({ ephemeral: true });
 			const platformSelectMenu = new StringSelectMenuBuilder()
-				.setCustomId("platformSelectMenu")
+				.setCustomId("platformSelectMenuSubmit")
 				.setPlaceholder("Select your platform")
 				.addOptions(
 					{
@@ -1041,18 +1046,19 @@ client.on("interactionCreate", async (interaction) => {
 					content:
 						"Invalid activation code. You haven't applied for the beta, click [here]( https://survey.isnssdk.com/q/51928/2lo2I2z9/d971) to sign-up!\nWe will draw 3300+ extra lucky players to get Beta access codes every Tuesday from 29th Nov 2022 by email.",
 				});
-		} else if (interaction.customId === "creatorModal") {
+		} else if (interaction.customId.startsWith("ca")) {
 			await interaction.deferReply({ ephemeral: true });
 
-			let c1 = interaction.fields.getTextInputValue("creatorModalChannel");
-			let c2 = interaction.fields.getTextInputValue("creatorModalSubs");
-			let c3 = interaction.fields.getTextInputValue("creatorModalMotivation");
+			const channel = interaction.fields.getTextInputValue(
+				"creatorModalChannel"
+			);
+			const subs = interaction.fields.getTextInputValue("creatorModalSubs");
+			const subCount = parseInt(onlyDigits(subs));
+			const platform = interaction.customId.substring(2);
 
-			let subCount = parseInt(onlyDigits(c2));
-
-			if (!checkURL(c1)) {
+			if (!checkURL(channel)) {
 				return await interaction.editReply({
-					content: `\`${c1}\`\nPlease enter a **valid YouTube channel** link.`,
+					content: `\`${channel}\`\nPlease enter a **valid ${platform}** link.`,
 				});
 			}
 
@@ -1066,9 +1072,10 @@ client.on("interactionCreate", async (interaction) => {
 				fields: {
 					"Discord ID": interaction.user.id,
 					"Discord Name": interaction.user.tag,
+					Platform: platform,
 					Channel: {
-						text: c1,
-						link: c1,
+						text: channel,
+						link: channel,
 					},
 					Subscribers: subCount,
 					Motivation: c3,
@@ -1903,52 +1910,23 @@ client.on("interactionCreate", async (interaction) => {
 						);
 					});
 			}
-		} else if (interaction.customId === "platformSelectMenu") {
+		} else if ((interaction.customId, startsWith("platformSelectMenu"))) {
 			await interaction.deferUpdate({ ephemeral: true });
-			const selection = interaction.values[0];
-			const platform = checkPlatform(selection);
-			const formatSelection = "sc" + selection;
-
-			const submitContentSelectMenu = new StringSelectMenuBuilder()
-				.setCustomId("submitContentSelectMenu")
-				.setPlaceholder("Select a topic")
-				.addOptions(
-					{
-						label: "God of Guns",
-						value: formatSelection + "God of Guns",
-					},
-					{
-						label: "Building Expert",
-						value: formatSelection + "Building Expert",
-					},
-					{
-						label: "Become The Richest",
-						value: formatSelection + "Become The Richest",
-					},
-					{
-						label: "Conquer Kane",
-						value: formatSelection + "Conquer Kane",
-					},
-					{
-						label: "Highlight / Funny Moment",
-						value: formatSelection + "Highlight / Funny Moment",
-					},
-					{
-						label: "Emberland Raider Challenge",
-						value: formatSelection + "Emberland Raider Challenge",
-					},
-					{
-						label: "Other Topics",
-						value: formatSelection + "Other Topics",
-					}
-				);
-
-			let row = new ActionRowBuilder().addComponents(submitContentSelectMenu);
-
-			await interaction.editReply({
-				content: `**What topic your content is about?**\n\n**Platform** ${platform}`,
-				components: [row],
-			});
+			const type = interaction.customId.substring(18);
+			switch (type) {
+				case "Apply":
+					showApplyModal(interaction);
+					break;
+				case "Submit":
+					showSubmitModal(interaction);
+					break;
+				default:
+					await interaction.editReply({
+						content: `Something went wrong. Please contact **Simon#0988** for further assistance.`,
+						components: [],
+					});
+					break;
+			}
 		}
 	}
 });
@@ -3043,4 +3021,80 @@ function checkPlatform(code) {
 			break;
 	}
 	return platform;
+}
+
+async function showApplyModal(interaction) {
+	const selection = interaction.values[0];
+	const platform = checkPlatform(selection);
+	const formatSelection = "ca" + selection;
+
+	const creatorModal = new ModalBuilder()
+		.setCustomId(formatSelection)
+		.setTitle(`${platform} Creator Application`);
+	const creatorModalChannel = new TextInputBuilder()
+		.setCustomId("creatorModalChannel")
+		.setLabel(`Your ${platform} Channel Link`)
+		.setPlaceholder("http://youtube.com/c/PROJECTEVOGAME")
+		.setStyle(TextInputStyle.Short)
+		.setRequired(true);
+	const creatorModalSubs = new TextInputBuilder()
+		.setCustomId("creatorModalSubs")
+		.setLabel("How many subscribers do you have?")
+		.setPlaceholder("1000+")
+		.setStyle(TextInputStyle.Short)
+		.setRequired(true);
+
+	let firstQuestion = new ActionRowBuilder().addComponents(creatorModalChannel);
+	let secondQuestion = new ActionRowBuilder().addComponents(creatorModalSubs);
+
+	creatorModal.addComponents(firstQuestion, secondQuestion);
+
+	await interaction.showModal(creatorModal);
+}
+
+async function showSubmitModal(interaction) {
+	const selection = interaction.values[0];
+	const platform = checkPlatform(selection);
+	const formatSelection = "sc" + selection;
+
+	const submitContentSelectMenu = new StringSelectMenuBuilder()
+		.setCustomId("submitContentSelectMenu")
+		.setPlaceholder("Select a topic")
+		.addOptions(
+			{
+				label: "God of Guns",
+				value: formatSelection + "God of Guns",
+			},
+			{
+				label: "Building Expert",
+				value: formatSelection + "Building Expert",
+			},
+			{
+				label: "Become The Richest",
+				value: formatSelection + "Become The Richest",
+			},
+			{
+				label: "Conquer Kane",
+				value: formatSelection + "Conquer Kane",
+			},
+			{
+				label: "Highlight / Funny Moment",
+				value: formatSelection + "Highlight / Funny Moment",
+			},
+			{
+				label: "Emberland Raider Challenge",
+				value: formatSelection + "Emberland Raider Challenge",
+			},
+			{
+				label: "Other Topics",
+				value: formatSelection + "Other Topics",
+			}
+		);
+
+	let row = new ActionRowBuilder().addComponents(submitContentSelectMenu);
+
+	await interaction.editReply({
+		content: `**What topic your content is about?**\n\n**Platform** ${platform}`,
+		components: [row],
+	});
 }
