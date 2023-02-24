@@ -1911,17 +1911,16 @@ client.on("interactionCreate", async (interaction) => {
 					});
 			}
 		} else if ((interaction.customId, startsWith("platformSelectMenu"))) {
-			await interaction.deferUpdate({ ephemeral: true });
 			const type = interaction.customId.substring(18);
 			switch (type) {
 				case "Apply":
-					showApplyModal(interaction);
+					await showApplyModal(interaction);
 					break;
 				case "Submit":
-					showSubmitModal(interaction);
+					await showSubmitModal(interaction);
 					break;
 				default:
-					await interaction.editReply({
+					await interaction.reply({
 						content: `Something went wrong. Please contact **Simon#0988** for further assistance.`,
 						components: [],
 					});
@@ -3053,6 +3052,7 @@ async function showApplyModal(interaction) {
 }
 
 async function showSubmitModal(interaction) {
+	await interaction.deferUpdate({ ephemeral: true });
 	const selection = interaction.values[0];
 	const platform = checkPlatform(selection);
 	const formatSelection = "sc" + selection;
