@@ -881,6 +881,98 @@ client.on("interactionCreate", async (interaction) => {
 				await interaction.editReply({
 					content: "An error has occured. Please contact **Simon#0988**.",
 				});
+		} else if (interaction.customId.startsWith("ecc")) {
+			await interaction.deferReply({ ephemeral: true });
+			const type = interaction.customId.substring(3);
+			switch (type) {
+				case "Join":
+					const checkECCRole = await checkMemberRole(
+						client,
+						process.env.EVO_SERVER,
+						interaction.user.id,
+						process.env.ECC_ROLE
+					);
+					if (!checkECCRole) {
+						await interaction.member.roles
+							.add(process.env.ECC_ROLE)
+							.then(() => {
+								interaction.editReply({
+									content: `You have successfully joined ECC Participants! Please head over to the <#${process.env.ECC_CHANNEL}> channel for further information.`,
+								});
+							});
+					} else
+						await interaction.editReply({
+							content: `You already are an ECC Participant! Please head over to the <#${process.env.ECC_CHANNEL}> channel for further information.`,
+						});
+					break;
+				case "Apply":
+					const discordId = interaction.user.id;
+					const userName = interaction.user.tag;
+					const tenantToken = await feishu.authorize(
+						process.env.FEISHU_ID,
+						process.env.FEISHU_SECRET
+					);
+
+					const response = JSON.parse(
+						await feishu.getRecords(
+							tenantToken,
+							process.env.CEP_BASE,
+							process.env.ECC_JUDGE,
+							`CurrentValue.[Discord ID] = "${discordId}"`
+						)
+					);
+
+					if (response.data.total) {
+						await interaction.editReply({
+							content: "You can only apply once.",
+						});
+						break;
+					}
+
+					const rolesToCheck = [
+						process.env.MOD_ROLE,
+						process.env.CC_ROLE,
+						process.env.LVL_FIVE_ROLE,
+						process.env.LVL_TEN_ROLE,
+						process.env.LVL_TWENTY_ROLE,
+						process.env.LVL_THIRTY_ROLE,
+						process.env.LVL_FIFTY_ROLE,
+						process.env.LION_HERO_ROLE,
+					];
+
+					const userRoles = await checkRoles(
+						interaction,
+						discordId,
+						rolesToCheck
+					);
+
+					let roleString = [];
+
+					for (const roleId of userRoles) {
+						let role = interaction.guild.roles.cache.get(roleId);
+						roleString.push(role.name);
+					}
+
+					const success = await feishu.createRecord(
+						tenantToken,
+						process.env.CEP_BASE,
+						process.env.ECC_JUDGE,
+						{
+							fields: {
+								"Discord ID": discordId,
+								"Discord Name": userName,
+								Roles: roleString,
+							},
+						}
+					);
+
+					if (success) await interaction.editReply({ content: "Applied!" });
+					else
+						await interaction.editReply({
+							content: "An error has occured. Please contact **Simon#0988**.",
+						});
+				// Send feishu notification
+			}
 		}
 	} else if (interaction.isModalSubmit()) {
 		if (interaction.customId === "betaAccess") {
@@ -891,8 +983,8 @@ client.on("interactionCreate", async (interaction) => {
 					ephemeral: true,
 				})
 				.catch(console.error);
-			let activationCode = interaction.fields.getTextInputValue("betaCode");
-			let tenantToken = await feishu.authorize(
+			const activationCode = interaction.fields.getTextInputValue("betaCode");
+			const tenantToken = await feishu.authorize(
 				process.env.FEISHU_ID,
 				process.env.FEISHU_SECRET
 			);
@@ -2444,58 +2536,58 @@ client.on("messageReactionRemove", async (reaction, user) => {
 
 client.login(process.env.DISCORD_TOKEN);
 
-async function ChristmasEvent() {
-	let christmasEmbed = new EmbedBuilder()
-		.setTitle("❄️ **Christmas Event** ❄️")
-		.setColor(`C04946`)
-		.setImage(
-			"https://cdn.dribbble.com/users/707812/screenshots/4488314/gift-box-dribbble.gif"
-		)
-		.setTimestamp();
+// async function ChristmasEvent() {
+// 	let christmasEmbed = new EmbedBuilder()
+// 		.setTitle("❄️ **Christmas Event** ❄️")
+// 		.setColor(`C04946`)
+// 		.setImage(
+// 			"https://cdn.dribbble.com/users/707812/screenshots/4488314/gift-box-dribbble.gif"
+// 		)
+// 		.setTimestamp();
 
-	let christmasButton = new ButtonBuilder()
-		.setCustomId("christmasButton")
-		.setLabel("Open!")
-		.setStyle(ButtonStyle.Primary)
-		.setEmoji("🎁");
+// 	let christmasButton = new ButtonBuilder()
+// 		.setCustomId("christmasButton")
+// 		.setLabel("Open!")
+// 		.setStyle(ButtonStyle.Primary)
+// 		.setEmoji("🎁");
 
-	let christmasButtonDisabled = new ButtonBuilder()
-		.setCustomId("christmasButton")
-		.setLabel("Open!")
-		.setStyle(ButtonStyle.Secondary)
-		.setEmoji("🎁")
-		.setDisabled(true);
+// 	let christmasButtonDisabled = new ButtonBuilder()
+// 		.setCustomId("christmasButton")
+// 		.setLabel("Open!")
+// 		.setStyle(ButtonStyle.Secondary)
+// 		.setEmoji("🎁")
+// 		.setDisabled(true);
 
-	let christmasRow = new ActionRowBuilder().addComponents(christmasButton);
-	let christmasRowDisabled = new ActionRowBuilder().addComponents(
-		christmasButtonDisabled
-	);
+// 	let christmasRow = new ActionRowBuilder().addComponents(christmasButton);
+// 	let christmasRowDisabled = new ActionRowBuilder().addComponents(
+// 		christmasButtonDisabled
+// 	);
 
-	await client.channels.fetch("1054640415342592001").then((channel) => {
-		channel.messages
-			.fetch({ limit: 1 })
-			.then((messages) => {
-				let lastMessage = messages.first();
-				lastMessage
-					.edit({
-						embeds: [christmasEmbed],
-						components: [christmasRowDisabled],
-					})
-					.then(() => {
-						channel
-							.send({
-								embeds: [christmasEmbed],
-								components: [christmasRow],
-							})
-							.catch(console.error);
-					})
-					.catch(console.error);
-			})
-			.catch(console.error);
-	});
+// 	await client.channels.fetch("1054640415342592001").then((channel) => {
+// 		channel.messages
+// 			.fetch({ limit: 1 })
+// 			.then((messages) => {
+// 				let lastMessage = messages.first();
+// 				lastMessage
+// 					.edit({
+// 						embeds: [christmasEmbed],
+// 						components: [christmasRowDisabled],
+// 					})
+// 					.then(() => {
+// 						channel
+// 							.send({
+// 								embeds: [christmasEmbed],
+// 								components: [christmasRow],
+// 							})
+// 							.catch(console.error);
+// 					})
+// 					.catch(console.error);
+// 			})
+// 			.catch(console.error);
+// 	});
 
-	alreadyPressed = [];
-}
+// 	alreadyPressed = [];
+// }
 
 async function CCESDataCalculation() {
 	let tenantToken = await feishu.authorize(
@@ -2807,66 +2899,66 @@ async function CECCheck() {
 	//await CECQualifyCheck(tenantToken);
 }
 
-async function CECQualifyCheck(tenantToken) {
-	let response = await feishu.getRecords(
-		tenantToken,
-		process.env.CEP_BASE,
-		process.env.CEC_APP,
-		`CurrentValue.[Qualification] = "Accepted"`
-	);
-	response = JSON.parse(response);
+// async function CECQualifyCheck(tenantToken) {
+// 	let response = await feishu.getRecords(
+// 		tenantToken,
+// 		process.env.CEP_BASE,
+// 		process.env.CEC_APP,
+// 		`CurrentValue.[Qualification] = "Accepted"`
+// 	);
+// 	response = JSON.parse(response);
 
-	if (!response.data.total) {
-		console.log('No entries set to "Accepted" for qualification.');
-		return;
-	}
+// 	if (!response.data.total) {
+// 		console.log('No entries set to "Accepted" for qualification.');
+// 		return;
+// 	}
 
-	let records = response.data.items;
-	for (const record of records) {
-		let guild = client.guilds.cache.get(process.env.EVO_SERVER);
-		let member = guild.members.cache.get(record.fields["Discord ID"]);
-		let cecEmbed = new EmbedBuilder()
-			.setTitle("Congrats! You become members of Creator Evolution Club!")
-			.setDescription(
-				"Now the following exclusive benefits are waiting for you to win!\n- Beta codes for your fans (up to 200 codes/month)\n- Creator foundation (including high-end phones worth $800+)\n- Official support from dev team\n\nStaff from dev team will contact you in private very soon!"
-			);
+// 	let records = response.data.items;
+// 	for (const record of records) {
+// 		let guild = client.guilds.cache.get(process.env.EVO_SERVER);
+// 		let member = guild.members.cache.get(record.fields["Discord ID"]);
+// 		let cecEmbed = new EmbedBuilder()
+// 			.setTitle("Congrats! You become members of Creator Evolution Club!")
+// 			.setDescription(
+// 				"Now the following exclusive benefits are waiting for you to win!\n- Beta codes for your fans (up to 200 codes/month)\n- Creator foundation (including high-end phones worth $800+)\n- Official support from dev team\n\nStaff from dev team will contact you in private very soon!"
+// 			);
 
-		await member.roles
-			.add(process.env.CEC_MEMBER_ROLE)
-			.then(() => {
-				console.log(`Added role to ${member.user.tag}`);
-				let qualification = "DONE";
-				member
-					.send({ embeds: [cecEmbed] })
-					.then(() => {
-						console.log(`Sent message to ${member.user.tag}`);
-						qualification = "DONE";
-					})
-					.catch((error) => {
-						console.log(error);
-						qualification = "DONE (NO DM)";
-					});
-				feishu.updateRecord(
-					tenantToken,
-					process.env.CEP_BASE,
-					process.env.CEC_APP,
-					record.record_id,
-					{ fields: { Qualification: qualification } }
-				);
-			})
-			.catch((error) => {
-				console.log(error);
-				feishu.updateRecord(
-					tenantToken,
-					process.env.CEP_BASE,
-					process.env.CEC_APP,
-					record.record_id,
-					{ fields: { Qualification: "Left Server" } }
-				);
-			});
-	}
-	console.log("Successfully checked qualification data.");
-}
+// 		await member.roles
+// 			.add(process.env.CEC_MEMBER_ROLE)
+// 			.then(() => {
+// 				console.log(`Added role to ${member.user.tag}`);
+// 				let qualification = "DONE";
+// 				member
+// 					.send({ embeds: [cecEmbed] })
+// 					.then(() => {
+// 						console.log(`Sent message to ${member.user.tag}`);
+// 						qualification = "DONE";
+// 					})
+// 					.catch((error) => {
+// 						console.log(error);
+// 						qualification = "DONE (NO DM)";
+// 					});
+// 				feishu.updateRecord(
+// 					tenantToken,
+// 					process.env.CEP_BASE,
+// 					process.env.CEC_APP,
+// 					record.record_id,
+// 					{ fields: { Qualification: qualification } }
+// 				);
+// 			})
+// 			.catch((error) => {
+// 				console.log(error);
+// 				feishu.updateRecord(
+// 					tenantToken,
+// 					process.env.CEP_BASE,
+// 					process.env.CEC_APP,
+// 					record.record_id,
+// 					{ fields: { Qualification: "Left Server" } }
+// 				);
+// 			});
+// 	}
+// 	console.log("Successfully checked qualification data.");
+// }
 
 function interactionRegionRole(interaction) {
 	let roles = [],
@@ -2908,23 +3000,6 @@ function interactionRegionRole(interaction) {
 	return regions;
 }
 
-function checkURL(text) {
-	if (text.includes("www.")) {
-		text = text.replace("www.", "");
-	}
-	const expression =
-		/^(https?\:\/\/)?((www\.)?youtube\.com|youtu\.be|tiktok.com|taptap.io|twitter.com|instagram.com|twitch.com)\/.+$/;
-	const regex = new RegExp(expression);
-
-	if (text.match(regex)) {
-		return true;
-	} else return false;
-}
-
-function onlyDigits(string) {
-	return string.replace(/\D/g, "");
-}
-
 async function checkMemberRole(client, guildId, userId, roleId) {
 	// logger.debug(`Checking if user ${userId} has role ${roleId} in guild ${guildId}`);
 	const guild = client.guilds.cache.get(guildId);
@@ -2940,6 +3015,36 @@ async function checkMemberRole(client, guildId, userId, roleId) {
 		// logger.debug(`User ${userId} does not have role ${roleId} in guild ${guildId}`);
 		return false;
 	}
+}
+
+async function checkRoles(interaction, userId, rolesToCheck) {
+	const member = await interaction.guild.members.fetch(userId);
+	let roles = [];
+
+	for (const role of rolesToCheck) {
+		if (member.roles.cache.has(role)) {
+			roles.push(role);
+		}
+	}
+
+	return roles;
+}
+
+function checkURL(text) {
+	if (text.includes("www.")) {
+		text = text.replace("www.", "");
+	}
+	const expression =
+		/^(https?\:\/\/)?((www\.)?youtube\.com|youtu\.be|tiktok.com|taptap.io|twitter.com|instagram.com|twitch.com)\/.+$/;
+	const regex = new RegExp(expression);
+
+	if (text.match(regex)) {
+		return true;
+	} else return false;
+}
+
+function onlyDigits(string) {
+	return string.replace(/\D/g, "");
 }
 
 async function checkOldFiles() {
