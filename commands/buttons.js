@@ -142,6 +142,17 @@ module.exports = {
 						.setDescription("Input the channel.")
 						.setRequired(true)
 				)
+		)
+		.addSubcommand((subcommand) =>
+			subcommand
+				.setName("ecc-application")
+				.setDescription("Setup ECC Application.")
+				.addChannelOption((option) =>
+					option
+						.setName("channel")
+						.setDescription("Input the channel.")
+						.setRequired(true)
+				)
 		),
 	async execute(interaction, client) {
 		await interaction.deferReply();
@@ -503,6 +514,35 @@ module.exports = {
 				.then((channel) =>
 					channel.send({ embeds: [sdEmbed2], components: [sdRow2] })
 				);
+		} else if (subCommand === "ecc-application") {
+			let eccEmbed = new EmbedBuilder()
+				.setTitle("EVO Creator Competition")
+				.setDescription("Lorem Ipsum")
+				.setColor(`C04946`);
+
+			const eccJoinButton = new ButtonBuilder()
+				.setCustomId("eccJoin")
+				.setLabel("Join Now")
+				.setStyle(ButtonStyle.Success)
+				.setEmoji("📃");
+
+			const eccApplyButton = new ButtonBuilder()
+				.setCustomId("eccApply")
+				.setLabel("Apply for Players Judge")
+				.setStyle(ButtonStyle.Success)
+				.setEmoji("🧑🏻‍⚖️");
+
+			const row = new ActionRowBuilder().addComponents([
+				eccJoinButton,
+				eccApplyButton,
+			]);
+
+			client.channels.fetch(channel.id).then((channel) =>
+				channel.send({
+					embeds: [eccEmbed],
+					components: [row],
+				})
+			);
 		}
 		await interaction.deleteReply();
 	},
