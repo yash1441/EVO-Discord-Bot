@@ -897,12 +897,12 @@ client.on("interactionCreate", async (interaction) => {
 							.add(process.env.ECC_ROLE)
 							.then(() => {
 								interaction.editReply({
-									content: `**Hi, welcome to join EVO Creator Competition! **\n\n**Here is what to do next:**\n1. Choose the content direction and decide the topic.\n2. Before you get started, ask advice for your topic on<#${process.env.ECC_CHANNEL}>.\n3. Make videos.\n4. Submit videos via <#${process.env.SUBMIT_CONTENT_CHANNEL}>, and choose the relevant topic.\n\n**We provide support!**\n1. We have released the latest <#${process.env.VIDEO_GUIDE_CHANNEL}>.\n2. Access to high-quality art material via <#${process.env.MEDIA_KIT_CHANNEL}>.\n3. Ask for advice from <@${process.env.VOID_ID}>.`,
+									content: `**Hi, welcome to join EVO Creator Competition! **\n\n**Here is what to do next:**\n1. Choose the content direction and decide the topic.\n2. Before you get started, ask advice for your topic on <#${process.env.ECC_CHANNEL}>.\n3. Make videos.\n4. Submit videos via <#${process.env.SUBMIT_CONTENT_CHANNEL}>, and choose the relevant topic.\n\n**We provide support!**\n1. We have released the latest <#${process.env.VIDEO_GUIDE_CHANNEL}>.\n2. Access to high-quality art material via <#${process.env.MEDIA_KIT_CHANNEL}>.\n3. Ask for advice from <@${process.env.VOID_ID}>.`,
 								});
 							});
 					} else
 						await interaction.editReply({
-							content: `**Hi, you are already a part of EVO Creator Competition! **\n\n**Here is what to do next:**\n1. Choose the content direction and decide the topic.\n2. Before you get started, ask advice for your topic on<#${process.env.ECC_CHANNEL}>.\n3. Make videos.\n4. Submit videos via <#${process.env.SUBMIT_CONTENT_CHANNEL}>, and choose the relevant topic.\n\n**We provide support!**\n1. We have released the latest <#${process.env.VIDEO_GUIDE_CHANNEL}>.\n2. Access to high-quality art material via <#${process.env.MEDIA_KIT_CHANNEL}>.\n3. Ask for advice from <@${process.env.VOID_ID}>.`,
+							content: `**Hi, you are already a part of EVO Creator Competition! **\n\n**Here is what to do next:**\n1. Choose the content direction and decide the topic.\n2. Before you get started, ask advice for your topic on <#${process.env.ECC_CHANNEL}>.\n3. Make videos.\n4. Submit videos via <#${process.env.SUBMIT_CONTENT_CHANNEL}>, and choose the relevant topic.\n\n**We provide support!**\n1. We have released the latest <#${process.env.VIDEO_GUIDE_CHANNEL}>.\n2. Access to high-quality art material via <#${process.env.MEDIA_KIT_CHANNEL}>.\n3. Ask for advice from <@${process.env.VOID_ID}>.`,
 						});
 					break;
 				case "Apply":
