@@ -14,7 +14,7 @@ module.exports = {
 		const message = interaction.targetMessage.content;
 		translate(message, { to: "pt" })
 			.then((res) => {
-				interaction.reply({
+				interaction.editReply({
 					ephemeral: true,
 					content: "```" + res.text + "```",
 				});
