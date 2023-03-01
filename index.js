@@ -2177,13 +2177,14 @@ client.on("guildMemberUpdate", async (oldMember, newMember) => {
 		newMember.roles.cache.has(process.env.CC_ROLE)
 	) {
 		logger.debug("CC_ROLE: " + newMember.user.tag);
-		let creator = {
+		const creator = {
 			fields: {
 				"Discord ID": newMember.user.id,
 				"Discord Name": newMember.user.tag,
 			},
 		};
-		let tenantToken = await feishu.authorize(
+
+		const tenantToken = await feishu.authorize(
 			process.env.FEISHU_ID,
 			process.env.FEISHU_SECRET
 		);
@@ -2197,7 +2198,7 @@ client.on("guildMemberUpdate", async (oldMember, newMember) => {
 			)
 		);
 
-		if (response.data.total) {
+		if (!response.data.total) {
 			return;
 		}
 
