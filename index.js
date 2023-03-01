@@ -2199,6 +2199,7 @@ client.on("guildMemberUpdate", async (oldMember, newMember) => {
 		);
 
 		if (response.data.total) {
+			logger.debug("Creator already exists.");
 			return;
 		}
 
