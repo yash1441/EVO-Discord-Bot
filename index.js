@@ -2244,6 +2244,8 @@ client.on("guildMemberUpdate", async (oldMember, newMember) => {
 				);
 			})
 			.catch((error) => console.error(error));
+
+		return;
 	}
 
 	for (let roleID of rolesToCheck) {
