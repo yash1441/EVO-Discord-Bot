@@ -2172,6 +2172,9 @@ client.on("guildMemberUpdate", async (oldMember, newMember) => {
 		"1017922224776286269": "YOU ARE ALL SET! 🎉 The server is unlocked!",
 	};
 
+	const guild = client.guilds.cache.get(process.env.EVO_SERVER);
+	const member = await guild.members.fetch(newMember.user.id);
+
 	if (
 		!oldMember.roles.cache.has(process.env.CC_ROLE) &&
 		newMember.roles.cache.has(process.env.CC_ROLE)
@@ -2223,7 +2226,6 @@ client.on("guildMemberUpdate", async (oldMember, newMember) => {
 
 		const recordId = response.data.items[0].record_id;
 		const code = response.data.items[0].fields["Beta Codes"];
-		const member = await guild.members.fetch(newMember.user.id);
 
 		await member
 			.send({
@@ -2252,8 +2254,6 @@ client.on("guildMemberUpdate", async (oldMember, newMember) => {
 	}
 
 	for (let roleID of rolesToCheck) {
-		const guild = client.guilds.cache.get(process.env.EVO_SERVER);
-		const member = await guild.members.fetch(newMember.user.id);
 		const role = member.guild.roles.cache.get(roleID);
 
 		if (
