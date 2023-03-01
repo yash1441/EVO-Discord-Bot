@@ -2229,7 +2229,7 @@ client.on("guildMemberUpdate", async (oldMember, newMember) => {
 
 		await member
 			.send({
-				content: `Congratulations! Thanks for joining CEP. Now you are EVO creator!\nHere is your Beta Code. Feel free to try the game and introduce it to your friends & fans!\n\n\`${code}\`Good luck. Have fun!\n\n*Note: we have the right to ban your code if we find out fraudulent behaviors or code-trading.*`,
+				content: `Congratulations! Thanks for joining CEP. Now you are EVO creator!\nHere is your Beta Code. Feel free to try the game and introduce it to your friends & fans!\n\n\`${code}\`\n\nGood luck. Have fun!\n\n*Note: we have the right to ban your code if we find out fraudulent behaviors or code-trading.*`,
 			})
 			.then(() => {
 				logger.info(
