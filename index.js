@@ -2221,6 +2221,7 @@ client.on("guildMemberUpdate", async (oldMember, newMember) => {
 
 		const recordId = response.data.items[0].record_id;
 		const code = response.data.items[0].fields["Beta Codes"];
+		const member = await guild.members.fetch(newMember.user.id);
 
 		await member
 			.send({
