@@ -2174,7 +2174,7 @@ client.on("guildMemberUpdate", async (oldMember, newMember) => {
 	};
 
 	for (let roleID of rolesToCheck) {
-		logger.debug("roleID: " + roleID);
+		if (roleID == process.env.CC_ROLE) logger.debug("CC_ROLE");
 		let role = newMember.guild.roles.cache.get(roleID);
 		if (
 			role &&
