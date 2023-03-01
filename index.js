@@ -2135,12 +2135,11 @@ client.on("messageCreate", async (message) => {
 });
 
 client.on("guildMemberUpdate", async (oldMember, newMember) => {
-	logger.debug("guildMemberUpdate");
 	let rolesToCheck = [
-		"973278649698648135",
-		"972350401863122974",
-		"972350282455453756",
-		"972375372660346910",
+		process.env.CIS_ROLE,
+		process.env.PT_ROLE,
+		process.env.ES_ROLE,
+		process.env.TH_ROLE,
 		"972375574406385705",
 		"973040050063417376",
 		"973040245119524915",
@@ -2174,86 +2173,13 @@ client.on("guildMemberUpdate", async (oldMember, newMember) => {
 	};
 
 	for (let roleID of rolesToCheck) {
-		if (roleID == process.env.CC_ROLE) logger.debug("CC_ROLE");
-		let role = newMember.guild.roles.cache.get(roleID);
+		const member = await interaction.guild.members.fetch(newMember.user.id);
+		const role = member.guild.roles.cache.get(roleID);
 		if (
 			role &&
 			!oldMember.roles.cache.has(role.id) &&
 			newMember.roles.cache.has(role.id)
 		) {
-			if (role.id == process.env.CC_ROLE) {
-				logger.debug("CC_ROLE: " + newMember.user.tag);
-				let creator = {
-					fields: {
-						"Discord ID": newMember.user.id,
-						"Discord Name": newMember.user.tag,
-					},
-				};
-				let tenantToken = await feishu.authorize(
-					process.env.FEISHU_ID,
-					process.env.FEISHU_SECRET
-				);
-
-				let response = JSON.parse(
-					await feishu.getRecords(
-						tenantToken,
-						process.env.CEP_BASE,
-						process.env.CEP_CREATOR,
-						`CurrentValue.[Discord ID] = "${newMember.user.id}"`
-					)
-				);
-
-				if (response.data.total) {
-					return;
-				}
-
-				await feishu.createRecord(
-					tenantToken,
-					process.env.CEP_BASE,
-					process.env.CEP_CREATOR,
-					creator
-				);
-
-				response = JSON.parse(
-					await feishu.getRecords(
-						tenantToken,
-						process.env.CODE_BASE,
-						process.env.CODE_DATABASE,
-						`NOT(CurrentValue.[Status] = "Used")`
-					)
-				);
-
-				logger.info(
-					`Codes available: ${response.data.total}.\nCodes needed: 1.`
-				);
-
-				const recordId = response.data.items[0].record_id;
-				const code = response.data.items[0].fields["Beta Codes"];
-
-				await member
-					.send({
-						content: `Congratulations! Thanks for joining CEP. Now you are EVO creator!\nHere is your Beta Code. Feel free to try the game and introduce it to your friends & fans!\n\n\`${code}\`Good luck. Have fun!\n\n*Note: we have the right to ban your code if we find out fraudulent behaviors or code-trading.*`,
-					})
-					.then(() => {
-						logger.info(
-							`Sent code to ${newMember.user.tag} (${newMember.user.id})`
-						);
-						feishu.updateRecord(
-							tenantToken,
-							process.env.CODE_BASE,
-							process.env.CODE_DATABASE,
-							recordId,
-							{
-								fields: {
-									Status: "Used",
-									"Discord ID": newMember.user.id,
-								},
-							}
-						);
-					})
-					.catch((error) => console.error(error));
-				break;
-			}
 			let userID = newMember.user.id;
 			if (!welcomeMessages.has(userID)) {
 				let reactEmbed = new EmbedBuilder()
@@ -2290,6 +2216,80 @@ client.on("guildMemberUpdate", async (oldMember, newMember) => {
 					JSON.stringify([...welcomeMessages])
 				);
 			}
+			break;
+		} else if (
+			role.id == process.env.CC_ROLE &&
+			!oldMember.roles.cache.has(role.id) &&
+			newMember.roles.cache.has(role.id)
+		) {
+			logger.debug("CC_ROLE: " + newMember.user.tag);
+			let creator = {
+				fields: {
+					"Discord ID": newMember.user.id,
+					"Discord Name": newMember.user.tag,
+				},
+			};
+			let tenantToken = await feishu.authorize(
+				process.env.FEISHU_ID,
+				process.env.FEISHU_SECRET
+			);
+
+			let response = JSON.parse(
+				await feishu.getRecords(
+					tenantToken,
+					process.env.CEP_BASE,
+					process.env.CEP_CREATOR,
+					`CurrentValue.[Discord ID] = "${newMember.user.id}"`
+				)
+			);
+
+			if (response.data.total) {
+				return;
+			}
+
+			await feishu.createRecord(
+				tenantToken,
+				process.env.CEP_BASE,
+				process.env.CEP_CREATOR,
+				creator
+			);
+
+			response = JSON.parse(
+				await feishu.getRecords(
+					tenantToken,
+					process.env.CODE_BASE,
+					process.env.CODE_DATABASE,
+					`NOT(CurrentValue.[Status] = "Used")`
+				)
+			);
+
+			logger.info(`Codes available: ${response.data.total}.\nCodes needed: 1.`);
+
+			const recordId = response.data.items[0].record_id;
+			const code = response.data.items[0].fields["Beta Codes"];
+
+			await member
+				.send({
+					content: `Congratulations! Thanks for joining CEP. Now you are EVO creator!\nHere is your Beta Code. Feel free to try the game and introduce it to your friends & fans!\n\n\`${code}\`Good luck. Have fun!\n\n*Note: we have the right to ban your code if we find out fraudulent behaviors or code-trading.*`,
+				})
+				.then(() => {
+					logger.info(
+						`Sent code to ${newMember.user.tag} (${newMember.user.id})`
+					);
+					feishu.updateRecord(
+						tenantToken,
+						process.env.CODE_BASE,
+						process.env.CODE_DATABASE,
+						recordId,
+						{
+							fields: {
+								Status: "Used",
+								"Discord ID": newMember.user.id,
+							},
+						}
+					);
+				})
+				.catch((error) => console.error(error));
 			break;
 		}
 	}
