@@ -2198,7 +2198,7 @@ client.on("guildMemberUpdate", async (oldMember, newMember) => {
 			)
 		);
 
-		if (!response.data.total) {
+		if (response.data.total) {
 			return;
 		}
 
