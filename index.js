@@ -2135,6 +2135,7 @@ client.on("messageCreate", async (message) => {
 });
 
 client.on("guildMemberUpdate", async (oldMember, newMember) => {
+	logger.debug("guildMemberUpdate");
 	let rolesToCheck = [
 		"973278649698648135",
 		"972350401863122974",
@@ -2173,6 +2174,7 @@ client.on("guildMemberUpdate", async (oldMember, newMember) => {
 	};
 
 	for (let roleID of rolesToCheck) {
+		logger.debug("roleID: " + roleID);
 		let role = newMember.guild.roles.cache.get(roleID);
 		if (
 			role &&
@@ -2180,6 +2182,7 @@ client.on("guildMemberUpdate", async (oldMember, newMember) => {
 			newMember.roles.cache.has(role.id)
 		) {
 			if (role.id == process.env.CC_ROLE) {
+				logger.debug("CC_ROLE: " + newMember.user.tag);
 				let creator = {
 					fields: {
 						"Discord ID": newMember.user.id,
