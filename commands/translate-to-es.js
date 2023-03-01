@@ -10,6 +10,7 @@ module.exports = {
 		.setType(ApplicationCommandType.Message),
 
 	async execute(interaction) {
+		await interaction.deferReply({ ephemeral: true });
 		const message = interaction.targetMessage.content;
 		translate(message, { to: "es" })
 			.then((res) => {
@@ -20,7 +21,7 @@ module.exports = {
 			})
 			.catch((err) => {
 				console.log(err);
-				interaction.reply({ ephemeral: true, content: "Error." });
+				interaction.editReply({ ephemeral: true, content: "Error." });
 			});
 	},
 };
