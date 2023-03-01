@@ -2211,10 +2211,42 @@ client.on("guildMemberUpdate", async (oldMember, newMember) => {
 					creator
 				);
 
-				member
+				response = JSON.parse(
+					await feishu.getRecords(
+						tenantToken,
+						process.env.CODE_BASE,
+						process.env.CODE_DATABASE,
+						`NOT(CurrentValue.[Status] = "Used")`
+					)
+				);
+
+				logger.info(
+					`Codes available: ${response.data.total}.\nCodes needed: 1.`
+				);
+
+				const recordId = response.data.items[0].record_id;
+				const code = response.data.items[0].fields["Beta Codes"];
+
+				await member
 					.send({
-						content:
-							"Congrats! You have become the content creator of Project EVO 🎉\nHere's how to get beta codes. Please submit the link of the video related to Project EVO via __#submit-content__ and if it has more than 1000 views, 2 beta codes will be granted and sent to you on Nov 29 via the EVO bot.",
+						content: `Congratulations! Thanks for joining CEP. Now you are EVO creator!\nHere is your Beta Code. Feel free to try the game and introduce it to your friends & fans!\n\n\`${code}\`Good luck. Have fun!\n\n*Note: we have the right to ban your code if we find out fraudulent behaviors or code-trading.*`,
+					})
+					.then(() => {
+						logger.info(
+							`Sent code to ${newMember.user.tag} (${newMember.user.id})`
+						);
+						feishu.updateRecord(
+							tenantToken,
+							process.env.CODE_BASE,
+							process.env.CODE_DATABASE,
+							recordId,
+							{
+								fields: {
+									Status: "Used",
+									"Discord ID": newMember.user.id,
+								},
+							}
+						);
 					})
 					.catch((error) => console.error(error));
 				break;
