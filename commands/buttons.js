@@ -542,7 +542,6 @@ module.exports = {
 
 			client.channels.fetch(channel.id).then((channel) =>
 				channel.send({
-					content: "@everyone",
 					embeds: [eccEmbed],
 					components: [row],
 				})
