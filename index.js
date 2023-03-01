@@ -2249,7 +2249,8 @@ client.on("guildMemberUpdate", async (oldMember, newMember) => {
 	}
 
 	for (let roleID of rolesToCheck) {
-		const member = await interaction.guild.members.fetch(newMember.user.id);
+		const guild = client.guilds.cache.get(process.env.EVO_SERVER);
+		const member = await guild.members.fetch(newMember.user.id);
 		const role = member.guild.roles.cache.get(roleID);
 
 		if (
