@@ -3166,6 +3166,18 @@ async function showSubmitModal(interaction) {
 		.setPlaceholder("Select a topic")
 		.addOptions(
 			{
+				label: "ECC - Gameplay Guide",
+				value: formatSelection + "ECC - Gameplay Guide",
+			},
+			{
+				label: "ECC - Storytelling",
+				value: formatSelection + "ECC - Storytelling",
+			},
+			{
+				label: "ECC - Entertaining Montages",
+				value: formatSelection + "ECC - Entertaining Montages",
+			},
+			{
 				label: "Beta 1.3 Update",
 				value: formatSelection + "Beta 1.3 Update",
 			},
