@@ -108,7 +108,7 @@ client.on("ready", () => {
 });
 
 client.on("interactionCreate", async (interaction) => {
-	if (interaction.isChatInputCommand()) {
+	if (interaction.isChatInputCommand() || interaction.isContextMenuCommand()) {
 		const command = interaction.client.commands.get(interaction.commandName);
 
 		if (!command) return;
