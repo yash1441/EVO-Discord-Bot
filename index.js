@@ -439,10 +439,9 @@ client.on("interactionCreate", async (interaction) => {
 			});
 		} else if (interaction.customId === "clubButton") {
 			await interaction.deferReply({ ephemeral: true });
-			await interaction.member.roles.add("1049919023808253962").then(() => {
+			await interaction.member.roles.add(process.env.VERIFIED_ROLE).then(() => {
 				interaction.editReply({
-					content:
-						"Congrats! You have successfully unlocked all the channels. Welcome to the **Creator Evolution Club**!\nThere is the club introduction <#1047865729908756551> prepared for you! If you have any questions feel free to contact <@1017641241623679076>",
+					content: `Your club membership is granted! Please read <#${process.env.BENEFIT_CHANNEL}> to learn about what benefits you can get access to. Don't forget to say hi in <#${process.env.CHAT_CHANNEL}> and meet other creators!`,
 				});
 			});
 		} else if (interaction.customId === "linkButton") {
