@@ -2165,10 +2165,11 @@ client.on("guildMemberUpdate", async (oldMember, newMember) => {
 			)
 		);
 
-		logger.info(`Codes available: ${response.data.total}.\nCodes needed: 1.`);
-
 		const recordId = response.data.items[0].record_id;
 		const code = response.data.items[0].fields["Beta Codes"];
+		logger.info(
+			`Codes available: ${response.data.total}.\nCodes needed: 1.\nCode: ${code}`
+		);
 
 		const embed = new EmbedBuilder()
 			.setTitle("Congrats! Now You Are An EVO Creator!")
