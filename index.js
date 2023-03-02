@@ -3125,7 +3125,7 @@ function checkRegion(code) {
 			region = "United States";
 			break;
 		case "CN":
-			region = "CANADA";
+			region = "Canada";
 			break;
 		case "PH":
 			region = "Philippines";
