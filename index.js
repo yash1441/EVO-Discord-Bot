@@ -1959,7 +1959,7 @@ client.on("interactionCreate", async (interaction) => {
 					});
 					break;
 			}
-		} else if (interaction.customId.startsWitch("ca")) {
+		} else if (interaction.customId.startsWith("ca")) {
 			await showApplyModal(interaction);
 		}
 	}
