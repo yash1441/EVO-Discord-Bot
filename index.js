@@ -2248,16 +2248,16 @@ client.on("guildMemberUpdate", async (oldMember, newMember) => {
 
 client.on("guildMemberAdd", async (member) => {
 	if (member.guild.id == process.env.EVO_CEC_SERVER) {
-		let hasCECRole = await checkMemberRole(
+		let hasCCRole = await checkMemberRole(
 			client,
 			process.env.EVO_SERVER,
 			member.user.id,
-			process.env.CEC_MEMBER_ROLE
+			process.env.CC_ROLE
 		);
 		setTimeout(() => {
-			if (hasCECRole) {
+			if (hasCCRole) {
 				member.roles
-					.add(["1049918980627906590"])
+					.add([process.env.CEC_MEMBER_ROLE])
 					.catch((error) => console.error(error));
 			} else {
 				member
@@ -2266,11 +2266,11 @@ client.on("guildMemberAdd", async (member) => {
 							"You have been kicked from the server because you don't have access to **Creator Evolution Club**.",
 					})
 					.then(() => {
-						member.kick("No CEC Role").catch((error) => console.error(error));
+						member.kick("No CC Role").catch((error) => console.error(error));
 					})
 					.catch((error) => {
 						console.error(error);
-						member.kick("No CEC Role").catch((error) => console.error(error));
+						member.kick("No CC Role").catch((error) => console.error(error));
 					});
 			}
 		}, 5000);
