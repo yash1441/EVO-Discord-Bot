@@ -2123,7 +2123,6 @@ client.on("guildMemberUpdate", async (oldMember, newMember) => {
 		!oldMember.roles.cache.has(process.env.CC_ROLE) &&
 		newMember.roles.cache.has(process.env.CC_ROLE)
 	) {
-		logger.debug("CC_ROLE: " + newMember.user.tag);
 		const creator = {
 			fields: {
 				"Discord ID": newMember.user.id,
@@ -2171,10 +2170,14 @@ client.on("guildMemberUpdate", async (oldMember, newMember) => {
 		const recordId = response.data.items[0].record_id;
 		const code = response.data.items[0].fields["Beta Codes"];
 
+		const embed = new EmbedBuilder()
+			.setTitle("Congrats! Now You Are An EVO Creator!")
+			.setDescription(
+				`Congratulations! Thanks for joining CEP. Together with the official team, we make the EVO community bigger and better!\n\n**Here is your Beta Code. Feel free to try the game and introduce it to your friends & fans!**\n${code}\n\n**Feel free to enjoy our exclusive benefits! Your benefit level is {benefit level}, which decides how many benefits you can get access to. Please join our official [Creator Evolution Club](https://discord.gg/bexu5aVyrY) to learn about details!\n- Sneak Peeks into the latest version!\n- Beta codes for you & your fans per month!\n- Chances to win mobile phones or more devices!\n- Chances to become sponsored channels and more!\n- Chances to get access to collaboration opportunities!\n\n*Note:*\n*1. you can only get access to the benefits by joining our club!\n*2. We have the right to ban your code if we find out fraudulent behaviors or code trading.*\n\nGood luck. Have fun!`
+			);
+
 		await member
-			.send({
-				content: `Congratulations! Thanks for joining CEP. Now you are EVO creator!\nHere is your Beta Code. Feel free to try the game and introduce it to your friends & fans!\n\n\`${code}\`\n\nGood luck. Have fun!\n\n*Note: we have the right to ban your code if we find out fraudulent behaviors or code-trading.*`,
-			})
+			.send({ embeds: [embed] })
 			.then(() => {
 				logger.info(
 					`Sent code to ${newMember.user.tag} (${newMember.user.id})`
