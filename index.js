@@ -124,82 +124,14 @@ client.on("interactionCreate", async (interaction) => {
 	} else if (interaction.isButton()) {
 		if (interaction.customId === "creatorApply") {
 			await interaction.deferReply({ ephemeral: true });
-			const platformSelectMenu = new StringSelectMenuBuilder()
-				.setCustomId("platformSelectMenuApply")
-				.setPlaceholder("Select your platform")
-				.addOptions(
-					{
-						label: "YouTube",
-						value: "YT",
-					},
-					{
-						label: "YouTube Shorts",
-						value: "SH",
-					},
-					{
-						label: "TikTok",
-						value: "TK",
-					},
-					{
-						label: "TapTap",
-						value: "TP",
-					},
-					{
-						label: "Twitch",
-						value: "TW",
-					},
-					{
-						label: "Twitter",
-						value: "TT",
-					},
-					{
-						label: "Instagram",
-						value: "IG",
-					}
-				);
-
-			let row = new ActionRowBuilder().addComponents(platformSelectMenu);
+			const row = await platformMenu("platformSelectMenuApply");
 			await interaction.editReply({
 				content: `**In which social media do you publish content?**`,
 				components: [row],
 			});
 		} else if (interaction.customId === "submitContent") {
 			await interaction.deferReply({ ephemeral: true });
-			const platformSelectMenu = new StringSelectMenuBuilder()
-				.setCustomId("platformSelectMenuSubmit")
-				.setPlaceholder("Select your platform")
-				.addOptions(
-					{
-						label: "YouTube",
-						value: "YT",
-					},
-					{
-						label: "YouTube Shorts",
-						value: "SH",
-					},
-					{
-						label: "TikTok",
-						value: "TK",
-					},
-					{
-						label: "TapTap",
-						value: "TP",
-					},
-					{
-						label: "Twitch",
-						value: "TW",
-					},
-					{
-						label: "Twitter",
-						value: "TT",
-					},
-					{
-						label: "Instagram",
-						value: "IG",
-					}
-				);
-
-			let row = new ActionRowBuilder().addComponents(platformSelectMenu);
+			const row = await platformMenu("platformSelectMenuSubmit");
 			await interaction.editReply({
 				content: `**Where do you publish the content?**`,
 				components: [row],
@@ -1146,7 +1078,8 @@ client.on("interactionCreate", async (interaction) => {
 			);
 			const subs = interaction.fields.getTextInputValue("creatorModalSubs");
 			const subCount = parseInt(onlyDigits(subs));
-			const platform = checkPlatform(interaction.customId.substring(2));
+			const platform = checkPlatform(interaction.customId.substring(2, 4));
+			const region = checkRegion(interaction.customId.substring(4));
 
 			if (!checkURL(channel)) {
 				return await interaction.editReply({
@@ -1165,6 +1098,7 @@ client.on("interactionCreate", async (interaction) => {
 					"Discord ID": interaction.user.id,
 					"Discord Name": interaction.user.tag,
 					Platform: platform,
+					Region: region,
 					Channel: {
 						text: channel,
 						link: channel,
@@ -2005,7 +1939,15 @@ client.on("interactionCreate", async (interaction) => {
 			const type = interaction.customId.substring(18);
 			switch (type) {
 				case "Apply":
-					await showApplyModal(interaction);
+					const selection = interaction.values[0];
+					const platform = checkPlatform(selection);
+					const formatSelection = "ca" + selection;
+					await interaction.deferReply({ ephemeral: true });
+					const row = await showRegionMenu(formatSelection);
+					await interaction.editReply({
+						content: `**Platform** ${platform}\n`,
+						components: [row],
+					});
 					break;
 				case "Submit":
 					await showSubmitModal(interaction);
@@ -2017,6 +1959,8 @@ client.on("interactionCreate", async (interaction) => {
 					});
 					break;
 			}
+		} else if (interaction.customId.startsWitch("ca")) {
+			await showApplyModal(interaction);
 		}
 	}
 });
@@ -3168,10 +3112,74 @@ function checkPlatform(code) {
 	return platform;
 }
 
+function checkRegion(code) {
+	let region = "";
+	switch (code) {
+		case "BR":
+			region = "Brazil";
+			break;
+		case "MX":
+			region = "Mexico";
+			break;
+		case "US":
+			region = "United States";
+			break;
+		case "CN":
+			region = "CANADA";
+			break;
+		case "PH":
+			region = "Philippines";
+			break;
+		case "TH":
+			region = "Thailand";
+			break;
+		case "SG":
+			region = "Singapore";
+			break;
+		case "RU":
+			region = "Russia";
+			break;
+		case "IN":
+			region = "India";
+			break;
+		case "IQ":
+			region = "Iraq";
+			break;
+		case "IL":
+			region = "Israel";
+			break;
+		case "SA":
+			region = "Saudi Arabia";
+			break;
+		case "AE":
+			region = "United Arab Emirates";
+			break;
+		case "TR":
+			region = "Turkey";
+			break;
+		case "GB":
+			region = "United Kingdom";
+			break;
+		case "UA":
+			region = "Ukraine";
+			break;
+		case "DO":
+			region = "Dominican Republic";
+			break;
+		case "OT":
+			region = "Other";
+			break;
+		default:
+			region = "Other";
+			break;
+	}
+	return region;
+}
+
 async function showApplyModal(interaction) {
 	const selection = interaction.values[0];
-	const platform = checkPlatform(selection);
-	const formatSelection = "ca" + selection;
+	const platform = checkPlatform(interaction.customId.substring(2));
+	const formatSelection = interaction.customId + selection;
 
 	const creatorModal = new ModalBuilder()
 		.setCustomId(formatSelection)
@@ -3259,4 +3267,126 @@ async function showSubmitModal(interaction) {
 		content: `**What topic your content is about?**\n\n**Platform** ${platform}`,
 		components: [row],
 	});
+}
+
+async function platformMenu(customId) {
+	const platformSelectMenu = new StringSelectMenuBuilder()
+		.setCustomId(customId)
+		.setPlaceholder("Select your platform")
+		.addOptions(
+			{
+				label: "YouTube",
+				value: "YT",
+			},
+			{
+				label: "YouTube Shorts",
+				value: "SH",
+			},
+			{
+				label: "TikTok",
+				value: "TK",
+			},
+			{
+				label: "TapTap",
+				value: "TP",
+			},
+			{
+				label: "Twitch",
+				value: "TW",
+			},
+			{
+				label: "Twitter",
+				value: "TT",
+			},
+			{
+				label: "Instagram",
+				value: "IG",
+			}
+		);
+
+	const row = new ActionRowBuilder().addComponents(platformSelectMenu);
+	return row;
+}
+
+async function showRegionMenu(customId) {
+	const regionSelectMenu = new StringSelectMenuBuilder()
+		.setCustomId(customId)
+		.setPlaceholder("Select your region")
+		.addOptions(
+			{
+				label: "Brazil",
+				value: "BR",
+			},
+			{
+				label: "Mexico",
+				value: "MX",
+			},
+			{
+				label: "United States",
+				value: "US",
+			},
+			{
+				label: "Canada",
+				value: "CN",
+			},
+			{
+				label: "Philippines",
+				value: "PH",
+			},
+			{
+				label: "Thailand",
+				value: "TH",
+			},
+			{
+				label: "Singapore",
+				value: "SG",
+			},
+			{
+				label: "Russia",
+				value: "RU",
+			},
+			{
+				label: "India",
+				value: "IN",
+			},
+			{
+				label: "Iraq",
+				value: "IQ",
+			},
+			{
+				label: "Israel",
+				value: "IL",
+			},
+			{
+				label: "Saudi Arabia",
+				value: "SA",
+			},
+			{
+				label: "United Arab Emirates",
+				value: "AE",
+			},
+			{
+				label: "Turkey",
+				value: "TR",
+			},
+			{
+				label: "United Kingdom",
+				value: "GB",
+			},
+			{
+				label: "Ukraine",
+				value: "UA",
+			},
+			{
+				label: "Dominican Republic",
+				value: "DO",
+			},
+			{
+				label: "Other Regions",
+				value: "OT",
+			}
+		);
+
+	const row = new ActionRowBuilder().addComponents(regionSelectMenu);
+	return row;
 }
