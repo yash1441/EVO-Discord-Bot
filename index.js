@@ -2358,8 +2358,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
 			process.env.FEISHU_SECRET
 		);
 
-		const details = message.embeds[0].fields[0].value;
-		details = details.replace(/"/g, '\\"');
+		const details = message.embeds[0].fields[0].value.replace(/"/g, '\\"');
 
 		const count = message.reactions.cache.get("🔼").count;
 
@@ -2397,8 +2396,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
 			process.env.FEISHU_SECRET
 		);
 
-		const details = message.embeds[0].fields[0].value;
-		details = details.replace(/"/g, '\\"');
+		const details = message.embeds[0].fields[0].value.replace(/"/g, '\\"');
 
 		const count = message.reactions.cache.get("🔽").count;
 
@@ -2440,23 +2438,22 @@ client.on("messageReactionRemove", async (reaction, user) => {
 		}
 	}
 
-	let message = reaction.message;
-	let channel = reaction.message.channelId;
+	const message = reaction.message;
+	const channel = reaction.message.channelId;
 
 	if (user == client.user) return;
 	if (
 		reaction.emoji.name === "🔼" &&
 		channel == process.env.VOTE_SUGGESTION_CHANNEL
 	) {
-		let tenantToken = await feishu.authorize(
+		const tenantToken = await feishu.authorize(
 			process.env.FEISHU_ID,
 			process.env.FEISHU_SECRET
 		);
 
-		let details = message.embeds[0].fields[0].value;
-		details = details.replace(/"/g, '\\"');
+		const details = message.embeds[0].fields[0].value.replace(/"/g, '\\"');
 
-		let count = message.reactions.cache.get("🔼").count;
+		const count = message.reactions.cache.get("🔼").count;
 
 		let response = JSON.parse(
 			await feishu.getRecords(
@@ -2486,15 +2483,14 @@ client.on("messageReactionRemove", async (reaction, user) => {
 		reaction.emoji.name === "🔽" &&
 		channel == process.env.VOTE_SUGGESTION_CHANNEL
 	) {
-		let tenantToken = await feishu.authorize(
+		const tenantToken = await feishu.authorize(
 			process.env.FEISHU_ID,
 			process.env.FEISHU_SECRET
 		);
 
-		let details = message.embeds[0].fields[0].value;
-		details = details.replace(/"/g, '\\"');
+		const details = message.embeds[0].fields[0].value.replace(/"/g, '\\"');
 
-		let count = message.reactions.cache.get("🔽").count;
+		const count = message.reactions.cache.get("🔽").count;
 
 		let response = JSON.parse(
 			await feishu.getRecords(
