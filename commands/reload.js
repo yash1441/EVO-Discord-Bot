@@ -59,7 +59,8 @@ module.exports = {
 		if (
 			interaction.user.id != process.env.MY_ID &&
 			interaction.user.id != process.env.VOID_ID &&
-			interaction.user.id != process.env.ELSON_ID
+			interaction.user.id != process.env.ELSON_ID &&
+			interaction.user.id != process.env.COSMOS_ID
 		) {
 			return;
 		}
