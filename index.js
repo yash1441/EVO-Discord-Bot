@@ -2170,6 +2170,8 @@ client.on("guildMemberUpdate", async (oldMember, newMember) => {
 				"Creator application not found. - " + newMember.user.id
 			);
 
+		const benefitLevel = response.data.items[0].fields["Benefit Level"];
+
 		const creator = {
 			fields: {
 				"Discord ID": newMember.user.id,
@@ -2181,7 +2183,7 @@ client.on("guildMemberUpdate", async (oldMember, newMember) => {
 					link: response.data.items[0].fields.Channel.link,
 				},
 				Subscribers: response.data.items[0].fields.Subscribers,
-				"Benefit Level": response.data.items[0].fields["Benefit Level"],
+				"Benefit Level": benefitLevel,
 			},
 		};
 
@@ -2192,8 +2194,6 @@ client.on("guildMemberUpdate", async (oldMember, newMember) => {
 			creator,
 			true
 		);
-
-		const benefitLevel = response.data.items[0].fields["Benefit Level"];
 
 		const embed = new EmbedBuilder()
 			.setTitle("Congrats! Now You Are An EVO Creator!")
