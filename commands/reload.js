@@ -75,12 +75,12 @@ module.exports = {
 					logger.info("Updating the list of creators.");
 				});
 
-			let tenantToken = await feishu.authorize(
+			const tenantToken = await feishu.authorize(
 				process.env.FEISHU_ID,
 				process.env.FEISHU_SECRET
 			);
 
-			let response = JSON.parse(
+			const response = JSON.parse(
 				await feishu.getRecords(
 					tenantToken,
 					process.env.CEP_BASE,
