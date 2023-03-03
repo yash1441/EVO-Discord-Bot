@@ -2353,15 +2353,15 @@ client.on("messageReactionAdd", async (reaction, user) => {
 		reaction.emoji.name === "🔼" &&
 		channel == process.env.VOTE_SUGGESTION_CHANNEL
 	) {
-		let tenantToken = await feishu.authorize(
+		const tenantToken = await feishu.authorize(
 			process.env.FEISHU_ID,
 			process.env.FEISHU_SECRET
 		);
 
-		let details = message.embeds[0].fields[0].value;
+		const details = message.embeds[0].fields[0].value;
 		details = details.replace(/"/g, '\\"');
 
-		let count = message.reactions.cache.get("🔼").count;
+		const count = message.reactions.cache.get("🔼").count;
 
 		let response = JSON.parse(
 			await feishu.getRecords(
@@ -2392,15 +2392,15 @@ client.on("messageReactionAdd", async (reaction, user) => {
 		reaction.emoji.name === "🔽" &&
 		channel == process.env.VOTE_SUGGESTION_CHANNEL
 	) {
-		let tenantToken = await feishu.authorize(
+		const tenantToken = await feishu.authorize(
 			process.env.FEISHU_ID,
 			process.env.FEISHU_SECRET
 		);
 
-		let details = message.embeds[0].fields[0].value;
+		const details = message.embeds[0].fields[0].value;
 		details = details.replace(/"/g, '\\"');
 
-		let count = message.reactions.cache.get("🔽").count;
+		const count = message.reactions.cache.get("🔽").count;
 
 		let response = JSON.parse(
 			await feishu.getRecords(
