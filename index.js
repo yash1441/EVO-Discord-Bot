@@ -79,7 +79,7 @@ client.on("ready", () => {
 		function () {
 			logger.info(`Starting scheduled cronjob. (Every 12 hours)`);
 			CCESDataCalculation();
-			CECCheck();
+			//CECCheck();
 			checkOldFiles();
 		},
 		{
@@ -2859,66 +2859,66 @@ async function CCESRewardCalculation(tenantToken) {
 	console.log("Successfully entered CCES Reward Data.");
 }
 
-async function CECCheck() {
-	let tenantToken = await feishu.authorize(
-		process.env.FEISHU_ID,
-		process.env.FEISHU_SECRET
-	);
-	let response = await feishu.getRecords(
-		tenantToken,
-		process.env.CEP_BASE,
-		process.env.CEC_APP,
-		`CurrentValue.[Data Review] = "CHECK"`
-	);
-	response = JSON.parse(response);
+// async function CECCheck() {
+// 	let tenantToken = await feishu.authorize(
+// 		process.env.FEISHU_ID,
+// 		process.env.FEISHU_SECRET
+// 	);
+// 	let response = await feishu.getRecords(
+// 		tenantToken,
+// 		process.env.CEP_BASE,
+// 		process.env.CEC_APP,
+// 		`CurrentValue.[Data Review] = "CHECK"`
+// 	);
+// 	response = JSON.parse(response);
 
-	if (!response.data.total) {
-		console.log('No entries set to "CHECK" for review.');
-		//await CECQualifyCheck(tenantToken);
-		return;
-	}
+// 	if (!response.data.total) {
+// 		console.log('No entries set to "CHECK" for review.');
+// 		//await CECQualifyCheck(tenantToken);
+// 		return;
+// 	}
 
-	let records = response.data.items;
-	let recordsSimplified = [];
-	records.forEach(function (record) {
-		recordsSimplified.push({
-			recordId: record.record_id,
-			"Discord ID": record.fields["Discord ID"],
-			"Total Views": 0,
-			"Total Videos": 0,
-		});
-	});
+// 	let records = response.data.items;
+// 	let recordsSimplified = [];
+// 	records.forEach(function (record) {
+// 		recordsSimplified.push({
+// 			recordId: record.record_id,
+// 			"Discord ID": record.fields["Discord ID"],
+// 			"Total Views": 0,
+// 			"Total Videos": 0,
+// 		});
+// 	});
 
-	for (const record of recordsSimplified) {
-		let res = await feishu.getRecords(
-			tenantToken,
-			process.env.CEP_BASE,
-			process.env.CCES_DATA,
-			`CurrentValue.[Discord ID] = "${record["Discord ID"]}"`
-		);
-		res = JSON.parse(res);
-		if (res.data.total) {
-			record["Total Views"] = parseInt(res.data.items[0].fields["Valid Views"]);
-			record["Total Videos"] = parseInt(
-				res.data.items[0].fields["Valid Videos"]
-			);
-		}
-		let recordId = record.recordId;
-		delete record.recordId;
-		delete record["Discord ID"];
-		record["Data Review"] = "DONE";
-		console.log(record);
-		await feishu.updateRecord(
-			tenantToken,
-			process.env.CEP_BASE,
-			process.env.CEC_APP,
-			recordId,
-			{ fields: record }
-		);
-	}
-	console.log("Completed CEC Check.");
-	//await CECQualifyCheck(tenantToken);
-}
+// 	for (const record of recordsSimplified) {
+// 		let res = await feishu.getRecords(
+// 			tenantToken,
+// 			process.env.CEP_BASE,
+// 			process.env.CCES_DATA,
+// 			`CurrentValue.[Discord ID] = "${record["Discord ID"]}"`
+// 		);
+// 		res = JSON.parse(res);
+// 		if (res.data.total) {
+// 			record["Total Views"] = parseInt(res.data.items[0].fields["Valid Views"]);
+// 			record["Total Videos"] = parseInt(
+// 				res.data.items[0].fields["Valid Videos"]
+// 			);
+// 		}
+// 		let recordId = record.recordId;
+// 		delete record.recordId;
+// 		delete record["Discord ID"];
+// 		record["Data Review"] = "DONE";
+// 		console.log(record);
+// 		await feishu.updateRecord(
+// 			tenantToken,
+// 			process.env.CEP_BASE,
+// 			process.env.CEC_APP,
+// 			recordId,
+// 			{ fields: record }
+// 		);
+// 	}
+// 	console.log("Completed CEC Check.");
+// 	await CECQualifyCheck(tenantToken);
+// }
 
 async function CECQualifyCheck(tenantToken) {
 	let response = await feishu.getRecords(
