@@ -677,7 +677,7 @@ module.exports = {
 				ephemeral: true,
 			});
 
-			let tenantToken = await feishu.authorize(
+			const tenantToken = await feishu.authorize(
 				process.env.FEISHU_ID,
 				process.env.FEISHU_SECRET
 			);

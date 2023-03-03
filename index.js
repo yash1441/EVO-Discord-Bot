@@ -87,6 +87,17 @@ client.on("ready", () => {
 		}
 	);
 
+	cron.schedule(
+		"0 59 11 * * 1",
+		function () {
+			logger.info(`Starting scheduled cronjob. (Every Monday 11:59 AM)`);
+			calculateBP();
+		},
+		{
+			timezone: "Asia/Singapore",
+		}
+	);
+
 	logger.info(`Deleting old bug reports.`);
 	checkOldFiles();
 
@@ -500,7 +511,7 @@ client.on("interactionCreate", async (interaction) => {
 		} else if (interaction.customId === "afcButton") {
 			await interaction.deferReply({ ephemeral: true });
 
-			let tenantToken = await feishu.authorize(
+			const tenantToken = await feishu.authorize(
 				process.env.FEISHU_ID,
 				process.env.FEISHU_SECRET
 			);
@@ -2600,7 +2611,7 @@ client.login(process.env.DISCORD_TOKEN);
 // }
 
 async function CCESDataCalculation() {
-	let tenantToken = await feishu.authorize(
+	const tenantToken = await feishu.authorize(
 		process.env.FEISHU_ID,
 		process.env.FEISHU_SECRET
 	);
@@ -2909,66 +2920,66 @@ async function CECCheck() {
 	//await CECQualifyCheck(tenantToken);
 }
 
-// async function CECQualifyCheck(tenantToken) {
-// 	let response = await feishu.getRecords(
-// 		tenantToken,
-// 		process.env.CEP_BASE,
-// 		process.env.CEC_APP,
-// 		`CurrentValue.[Qualification] = "Accepted"`
-// 	);
-// 	response = JSON.parse(response);
+async function CECQualifyCheck(tenantToken) {
+	let response = await feishu.getRecords(
+		tenantToken,
+		process.env.CEP_BASE,
+		process.env.CEC_APP,
+		`CurrentValue.[Qualification] = "Accepted"`
+	);
+	response = JSON.parse(response);
 
-// 	if (!response.data.total) {
-// 		console.log('No entries set to "Accepted" for qualification.');
-// 		return;
-// 	}
+	if (!response.data.total) {
+		console.log('No entries set to "Accepted" for qualification.');
+		return;
+	}
 
-// 	let records = response.data.items;
-// 	for (const record of records) {
-// 		let guild = client.guilds.cache.get(process.env.EVO_SERVER);
-// 		let member = guild.members.cache.get(record.fields["Discord ID"]);
-// 		let cecEmbed = new EmbedBuilder()
-// 			.setTitle("Congrats! You become members of Creator Evolution Club!")
-// 			.setDescription(
-// 				"Now the following exclusive benefits are waiting for you to win!\n- Beta codes for your fans (up to 200 codes/month)\n- Creator foundation (including high-end phones worth $800+)\n- Official support from dev team\n\nStaff from dev team will contact you in private very soon!"
-// 			);
+	let records = response.data.items;
+	for (const record of records) {
+		let guild = client.guilds.cache.get(process.env.EVO_SERVER);
+		let member = guild.members.cache.get(record.fields["Discord ID"]);
+		let cecEmbed = new EmbedBuilder()
+			.setTitle("Congrats! You become members of Creator Evolution Club!")
+			.setDescription(
+				"Now the following exclusive benefits are waiting for you to win!\n- Beta codes for your fans (up to 200 codes/month)\n- Creator foundation (including high-end phones worth $800+)\n- Official support from dev team\n\nStaff from dev team will contact you in private very soon!"
+			);
 
-// 		await member.roles
-// 			.add(process.env.CEC_MEMBER_ROLE)
-// 			.then(() => {
-// 				console.log(`Added role to ${member.user.tag}`);
-// 				let qualification = "DONE";
-// 				member
-// 					.send({ embeds: [cecEmbed] })
-// 					.then(() => {
-// 						console.log(`Sent message to ${member.user.tag}`);
-// 						qualification = "DONE";
-// 					})
-// 					.catch((error) => {
-// 						console.log(error);
-// 						qualification = "DONE (NO DM)";
-// 					});
-// 				feishu.updateRecord(
-// 					tenantToken,
-// 					process.env.CEP_BASE,
-// 					process.env.CEC_APP,
-// 					record.record_id,
-// 					{ fields: { Qualification: qualification } }
-// 				);
-// 			})
-// 			.catch((error) => {
-// 				console.log(error);
-// 				feishu.updateRecord(
-// 					tenantToken,
-// 					process.env.CEP_BASE,
-// 					process.env.CEC_APP,
-// 					record.record_id,
-// 					{ fields: { Qualification: "Left Server" } }
-// 				);
-// 			});
-// 	}
-// 	console.log("Successfully checked qualification data.");
-// }
+		await member.roles
+			.add(process.env.CEC_MEMBER_ROLE)
+			.then(() => {
+				console.log(`Added role to ${member.user.tag}`);
+				let qualification = "DONE";
+				member
+					.send({ embeds: [cecEmbed] })
+					.then(() => {
+						console.log(`Sent message to ${member.user.tag}`);
+						qualification = "DONE";
+					})
+					.catch((error) => {
+						console.log(error);
+						qualification = "DONE (NO DM)";
+					});
+				feishu.updateRecord(
+					tenantToken,
+					process.env.CEP_BASE,
+					process.env.CEC_APP,
+					record.record_id,
+					{ fields: { Qualification: qualification } }
+				);
+			})
+			.catch((error) => {
+				console.log(error);
+				feishu.updateRecord(
+					tenantToken,
+					process.env.CEP_BASE,
+					process.env.CEC_APP,
+					record.record_id,
+					{ fields: { Qualification: "Left Server" } }
+				);
+			});
+	}
+	console.log("Successfully checked qualification data.");
+}
 
 function interactionRegionRole(interaction) {
 	let roles = [],
@@ -3413,4 +3424,69 @@ async function showRegionMenu(customId) {
 
 	const row = new ActionRowBuilder().addComponents(regionSelectMenu);
 	return row;
+}
+
+async function calculateBP() {
+	const tenantToken = await feishu.authorize(
+		process.env.FEISHU_ID,
+		process.env.FEISHU_SECRET
+	);
+
+	let response = JSON.parse(
+		await feishu.getRecords(
+			tenantToken,
+			process.env.CEP_BASE,
+			process.env.CEC_DATA
+		)
+	);
+
+	if (!response.data.total) {
+		await interaction.editReply({
+			content: "CLUB Data Not Found.",
+			ephemeral: true,
+		});
+		return;
+	}
+
+	let records = [];
+
+	for (const record of response.data.items) {
+		records.push({
+			recordId: record.record_id,
+			discordId: record.fields["Discord ID"],
+			totalViews: parseInt(record.fields["CEC Total Views"]),
+			missionViews: parseInt(record.fields["Mission Views"]),
+		});
+	}
+
+	for (const record of records) {
+		let bp = 0.0,
+			bpRate = 1.0;
+		response = JSON.parse(
+			await feishu.getRecords(
+				tenantToken,
+				process.env.CEP_BASE,
+				process.env.CEC_BENEFIT,
+				`CurrentValue.[Discord ID] = "${record.discordId}"`
+			)
+		);
+		if (response.data.total)
+			bpRate = parseFloat(response.data.items[0].fields["BP Rate"]);
+		if (bpRate == NaN) bpRate = 0.0;
+		bp = ((record.totalViews - record.missionViews) / 1000) * bpRate;
+		bp += (record.missionViews / 1000) * bpRate * 1.5;
+
+		await feishu.updateRecord(
+			tenantToken,
+			process.env.CEP_BASE,
+			process.env.CEC_DATA,
+			record.recordId,
+			{ fields: { "BP Amount": bp } }
+		);
+	}
+
+	await interaction.editReply({
+		content: "CLUB BP Data Calculated.",
+		ephemeral: true,
+	});
 }
