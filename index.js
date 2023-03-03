@@ -3279,30 +3279,6 @@ async function showSubmitModal(interaction) {
 				value: formatSelection + "Beta 1.3 Update",
 			},
 			{
-				label: "God of Guns",
-				value: formatSelection + "God of Guns",
-			},
-			{
-				label: "Building Expert",
-				value: formatSelection + "Building Expert",
-			},
-			{
-				label: "Become The Richest",
-				value: formatSelection + "Become The Richest",
-			},
-			{
-				label: "Conquer Kane",
-				value: formatSelection + "Conquer Kane",
-			},
-			{
-				label: "Highlight / Funny Moment",
-				value: formatSelection + "Highlight / Funny Moment",
-			},
-			{
-				label: "Emberland Raider Challenge",
-				value: formatSelection + "Emberland Raider Challenge",
-			},
-			{
 				label: "Other Topics",
 				value: formatSelection + "Other Topics",
 			}
