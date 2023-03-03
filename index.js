@@ -2182,7 +2182,7 @@ client.on("guildMemberUpdate", async (oldMember, newMember) => {
 					text: response.data.items[0].fields.Channel.text,
 					link: response.data.items[0].fields.Channel.link,
 				},
-				Subscribers: response.data.items[0].fields.Subscribers,
+				Subscribers: parseInt(response.data.items[0].fields.Subscribers),
 				"Benefit Level": benefitLevel,
 			},
 		};
