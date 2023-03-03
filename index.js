@@ -2191,8 +2191,7 @@ client.on("guildMemberUpdate", async (oldMember, newMember) => {
 			tenantToken,
 			process.env.CEP_BASE,
 			process.env.CEP_CREATOR,
-			creator,
-			true
+			creator
 		);
 
 		const embed = new EmbedBuilder()
