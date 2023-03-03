@@ -2170,10 +2170,26 @@ client.on("guildMemberUpdate", async (oldMember, newMember) => {
 			`Codes available: ${response.data.total}.\nCodes needed: 1.\nCode: ${code}`
 		);
 
+		response = JSON.parse(
+			await feishu.getRecords(
+				tenantToken,
+				process.env.CEP_BASE,
+				process.env.CEP_APP,
+				`CurrentValue.[Discord ID] = "${newMember.user.id}"`
+			)
+		);
+
+		if (!response.data.total)
+			return logger.debug(
+				"Creator application not found. - " + newMember.user.id
+			);
+
+		const benefitLevel = response.data.items[0].fields["Benefit Level"];
+
 		const embed = new EmbedBuilder()
 			.setTitle("Congrats! Now You Are An EVO Creator!")
 			.setDescription(
-				`Congratulations! Thanks for joining CEP. Together with the official team, we make the EVO community bigger and better!\n\n**Here is your Beta Code. Feel free to try the game and introduce it to your friends & fans!**\n\`${code}\`\n\n**Feel free to enjoy our exclusive benefits! Your benefit level is {benefit level}, which decides how many benefits you can get access to. Please join our official [Creator Evolution Club](https://discord.gg/bexu5aVyrY) to learn about details!**\n- Sneak Peeks into the latest version!\n- Beta codes for you & your fans per month!\n- Chances to win mobile phones or more devices!\n- Chances to become sponsored channels and more!\n- Chances to get access to collaboration opportunities!\n\n*Note:*\n*1. you can only get access to the benefits by joining our club!*n*2. We have the right to ban your code if we find out fraudulent behaviors or code trading.*\n\nGood luck. Have fun!`
+				`Congratulations! Thanks for joining CEP. Together with the official team, we make the EVO community bigger and better!\n\n**Here is your Beta Code. Feel free to try the game and introduce it to your friends & fans!**\n\`${code}\`\n\n**Feel free to enjoy our exclusive benefits! Your benefit level is ${benefitLevel}, which decides how many benefits you can get access to. Please join our official [Creator Evolution Club](https://discord.gg/bexu5aVyrY) to learn about details!**\n- Sneak Peeks into the latest version!\n- Beta codes for you & your fans per month!\n- Chances to win mobile phones or more devices!\n- Chances to become sponsored channels and more!\n- Chances to get access to collaboration opportunities!\n\n*Note:*\n*1. you can only get access to the benefits by joining our club!*n*2. We have the right to ban your code if we find out fraudulent behaviors or code trading.*\n\nGood luck. Have fun!`
 			)
 			.setColor(`C04946`);
 
