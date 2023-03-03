@@ -2189,7 +2189,8 @@ client.on("guildMemberUpdate", async (oldMember, newMember) => {
 			tenantToken,
 			process.env.CEP_BASE,
 			process.env.CEP_CREATOR,
-			creator
+			creator,
+			true
 		);
 
 		const benefitLevel = response.data.items[0].fields["Benefit Level"];
