@@ -2122,13 +2122,6 @@ client.on("guildMemberUpdate", async (oldMember, newMember) => {
 		!oldMember.roles.cache.has(process.env.CC_ROLE) &&
 		newMember.roles.cache.has(process.env.CC_ROLE)
 	) {
-		const creator = {
-			fields: {
-				"Discord ID": newMember.user.id,
-				"Discord Name": newMember.user.tag,
-			},
-		};
-
 		const tenantToken = await feishu.authorize(
 			process.env.FEISHU_ID,
 			process.env.FEISHU_SECRET
@@ -2147,13 +2140,6 @@ client.on("guildMemberUpdate", async (oldMember, newMember) => {
 			logger.debug("Creator already exists.");
 			return;
 		}
-
-		await feishu.createRecord(
-			tenantToken,
-			process.env.CEP_BASE,
-			process.env.CEP_CREATOR,
-			creator
-		);
 
 		response = JSON.parse(
 			await feishu.getRecords(
@@ -2183,6 +2169,28 @@ client.on("guildMemberUpdate", async (oldMember, newMember) => {
 			return logger.debug(
 				"Creator application not found. - " + newMember.user.id
 			);
+
+		const creator = {
+			fields: {
+				"Discord ID": newMember.user.id,
+				"Discord Name": newMember.user.tag,
+				Platform: response.data.items[0].fields.Platform,
+				Region: response.data.items[0].fields.Region,
+				Channel: {
+					text: response.data.items[0].fields.Channel.text,
+					link: response.data.items[0].fields.Channel.link,
+				},
+				Subscribers: response.data.items[0].fields.Subscribers,
+				"Benefit Level": response.data.items[0].fields["Benefit Level"],
+			},
+		};
+
+		await feishu.createRecord(
+			tenantToken,
+			process.env.CEP_BASE,
+			process.env.CEP_CREATOR,
+			creator
+		);
 
 		const benefitLevel = response.data.items[0].fields["Benefit Level"];
 
