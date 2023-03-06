@@ -153,6 +153,17 @@ module.exports = {
 						.setDescription("Input the channel.")
 						.setRequired(true)
 				)
+		)
+		.addSubcommand((subcommand) =>
+			subcommand
+				.setName("bug-report")
+				.setDescription("Setup ECC Application.")
+				.addChannelOption((option) =>
+					option
+						.setName("channel")
+						.setDescription("Input the channel.")
+						.setRequired(true)
+				)
 		),
 	async execute(interaction, client) {
 		await interaction.deferReply();
@@ -543,6 +554,26 @@ module.exports = {
 			client.channels.fetch(channel.id).then((channel) =>
 				channel.send({
 					embeds: [eccEmbed],
+					components: [row],
+				})
+			);
+		} else if (subCommand === "bug-report") {
+			const bugEmbed = new EmbedBuilder()
+				.setTitle("Bug Report")
+				.setDescription(`Lorem Ipsum`)
+				.setColor(`C04946`);
+
+			const bugButton = new ButtonBuilder()
+				.setCustomId("bugButton")
+				.setLabel("Report a Bug")
+				.setStyle(ButtonStyle.Success)
+				.setEmoji("🐛");
+
+			const row = new ActionRowBuilder().addComponents([bugButton]);
+
+			client.channels.fetch(channel.id).then((channel) =>
+				channel.send({
+					embeds: [bugEmbed],
 					components: [row],
 				})
 			);
