@@ -3603,7 +3603,7 @@ async function sendResponseToFeishu(interaction) {
 			header: {
 				template: "red",
 				title: {
-					content: `${bugs.fields["Bug Type"]}`,
+					content: `${bugs.fields["Bug Type"]} - ${bugs.fields["Game Mode"]}`,
 					tag: "plain_text",
 				},
 			},
