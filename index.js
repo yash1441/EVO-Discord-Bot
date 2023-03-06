@@ -2035,7 +2035,7 @@ client.on("interactionCreate", async (interaction) => {
 					);
 				})
 				.catch((collected) => {
-					logger.debug(m.author.id + " " + interaction.user.id);
+					logger.debug(collected.author.id + " " + interaction.user.id);
 					interaction.followUp("Looks like nobody got the answer this time.");
 				});
 		}
