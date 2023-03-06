@@ -1292,9 +1292,10 @@ client.on("interactionCreate", async (interaction) => {
 					collected.first().delete();
 				})
 				.catch((collected) => {
-					interaction.followUp(
-						"You weren't able to upload a screenshot in time. Please try again."
-					);
+					interaction.editReply({
+						content:
+							"You weren't able to upload a screenshot in time. Please try again.",
+					});
 				});
 		} else if (
 			interaction.customId === "Vehicle" ||
