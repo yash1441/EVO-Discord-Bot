@@ -2016,7 +2016,7 @@ client.on("interactionCreate", async (interaction) => {
 			const filter = (m) =>
 				m.author.id === interaction.user.id && m.attachments.size > 0;
 			interaction.channel
-				.awaitMessages({ filter, max: 1, time: 30000, errors: ["time"] })
+				.awaitMessages({ max: 1, time: 30000, errors: ["time"] })
 				.then((collected) => {
 					const attachment = collected.attachments.first();
 					console.log(attachment);

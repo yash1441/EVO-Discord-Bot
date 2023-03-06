@@ -157,7 +157,7 @@ module.exports = {
 		.addSubcommand((subcommand) =>
 			subcommand
 				.setName("bug-report")
-				.setDescription("Setup ECC Application.")
+				.setDescription("Setup Bug Report.")
 				.addChannelOption((option) =>
 					option
 						.setName("channel")
