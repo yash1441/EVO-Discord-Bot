@@ -1870,10 +1870,10 @@ client.on("interactionCreate", async (interaction) => {
 				.setCustomId("bugMode" + selection)
 				.setPlaceholder("Select a game mode")
 				.addOptions(
-					{ label: "Casual Mode", value: "Casual" },
-					{ label: "Standard Mode", value: "Standard" },
+					{ label: "Casual Mode", value: "Casual Mode" },
+					{ label: "Standard Mode", value: "Standard Mode" },
 					{ label: "Lobby", value: "Lobby" },
-					{ label: "Other Places", value: "Other" }
+					{ label: "Other Places", value: "Other Places" }
 				);
 
 			const row = new ActionRowBuilder().addComponents(bugMode);
