@@ -2030,8 +2030,44 @@ client.on("interactionCreate", async (interaction) => {
 						});
 					} else {
 						download(attachment.url, `${interaction.user.id}-bug.jpg`);
+						const bugreportModal = new ModalBuilder()
+							.setCustomId(tempName)
+							.setTitle(interaction.options.getString("category"));
+						const bugUsername = new TextInputBuilder()
+							.setCustomId("bugUsername")
+							.setLabel("Nickname")
+							.setPlaceholder("Please enter your in-game nickname here.")
+							.setStyle(TextInputStyle.Short)
+							.setRequired(true);
+						const bugPhone = new TextInputBuilder()
+							.setCustomId("bugPhone")
+							.setLabel("Phone Model and RAM")
+							.setPlaceholder("Mention your phone model and RAM here.")
+							.setStyle(TextInputStyle.Short)
+							.setRequired(true);
+						const bugSession = new TextInputBuilder()
+							.setCustomId("bugSession")
+							.setLabel("Session ID")
+							.setPlaceholder("In which session did you encounter the bug?")
+							.setStyle(TextInputStyle.Short)
+							.setRequired(true);
+						const bugDetails = new TextInputBuilder()
+							.setCustomId("bugDetails")
+							.setLabel("Bug Details")
+							.setPlaceholder("Give a detailed explanation of the bug here.")
+							.setStyle(TextInputStyle.Paragraph)
+							.setRequired(true);
+
+						let r1 = new ActionRowBuilder().addComponents(bugUsername);
+						let r2 = new ActionRowBuilder().addComponents(bugPhone);
+						let r3 = new ActionRowBuilder().addComponents(bugSession);
+						let r4 = new ActionRowBuilder().addComponents(bugDetails);
+
+						bugreportModal.addComponents(r1, r2, r3, r4);
+
+						interaction.showModal(bugreportModal);
 					}
-					interaction.followUp(`${attachment.url}`);
+					interaction.showModal(bugreportModal);
 					collected.first().delete();
 				})
 				.catch((collected) => {
