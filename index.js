@@ -2003,7 +2003,7 @@ client.on("interactionCreate", async (interaction) => {
 			const row = new ActionRowBuilder().addComponents(bugMode);
 
 			await interaction.update({
-				content: `Selected **${selection}`,
+				content: `Selected **${selection}**`,
 				components: [row],
 			});
 		} else if (interaction.customId.startsWith("bugMode")) {
@@ -2012,12 +2012,13 @@ client.on("interactionCreate", async (interaction) => {
 
 			await interaction.update({
 				content: `**${category}**\n${selection}\n\nPlease upload **one** screenshot for the bug in the next **60** seconds below.`,
+				components: [],
 			});
 
 			const filter = (m) =>
 				m.author.id === interaction.user.id && m.attachments.size > 0;
 			interaction.channel
-				.awaitMessages({ filter, max: 1, time: 30000, errors: ["time"] })
+				.awaitMessages({ filter, max: 1, time: 60000, errors: ["time"] })
 				.then((collected) => {
 					const attachment = collected.first().attachments.first();
 					if (
