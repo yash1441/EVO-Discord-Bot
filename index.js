@@ -915,6 +915,24 @@ client.on("interactionCreate", async (interaction) => {
 						});
 				// Send feishu notification
 			}
+		} else if (interaction.customId === "bugButton") {
+			await interaction.deferReply({ ephemeral: true });
+			const bugCategories = new StringSelectMenuBuilder()
+				.setCustomId("bugCategories")
+				.setPlaceholder("Select a category")
+				.addOptions(
+					{ label: "Optimization", value: "Optimization" },
+					{ label: "Connection", value: "Connection" },
+					{ name: "Login", value: "Login" },
+					{ label: "Gameplay Abnormal", value: "Gameplay Abnormal" },
+					{ label: "Data Loss", value: "Data Loss" },
+					{ label: "Others", value: "Others" }
+				);
+
+			// Add the select menu to the action row
+			const row = new ActionRowBuilder().addComponents(bugCategories);
+
+			await interaction.editReply({ components: [row] });
 		}
 	} else if (interaction.isModalSubmit()) {
 		if (interaction.customId === "betaAccess") {
