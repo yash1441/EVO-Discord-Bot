@@ -2017,7 +2017,9 @@ client.on("interactionCreate", async (interaction) => {
 				.awaitMessages({ filter, max: 1, time: 30000, errors: ["time"] })
 				.then((collected) => {
 					const attachment = collected.attachments.first();
+					console.log(attachment);
 					if (!attachment.url.endsWith("jpg") && !attachment.url.endsWith("png")) {
+						logger.debug("Not a valid image");
 						return interaction.followUp({
 							content:
 								"You can only submit images in this. To submit a video, upload it to a public site (Youtube, Google Drive, Dropbox, etc.) and send link in the Bug Details section of the form.",
@@ -2025,6 +2027,7 @@ client.on("interactionCreate", async (interaction) => {
 						});
 					}
 					else {
+						logger.debug("Valid image");
 						download(attachment.url, `${interaction.user.id}-bug.jpg`);
 					}
 					interaction.followUp(
