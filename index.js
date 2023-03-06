@@ -2071,7 +2071,6 @@ client.on("interactionCreate", async (interaction) => {
 					collected.first().delete();
 				})
 				.catch((collected) => {
-					logger.debug(collected + " " + interaction.user.id);
 					interaction.followUp("Looks like nobody got the answer this time.");
 				});
 		}
