@@ -1280,10 +1280,9 @@ client.on("interactionCreate", async (interaction) => {
 						!attachment.url.endsWith("jpg") &&
 						!attachment.url.endsWith("png")
 					) {
-						return interaction.followUp({
+						return interaction.editReply({
 							content:
-								"You can only submit images in this. To submit a video, upload it to a public site (Youtube, Google Drive, Dropbox, etc.) and send link in the Bug Details section of the form.",
-							ephemeral: true,
+								"You can only submit images in this. To submit a video, upload it to a public site (Youtube, Google Drive, Dropbox, etc.) and send link in the Bug Details section of the form. Please try again.",
 						});
 					} else {
 						download(attachment.url, `${interaction.user.id}-bug.jpg`);
