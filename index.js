@@ -2010,10 +2010,10 @@ client.on("interactionCreate", async (interaction) => {
 			const selection = interaction.values[0];
 			const category = interaction.customId.substring(7);
 
-			await interaction.followUp({
-				content: `**${category}**\n${selection}\n\nPlease upload **one** screenshot for the bug in the next **60** seconds below.`,
-				components: [],
-			});
+			// await interaction.update({
+			// 	content: `**${category}**\n${selection}\n\nPlease upload **one** screenshot for the bug in the next **60** seconds below.`,
+			// 	components: [],
+			// });
 
 			const filter = (m) =>
 				m.author.id === interaction.user.id && m.attachments.size > 0;
