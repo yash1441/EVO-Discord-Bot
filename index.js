@@ -2032,6 +2032,7 @@ client.on("interactionCreate", async (interaction) => {
 						download(attachment.url, `${interaction.user.id}-bug.jpg`);
 					}
 					interaction.followUp(`${attachment.url}`);
+					collected.first().delete();
 				})
 				.catch((collected) => {
 					logger.debug(collected + " " + interaction.user.id);
