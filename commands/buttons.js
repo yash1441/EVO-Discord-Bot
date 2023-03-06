@@ -559,8 +559,10 @@ module.exports = {
 			);
 		} else if (subCommand === "bug-report") {
 			const bugEmbed = new EmbedBuilder()
-				.setTitle("Bug Report")
-				.setDescription(`Lorem Ipsum`)
+				.setTitle("YOU REPORT IT AND WE FIX IT")
+				.setDescription(
+					`**Click the button below** to start the report procedure, which takes you __less than 2 minutes__.\n\n**Please follow the bot instruction and submit the required bug info:**\n1. Select a bug category.\n2. Select a game mode where a bug occurs.\n3. Describe the bug.\n 4. Upload a screenshot that shows the bug (has to be done within 60 seconds)\n\n__Please give us as much bug detail as you can. It is very important for us to locate the issue and get it fixed as soon as possible.__\n__In the end, thanks for helping us improve the game. Your effort really matters!__`
+				)
 				.setColor(`C04946`);
 
 			const bugButton = new ButtonBuilder()
