@@ -1870,7 +1870,7 @@ client.on("interactionCreate", async (interaction) => {
 			const selection = interaction.values[0];
 			const bugMode = new StringSelectMenuBuilder()
 				.setCustomId("bugMode" + selection)
-				.setPlaceholder("Select a game mode")
+				.setPlaceholder("Where the bug occurs")
 				.addOptions(
 					{ label: "Casual Mode", value: "Casual Mode" },
 					{ label: "Standard Mode", value: "Standard Mode" },
