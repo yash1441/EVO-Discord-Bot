@@ -923,13 +923,12 @@ client.on("interactionCreate", async (interaction) => {
 				.addOptions(
 					{ label: "Optimization", value: "Optimization" },
 					{ label: "Connection", value: "Connection" },
-					{ name: "Login", value: "Login" },
+					{ label: "Login", value: "Login" },
 					{ label: "Gameplay Abnormal", value: "Gameplay Abnormal" },
 					{ label: "Data Loss", value: "Data Loss" },
 					{ label: "Others", value: "Others" }
 				);
 
-			// Add the select menu to the action row
 			const row = new ActionRowBuilder().addComponents(bugCategories);
 
 			await interaction.editReply({ components: [row] });
@@ -1989,6 +1988,42 @@ client.on("interactionCreate", async (interaction) => {
 			}
 		} else if (interaction.customId.startsWith("ca")) {
 			await showApplyModal(interaction);
+		} else if (interaction.customId === "bugCategories") {
+			await interaction.deferReply({ ephemeral: true });
+			const selection = interaction.values[0];
+			const bugMode = new StringSelectMenuBuilder()
+				.setCustomId("bugMode" + selection)
+				.setPlaceholder("Select a game mode")
+				.addOptions(
+					{ label: "Casual Mode", value: "Casual" },
+					{ label: "Standard Mode", value: "Standard" },
+					{ label: "Lobby", value: "Lobby" },
+					{ label: "Other Places", value: "Other" }
+				);
+
+			const row = new ActionRowBuilder().addComponents(bugMode);
+
+			await interaction.editReply({ components: [row] });
+		} else if (interaction.customId.startsWith("bugMode")) {
+			await interaction.deferReply({ ephemeral: true });
+			const selection = interaction.values[0];
+			const category = interaction.customId.substring(7);
+
+			const filter = m => m.author.id === interaction.user.id && m.attachments.size > 0;
+			interaction.channel.awaitMessages({ filter, max: 1, time: 30000, errors: ['time'] })
+			.then(collected => {
+				interaction.followUp(`${collected.first().author} got the correct answer!`);
+			})
+			.catch(collected => {
+				interaction.followUp('Looks like nobody got the answer this time.');
+			});
+
+			// const filter = (m) => (m) =>
+			// 	m.author.id === interaction.user.id && m.attachments.size > 0;
+			// const collector = interaction.channel.createMessageCollector({
+			// 	filter,
+			// 	time: 60000,
+			});
 		}
 	}
 });
