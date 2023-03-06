@@ -2009,27 +2009,31 @@ client.on("interactionCreate", async (interaction) => {
 			const selection = interaction.values[0];
 			const category = interaction.customId.substring(7);
 
-			await interaction.editReply({ content: `**${category}** ${selection}` });
+			await interaction.editReply({ content: `**${category}**\n${selection}\n\nPlease upload **one** screenshot for the bug in the next **60** seconds below.` });
 
 			const filter = m =>
 				m.author.id === interaction.user.id && m.attachments.size > 0;
 			interaction.channel
 				.awaitMessages({ filter, max: 1, time: 30000, errors: ["time"] })
 				.then((collected) => {
+					const attachment = collected.attachments.first();
+					if (!attachment.url.endsWith("jpg") && !attachment.url.endsWith("png")) {
+						return interaction.followUp({
+							content:
+								"You can only submit images in this. To submit a video, upload it to a public site (Youtube, Google Drive, Dropbox, etc.) and send link in the Bug Details section of the form.",
+							ephemeral: true,
+						});
+					}
+					else {
+						download(attachment.url, `${interaction.user.id}-bug.jpg`);
+					}
 					interaction.followUp(
-						`${collected.first().author} got the correct answer!`
+						`${collected.attachments.first().url}`
 					);
 				})
 				.catch((collected) => {
 					interaction.followUp("Looks like nobody got the answer this time.");
 				});
-
-			// const filter = (m) => (m) =>
-			// 	m.author.id === interaction.user.id && m.attachments.size > 0;
-			// const collector = interaction.channel.createMessageCollector({
-			// 	filter,
-			// 	time: 60000,
-			// });
 		}
 	}
 });
@@ -3537,5 +3541,13 @@ async function calculateBP() {
 	await interaction.editReply({
 		content: "CLUB BP Data Calculated.",
 		ephemeral: true,
+	});
+}
+
+async function download(url, name) {
+	await request.head(url, function (err, res, body) {
+		request(url).pipe(
+			fs.createWriteStream(name)
+		);
 	});
 }
