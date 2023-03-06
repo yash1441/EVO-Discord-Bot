@@ -3384,10 +3384,7 @@ async function calculateBP() {
 	);
 
 	if (!response.data.total) {
-		await interaction.editReply({
-			content: "CLUB Data Not Found.",
-			ephemeral: true,
-		});
+		logger.error("CLUB Data Not Found.");
 		return;
 	}
 
@@ -3428,10 +3425,7 @@ async function calculateBP() {
 		);
 	}
 
-	await interaction.editReply({
-		content: "CLUB BP Data Calculated.",
-		ephemeral: true,
-	});
+	logger.info("CLUB BP Data Calculated.");
 }
 
 async function download(url, name) {
