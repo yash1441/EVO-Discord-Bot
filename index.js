@@ -2016,25 +2016,25 @@ client.on("interactionCreate", async (interaction) => {
 			const filter = (m) =>
 				m.author.id === interaction.user.id && m.attachments.size > 0;
 			interaction.channel
-				.awaitMessages({ max: 1, time: 30000, errors: ["time"] })
+				.awaitMessages({ filter, max: 1, time: 30000, errors: ["time"] })
 				.then((collected) => {
-					const attachment = collected.attachments.first();
-					console.log(attachment);
-					if (
-						!attachment.url.endsWith("jpg") &&
-						!attachment.url.endsWith("png")
-					) {
-						logger.debug("Not a valid image");
-						return interaction.followUp({
-							content:
-								"You can only submit images in this. To submit a video, upload it to a public site (Youtube, Google Drive, Dropbox, etc.) and send link in the Bug Details section of the form.",
-							ephemeral: true,
-						});
-					} else {
-						logger.debug("Valid image");
-						download(attachment.url, `${interaction.user.id}-bug.jpg`);
-					}
-					interaction.followUp(`${collected.attachments.first().url}`);
+					//const attachment = collected.attachments.first();
+					console.log(collected);
+					// if (
+					// 	!attachment.url.endsWith("jpg") &&
+					// 	!attachment.url.endsWith("png")
+					// ) {
+					// 	logger.debug("Not a valid image");
+					// 	return interaction.followUp({
+					// 		content:
+					// 			"You can only submit images in this. To submit a video, upload it to a public site (Youtube, Google Drive, Dropbox, etc.) and send link in the Bug Details section of the form.",
+					// 		ephemeral: true,
+					// 	});
+					// } else {
+					// 	logger.debug("Valid image");
+					// 	download(attachment.url, `${interaction.user.id}-bug.jpg`);
+					// }
+					// interaction.followUp(`${collected.attachments.first().url}`);
 				})
 				.catch((collected) => {
 					logger.debug(collected + " " + interaction.user.id);
