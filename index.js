@@ -1292,7 +1292,9 @@ client.on("interactionCreate", async (interaction) => {
 					collected.first().delete();
 				})
 				.catch((collected) => {
-					interaction.followUp("Looks like nobody got the answer this time.");
+					interaction.followUp(
+						"You weren't able to upload a screenshot in time. Please try again."
+					);
 				});
 		} else if (
 			interaction.customId === "Vehicle" ||
