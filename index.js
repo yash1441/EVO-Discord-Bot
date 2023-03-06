@@ -2009,33 +2009,35 @@ client.on("interactionCreate", async (interaction) => {
 			const selection = interaction.values[0];
 			const category = interaction.customId.substring(7);
 
-			await interaction.editReply({ content: `**${category}**\n${selection}\n\nPlease upload **one** screenshot for the bug in the next **60** seconds below.` });
+			await interaction.editReply({
+				content: `**${category}**\n${selection}\n\nPlease upload **one** screenshot for the bug in the next **60** seconds below.`,
+			});
 
-			const filter = m =>
+			const filter = (m) =>
 				m.author.id === interaction.user.id && m.attachments.size > 0;
 			interaction.channel
 				.awaitMessages({ filter, max: 1, time: 30000, errors: ["time"] })
 				.then((collected) => {
 					const attachment = collected.attachments.first();
 					console.log(attachment);
-					if (!attachment.url.endsWith("jpg") && !attachment.url.endsWith("png")) {
+					if (
+						!attachment.url.endsWith("jpg") &&
+						!attachment.url.endsWith("png")
+					) {
 						logger.debug("Not a valid image");
 						return interaction.followUp({
 							content:
 								"You can only submit images in this. To submit a video, upload it to a public site (Youtube, Google Drive, Dropbox, etc.) and send link in the Bug Details section of the form.",
 							ephemeral: true,
 						});
-					}
-					else {
+					} else {
 						logger.debug("Valid image");
 						download(attachment.url, `${interaction.user.id}-bug.jpg`);
 					}
-					interaction.followUp(
-						`${collected.attachments.first().url}`
-					);
+					interaction.followUp(`${collected.attachments.first().url}`);
 				})
 				.catch((collected) => {
-					logger.debug(collected.author.id + " " + interaction.user.id);
+					logger.debug(collected + " " + interaction.user.id);
 					interaction.followUp("Looks like nobody got the answer this time.");
 				});
 		}
@@ -3550,8 +3552,6 @@ async function calculateBP() {
 
 async function download(url, name) {
 	await request.head(url, function (err, res, body) {
-		request(url).pipe(
-			fs.createWriteStream(name)
-		);
+		request(url).pipe(fs.createWriteStream(name));
 	});
 }
