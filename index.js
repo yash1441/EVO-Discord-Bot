@@ -2031,7 +2031,7 @@ client.on("interactionCreate", async (interaction) => {
 					} else {
 						download(attachment.url, `${interaction.user.id}-bug.jpg`);
 						const bugreportModal = new ModalBuilder()
-							.setCustomId(tempName)
+							.setCustomId("bug_" + category)
 							.setTitle(interaction.options.getString("category"));
 						const bugUsername = new TextInputBuilder()
 							.setCustomId("bugUsername")
