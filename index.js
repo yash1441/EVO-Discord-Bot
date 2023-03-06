@@ -2019,7 +2019,7 @@ client.on("interactionCreate", async (interaction) => {
 				.awaitMessages({ filter, max: 1, time: 30000, errors: ["time"] })
 				.then((collected) => {
 					//const attachment = collected.attachments.first();
-					console.log(collected.attachments);
+					console.log(collected.first().attachments.first());
 					// if (
 					// 	!attachment.url.endsWith("jpg") &&
 					// 	!attachment.url.endsWith("png")
