@@ -34,6 +34,10 @@ module.exports = {
 		),
 
 	async execute(interaction, client) {
+		return await interaction.reply({
+			content: "This command is currently disabled.",
+			ephemeral: true,
+		});
 		let attachment = interaction.options.getAttachment("attachment", true);
 		let tempName = "bug_" + interaction.options.getString("category");
 

@@ -1265,159 +1265,46 @@ client.on("interactionCreate", async (interaction) => {
 				});
 			}
 		} else if (interaction.customId.startsWith("bug_")) {
-			await interaction.deferReply({ ephemeral: true });
+			const substring = interaction.customId.substring(4);
+			const bOptions = substring.split("_");
 
-			let bUsername = interaction.fields.getTextInputValue("bugUsername");
-			let bPhone = interaction.fields.getTextInputValue("bugPhone");
-			let bDetails = interaction.fields.getTextInputValue("bugDetails");
-			let bUserId = interaction.user.id;
-			let bSession = interaction.fields.getTextInputValue("bugSession");
-			//let bRegion = interactionRegionRole(interaction);
-			let bCategory = interaction.customId.substring(4);
+			const bUsername = interaction.fields.getTextInputValue("bugUsername");
+			const bPhone = interaction.fields.getTextInputValue("bugPhone");
+			const bDetails = interaction.fields.getTextInputValue("bugDetails");
+			const bUserId = interaction.user.id;
+			const bSession = interaction.fields.getTextInputValue("bugSession");
+			const bCategory = bOptions[0];
+			const bMode = bOptions[1];
 
-			let file = `${interaction.user.id}-bug.jpg`;
-			let tenantToken = await feishu.authorize(
-				process.env.FEISHU_ID,
-				process.env.FEISHU_SECRET
-			);
-			let response = await feishu.uploadToDrive(
-				tenantToken,
-				process.env.EA1_BASE,
-				file,
-				"bitable_image"
-			);
-			let file_token = JSON.parse(response).data.file_token;
-
-			let bugs = {
-				fields: {
-					//Username: bUsername,
-					//Region: bRegion,
-					"Discord ID": bUserId,
-					"Discord Name": interaction.user.tag,
-					Nickname: bUsername,
-					"Session ID": bSession,
-					"Bug Details": bDetails,
-					Channel: "Discord",
-					"Phone Model": bPhone,
-					"Bug Type": bCategory,
-					Screenshot: [{ file_token: file_token }],
-				},
-			};
-
-			await feishu.createRecord(
-				tenantToken,
-				process.env.EA1_BASE,
-				process.env.BUGS,
-				bugs
-			);
-			response = await feishu.getFileToken(tenantToken, file);
-			let image_key = JSON.parse(response).data.image_key;
-			fs.unlinkSync(file);
-
-			let body = {
-				msg_type: "interactive",
-				card: {
-					config: {
-						wide_screen_mode: true,
-					},
-					elements: [
-						{
-							fields: [
-								{
-									is_short: true,
-									text: {
-										content: `**Discord ID**\n${bugs.fields["Discord ID"]}`,
-										tag: "lark_md",
-									},
-								},
-								{
-									is_short: true,
-									text: {
-										content: `**Discord Name**\n${interaction.user.tag}`,
-										tag: "lark_md",
-									},
-								},
-								// {
-								//     is_short: true,
-								//     text: {
-								//         content: `**Region**\n${bugs.fields["Region"]}`,
-								//         tag: "lark_md",
-								//     },
-								// },
-								{
-									is_short: false,
-									text: {
-										content: ``,
-										tag: "lark_md",
-									},
-								},
-								{
-									is_short: true,
-									text: {
-										content: `**Nickname**\n${bugs.fields.Nickname}`,
-										tag: "lark_md",
-									},
-								},
-								{
-									is_short: true,
-									text: {
-										content: `**Phone**\n${bugs.fields["Phone Model"]}`,
-										tag: "lark_md",
-									},
-								},
-								{
-									is_short: true,
-									text: {
-										content: `**Session ID**\n${bugs.fields["Session ID"]}`,
-										tag: "lark_md",
-									},
-								},
-								{
-									is_short: false,
-									text: {
-										content: ``,
-										tag: "lark_md",
-									},
-								},
-								{
-									is_short: true,
-									text: {
-										content: `**Bug Details**\n${bugs.fields["Bug Details"]}`,
-										tag: "lark_md",
-									},
-								},
-							],
-							tag: "div",
-						},
-						{
-							tag: "hr",
-						},
-						{
-							alt: {
-								content: "",
-								tag: "plaint_text",
-							},
-							img_key: image_key,
-							tag: "img",
-						},
-					],
-					header: {
-						template: "red",
-						title: {
-							content: `${bugs.fields["Bug Type"]}`,
-							tag: "plain_text",
-						},
-					},
-				},
-			};
-
-			await feishu.sendGroupMessage(
-				"https://open.larksuite.com/open-apis/bot/v2/hook/bf335c2b-2b3d-46e7-a181-8badecf95c56",
-				body
-			);
-			await interaction.editReply({
-				content: "Your submission was received successfully!",
+			await interaction.reply({
+				content: "Please upload a screenshot. Only jpg and png are accepted.",
+				ephemeral: true,
 			});
+
+			const filter = (m) =>
+				m.author.id === interaction.user.id && m.attachments.size > 0;
+			interaction.channel
+				.awaitMessages({ filter, max: 1, time: 60000, errors: ["time"] })
+				.then((collected) => {
+					const attachment = collected.first().attachments.first();
+					if (
+						!attachment.url.endsWith("jpg") &&
+						!attachment.url.endsWith("png")
+					) {
+						return interaction.followUp({
+							content:
+								"You can only submit images in this. To submit a video, upload it to a public site (Youtube, Google Drive, Dropbox, etc.) and send link in the Bug Details section of the form.",
+							ephemeral: true,
+						});
+					} else {
+						download(attachment.url, `${interaction.user.id}-bug.jpg`);
+						sendResponseToFeishu(interaction);
+					}
+					collected.first().delete();
+				})
+				.catch((collected) => {
+					interaction.followUp("Looks like nobody got the answer this time.");
+				});
 		} else if (
 			interaction.customId === "Vehicle" ||
 			interaction.customId === "Building" ||
@@ -2010,70 +1897,42 @@ client.on("interactionCreate", async (interaction) => {
 			const selection = interaction.values[0];
 			const category = interaction.customId.substring(7);
 
-			// await interaction.update({
-			// 	content: `**${category}**\n${selection}\n\nPlease upload **one** screenshot for the bug in the next **60** seconds below.`,
-			// 	components: [],
-			// });
+			const bugreportModal = new ModalBuilder()
+				.setCustomId("bug_" + category + "_" + selection)
+				.setTitle(category);
+			const bugUsername = new TextInputBuilder()
+				.setCustomId("bugUsername")
+				.setLabel("Nickname")
+				.setPlaceholder("Please enter your in-game nickname here.")
+				.setStyle(TextInputStyle.Short)
+				.setRequired(true);
+			const bugPhone = new TextInputBuilder()
+				.setCustomId("bugPhone")
+				.setLabel("Phone Model and RAM")
+				.setPlaceholder("Mention your phone model and RAM here.")
+				.setStyle(TextInputStyle.Short)
+				.setRequired(true);
+			const bugSession = new TextInputBuilder()
+				.setCustomId("bugSession")
+				.setLabel("Session ID")
+				.setPlaceholder("In which session did you encounter the bug?")
+				.setStyle(TextInputStyle.Short)
+				.setRequired(true);
+			const bugDetails = new TextInputBuilder()
+				.setCustomId("bugDetails")
+				.setLabel("Bug Details")
+				.setPlaceholder("Give a detailed explanation of the bug here.")
+				.setStyle(TextInputStyle.Paragraph)
+				.setRequired(true);
 
-			const filter = (m) =>
-				m.author.id === interaction.user.id && m.attachments.size > 0;
-			interaction.channel
-				.awaitMessages({ filter, max: 1, time: 60000, errors: ["time"] })
-				.then((collected) => {
-					const attachment = collected.first().attachments.first();
-					if (
-						!attachment.url.endsWith("jpg") &&
-						!attachment.url.endsWith("png")
-					) {
-						return interaction.followUp({
-							content:
-								"You can only submit images in this. To submit a video, upload it to a public site (Youtube, Google Drive, Dropbox, etc.) and send link in the Bug Details section of the form.",
-							ephemeral: true,
-						});
-					} else {
-						download(attachment.url, `${interaction.user.id}-bug.jpg`);
-						const bugreportModal = new ModalBuilder()
-							.setCustomId("bug_" + category)
-							.setTitle(category);
-						const bugUsername = new TextInputBuilder()
-							.setCustomId("bugUsername")
-							.setLabel("Nickname")
-							.setPlaceholder("Please enter your in-game nickname here.")
-							.setStyle(TextInputStyle.Short)
-							.setRequired(true);
-						const bugPhone = new TextInputBuilder()
-							.setCustomId("bugPhone")
-							.setLabel("Phone Model and RAM")
-							.setPlaceholder("Mention your phone model and RAM here.")
-							.setStyle(TextInputStyle.Short)
-							.setRequired(true);
-						const bugSession = new TextInputBuilder()
-							.setCustomId("bugSession")
-							.setLabel("Session ID")
-							.setPlaceholder("In which session did you encounter the bug?")
-							.setStyle(TextInputStyle.Short)
-							.setRequired(true);
-						const bugDetails = new TextInputBuilder()
-							.setCustomId("bugDetails")
-							.setLabel("Bug Details")
-							.setPlaceholder("Give a detailed explanation of the bug here.")
-							.setStyle(TextInputStyle.Paragraph)
-							.setRequired(true);
+			let r1 = new ActionRowBuilder().addComponents(bugUsername);
+			let r2 = new ActionRowBuilder().addComponents(bugPhone);
+			let r3 = new ActionRowBuilder().addComponents(bugSession);
+			let r4 = new ActionRowBuilder().addComponents(bugDetails);
 
-						let r1 = new ActionRowBuilder().addComponents(bugUsername);
-						let r2 = new ActionRowBuilder().addComponents(bugPhone);
-						let r3 = new ActionRowBuilder().addComponents(bugSession);
-						let r4 = new ActionRowBuilder().addComponents(bugDetails);
+			bugreportModal.addComponents(r1, r2, r3, r4);
 
-						bugreportModal.addComponents(r1, r2, r3, r4);
-
-						interaction.showModal(bugreportModal);
-					}
-					collected.first().delete();
-				})
-				.catch((collected) => {
-					interaction.followUp("Looks like nobody got the answer this time.");
-				});
+			await interaction.showModal(bugreportModal);
 		}
 	}
 });
@@ -3587,5 +3446,152 @@ async function calculateBP() {
 async function download(url, name) {
 	await request.head(url, function (err, res, body) {
 		request(url).pipe(fs.createWriteStream(name));
+	});
+}
+
+async function sendResponseToFeishu(interaction) {
+	const file = `${interaction.user.id}-bug.jpg`;
+	const tenantToken = await feishu.authorize(
+		process.env.FEISHU_ID,
+		process.env.FEISHU_SECRET
+	);
+	let response = await feishu.uploadToDrive(
+		tenantToken,
+		process.env.EA1_BASE,
+		file,
+		"bitable_image"
+	);
+	const file_token = JSON.parse(response).data.file_token;
+
+	const bugs = {
+		fields: {
+			//Username: bUsername,
+			//Region: bRegion,
+			"Discord ID": bUserId,
+			"Discord Name": interaction.user.tag,
+			Nickname: bUsername,
+			"Session ID": bSession,
+			"Bug Details": bDetails,
+			Channel: "Discord",
+			"Phone Model": bPhone,
+			"Bug Type": bCategory,
+			"Game Mode": bMode,
+			Screenshot: [{ file_token: file_token }],
+		},
+	};
+
+	await feishu.createRecord(
+		tenantToken,
+		process.env.EA1_BASE,
+		process.env.BUGS,
+		bugs
+	);
+	response = await feishu.getFileToken(tenantToken, file);
+	const image_key = JSON.parse(response).data.image_key;
+	fs.unlinkSync(file);
+
+	let body = {
+		msg_type: "interactive",
+		card: {
+			config: {
+				wide_screen_mode: true,
+			},
+			elements: [
+				{
+					fields: [
+						{
+							is_short: true,
+							text: {
+								content: `**Discord ID**\n${bugs.fields["Discord ID"]}`,
+								tag: "lark_md",
+							},
+						},
+						{
+							is_short: true,
+							text: {
+								content: `**Discord Name**\n${interaction.user.tag}`,
+								tag: "lark_md",
+							},
+						},
+						// {
+						//     is_short: true,
+						//     text: {
+						//         content: `**Region**\n${bugs.fields["Region"]}`,
+						//         tag: "lark_md",
+						//     },
+						// },
+						{
+							is_short: false,
+							text: {
+								content: ``,
+								tag: "lark_md",
+							},
+						},
+						{
+							is_short: true,
+							text: {
+								content: `**Nickname**\n${bugs.fields.Nickname}`,
+								tag: "lark_md",
+							},
+						},
+						{
+							is_short: true,
+							text: {
+								content: `**Phone**\n${bugs.fields["Phone Model"]}`,
+								tag: "lark_md",
+							},
+						},
+						{
+							is_short: true,
+							text: {
+								content: `**Session ID**\n${bugs.fields["Session ID"]}`,
+								tag: "lark_md",
+							},
+						},
+						{
+							is_short: false,
+							text: {
+								content: ``,
+								tag: "lark_md",
+							},
+						},
+						{
+							is_short: true,
+							text: {
+								content: `**Bug Details**\n${bugs.fields["Bug Details"]}`,
+								tag: "lark_md",
+							},
+						},
+					],
+					tag: "div",
+				},
+				{
+					tag: "hr",
+				},
+				{
+					alt: {
+						content: "",
+						tag: "plaint_text",
+					},
+					img_key: image_key,
+					tag: "img",
+				},
+			],
+			header: {
+				template: "red",
+				title: {
+					content: `${bugs.fields["Bug Type"]}`,
+					tag: "plain_text",
+				},
+			},
+		},
+	};
+
+	await feishu.sendGroupMessage(
+		"https://open.larksuite.com/open-apis/bot/v2/hook/bf335c2b-2b3d-46e7-a181-8badecf95c56",
+		body
+	);
+	await interaction.editReply({
+		content: "Your submission was received successfully!",
 	});
 }
