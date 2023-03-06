@@ -2031,7 +2031,7 @@ client.on("interactionCreate", async (interaction) => {
 					} else {
 						download(attachment.url, `${interaction.user.id}-bug.jpg`);
 					}
-					interaction.followUp(`${collected.attachments.first().url}`);
+					interaction.followUp(`${attachment.url}`);
 				})
 				.catch((collected) => {
 					logger.debug(collected + " " + interaction.user.id);
