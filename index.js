@@ -1265,17 +1265,6 @@ client.on("interactionCreate", async (interaction) => {
 				});
 			}
 		} else if (interaction.customId.startsWith("bug_")) {
-			const substring = interaction.customId.substring(4);
-			const bOptions = substring.split("_");
-
-			const bUsername = interaction.fields.getTextInputValue("bugUsername");
-			const bPhone = interaction.fields.getTextInputValue("bugPhone");
-			const bDetails = interaction.fields.getTextInputValue("bugDetails");
-			const bUserId = interaction.user.id;
-			const bSession = interaction.fields.getTextInputValue("bugSession");
-			const bCategory = bOptions[0];
-			const bMode = bOptions[1];
-
 			await interaction.reply({
 				content: "Please upload a screenshot. Only jpg and png are accepted.",
 				ephemeral: true,
@@ -3463,10 +3452,19 @@ async function sendResponseToFeishu(interaction) {
 	);
 	const file_token = JSON.parse(response).data.file_token;
 
+	const substring = interaction.customId.substring(4);
+	const bOptions = substring.split("_");
+
+	const bUsername = interaction.fields.getTextInputValue("bugUsername");
+	const bPhone = interaction.fields.getTextInputValue("bugPhone");
+	const bDetails = interaction.fields.getTextInputValue("bugDetails");
+	const bUserId = interaction.user.id;
+	const bSession = interaction.fields.getTextInputValue("bugSession");
+	const bCategory = bOptions[0];
+	const bMode = bOptions[1];
+
 	const bugs = {
 		fields: {
-			//Username: bUsername,
-			//Region: bRegion,
 			"Discord ID": bUserId,
 			"Discord Name": interaction.user.tag,
 			Nickname: bUsername,
