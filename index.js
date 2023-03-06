@@ -2009,21 +2009,25 @@ client.on("interactionCreate", async (interaction) => {
 			const selection = interaction.values[0];
 			const category = interaction.customId.substring(7);
 
-			const filter = m => m.author.id === interaction.user.id && m.attachments.size > 0;
-			interaction.channel.awaitMessages({ filter, max: 1, time: 30000, errors: ['time'] })
-			.then(collected => {
-				interaction.followUp(`${collected.first().author} got the correct answer!`);
-			})
-			.catch(collected => {
-				interaction.followUp('Looks like nobody got the answer this time.');
-			});
+			const filter = (m) =>
+				m.author.id === interaction.user.id && m.attachments.size > 0;
+			interaction.channel
+				.awaitMessages({ filter, max: 1, time: 30000, errors: ["time"] })
+				.then((collected) => {
+					interaction.followUp(
+						`${collected.first().author} got the correct answer!`
+					);
+				})
+				.catch((collected) => {
+					interaction.followUp("Looks like nobody got the answer this time.");
+				});
 
 			// const filter = (m) => (m) =>
 			// 	m.author.id === interaction.user.id && m.attachments.size > 0;
 			// const collector = interaction.channel.createMessageCollector({
 			// 	filter,
 			// 	time: 60000,
-			});
+			// });
 		}
 	}
 });
