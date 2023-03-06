@@ -2009,7 +2009,9 @@ client.on("interactionCreate", async (interaction) => {
 			const selection = interaction.values[0];
 			const category = interaction.customId.substring(7);
 
-			const filter = (m) =>
+			await interaction.editReply({ content: `**${category}** ${selection}` });
+
+			const filter = m =>
 				m.author.id === interaction.user.id && m.attachments.size > 0;
 			interaction.channel
 				.awaitMessages({ filter, max: 1, time: 30000, errors: ["time"] })
