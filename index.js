@@ -1989,7 +1989,6 @@ client.on("interactionCreate", async (interaction) => {
 		} else if (interaction.customId.startsWith("ca")) {
 			await showApplyModal(interaction);
 		} else if (interaction.customId === "bugCategories") {
-			await interaction.deferReply({ ephemeral: true });
 			const selection = interaction.values[0];
 			const bugMode = new StringSelectMenuBuilder()
 				.setCustomId("bugMode" + selection)
@@ -2003,13 +2002,15 @@ client.on("interactionCreate", async (interaction) => {
 
 			const row = new ActionRowBuilder().addComponents(bugMode);
 
-			await interaction.editReply({ components: [row] });
+			await interaction.update({
+				content: `Selected **${selection}`,
+				components: [row],
+			});
 		} else if (interaction.customId.startsWith("bugMode")) {
-			await interaction.deferReply({ ephemeral: true });
 			const selection = interaction.values[0];
 			const category = interaction.customId.substring(7);
 
-			await interaction.editReply({
+			await interaction.update({
 				content: `**${category}**\n${selection}\n\nPlease upload **one** screenshot for the bug in the next **60** seconds below.`,
 			});
 
@@ -2067,7 +2068,6 @@ client.on("interactionCreate", async (interaction) => {
 
 						interaction.showModal(bugreportModal);
 					}
-					interaction.showModal(bugreportModal);
 					collected.first().delete();
 				})
 				.catch((collected) => {
