@@ -1,6 +1,7 @@
 const axios = require("axios");
 const fs = require("fs");
 const request = require("request-promise");
+const logger = require("./logging/logger.js");
 
 async function authorize(id, secret) {
 	let tenantToken;
@@ -38,11 +39,11 @@ async function createRecord(token, app, table, record, log) {
 		)
 		.then((res) => {
 			res.data.msg == "success" ? (success = true) : (success = false);
-			if (log) console.log(res.data);
+			if (log) logger.debug(JSON.stringify(res.data));
 			return success;
 		})
 		.catch((error) => {
-			if (log) console.error(error);
+			if (log) logger.error(JSON.stringify(error));
 			return error;
 		});
 
@@ -86,6 +87,8 @@ async function getRecords(token, app, table, filter, page_token) {
 	if (page_token) options.qs.page_token = page_token;
 
 	if (filter) options.qs = { filter: filter };
+
+	logger.debug(JSON.stringify(options));
 
 	return await request(options).catch((error) => console.error(error));
 }
