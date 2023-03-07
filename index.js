@@ -3547,7 +3547,9 @@ async function loadBetaTesterCodes() {
 					`NOT(CurrentValue.[Status] = "Binded")`,
 					pageToken
 				)
-			);
+			).catch((error) => {
+				logger.error(error);
+			});
 		}
 	}
 
