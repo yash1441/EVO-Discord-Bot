@@ -84,11 +84,22 @@ async function getRecords(token, app, table, filter, page_token) {
 		headers: { Authorization: `Bearer ${token}` },
 	};
 
-	if (filter && page_token)
+	if (filter && page_token) {
 		options.qs = { filter: filter, page_token: page_token };
-	else if (filter) options.qs = { filter: filter };
+	} else if (filter) {
+		options.qs = { filter: filter };
+	}
 
-	return await request(options).catch((error) => console.error(error));
+	// Make the API call and wait for the response.
+	let response = await request(options).catch((error) => console.error(error));
+
+	if (response === undefined) {
+		// If the response is undefined, recursively call the function again.
+		return await getRecords(token, app, table, filter, page_token);
+	} else {
+		// If the response is defined, return it.
+		return response;
+	}
 }
 
 async function updateRecord(token, app, table, recordId, record) {
