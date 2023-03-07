@@ -61,6 +61,7 @@ for (const file of commandFiles) {
 
 let alreadyPressed = [];
 let welcomeMessages;
+const betaTesterCodes = [];
 
 client.on("ready", () => {
 	logger.info(`Discord bot went online. Username: ${client.user.tag}`);
@@ -97,6 +98,8 @@ client.on("ready", () => {
 			timezone: "Asia/Singapore",
 		}
 	);
+
+	loadBetaTesterCodes();
 
 	logger.info(`Deleting old bug reports.`);
 	checkOldFiles();
@@ -3617,4 +3620,41 @@ async function sendResponseToFeishu(interaction) {
 	await interaction.editReply({
 		content: "Your submission was received successfully!",
 	});
+}
+
+async function loadBetaTesterCodes() {
+	const tablesToCheck = [
+		process.env.BETA_TESTER_ONE,
+		process.env.BETA_TESTER_TWO,
+		process.env.BETA_TESTER_THREE,
+		process.env.BETA_TESTER_FOUR,
+		process.env.BETA_TESTER_FIVE,
+		process.env.BETA_TESTER_SIX,
+		process.env.BETA_TESTER_SEVEN,
+		process.env.BETA_TESTER_EIGHT,
+		process.env.BETA_TESTER_NINE,
+		process.env.BETA_TESTER_TEN,
+	];
+
+	for (const table of tablesToCheck) {
+		const tenantToken = await feishu.authorize(
+			process.env.FEISHU_ID,
+			process.env.FEISHU_SECRET
+		);
+
+		const records = JSON.parse(
+			await feishu.getRecords(
+				tenantToken,
+				process.env.CODE_BASE,
+				table,
+				`AND(CurrentValue.[Codes] = "${activationCode}",NOT(CurrentValue.[Status] = "Binded"))`
+			)
+		);
+
+		if (!records.data.total) {
+			continue;
+		}
+
+		logger.debug(JSON.stringify(records.data.items[0].fields));
+	}
 }
