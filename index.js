@@ -978,7 +978,7 @@ client.on("interactionCreate", async (interaction) => {
 					}
 				);
 
-				await interaction.member.roles.add("1032238398829768735").then(() => {
+				await interaction.member.roles.add(process.env.BETA_ROLE).then(() => {
 					interaction.editReply({
 						content: "Congrats! <#1018243733373866004> channels are unlocked!",
 					});

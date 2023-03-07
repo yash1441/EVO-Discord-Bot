@@ -351,7 +351,7 @@ module.exports = {
 			const submitEmbed = new EmbedBuilder()
 				.setTitle(`Enter your beta code to unlock beta and LFG channels`)
 				.setDescription(
-					`Please enter the beta activation code to unlock <#1018243733373866004> channels and get <@&1032238398829768735> role.`
+					`Please enter the beta activation code to unlock <#1018243733373866004> channels and get <@&${process.env.BETA_ROLE}> role.`
 				)
 				.setColor(`C04946`);
 
