@@ -3514,7 +3514,10 @@ async function loadBetaTesterCodes() {
 			)
 		);
 
-		if (!response.data.items) continue;
+		if (!response.data.items) {
+			logger.error(JSON.stringify(response.data));
+			continue;
+		}
 
 		if (response.data.has_more == false) {
 			for (const item of response.data.items) {
