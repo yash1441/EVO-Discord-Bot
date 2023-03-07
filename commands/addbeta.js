@@ -1,3 +1,4 @@
+const { trace } = require("console");
 const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
 const feishu = require("../feishu.js");
 require("dotenv").config();
@@ -16,6 +17,7 @@ module.exports = {
 	async execute(interaction, client) {
 		await interaction.deferReply({ ephemeral: true });
 		const target = await interaction.options.getUser("user");
+		console.log(target);
 
 		const member = await interaction.guild.members.fetch(target.user.id);
 		await member.roles.add(process.env.BETA_ROLE);
