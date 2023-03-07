@@ -61,7 +61,7 @@ for (const file of commandFiles) {
 
 let alreadyPressed = [];
 let welcomeMessages;
-const betaTesterCodes = [];
+let betaTesterCodes = {};
 let betaTesterCodesLoaded = false;
 
 client.on("ready", () => {
@@ -954,70 +954,20 @@ client.on("interactionCreate", async (interaction) => {
 				});
 			}
 			const activationCode = interaction.fields.getTextInputValue("betaCode");
-			const tenantToken = await feishu.authorize(
-				process.env.FEISHU_ID,
-				process.env.FEISHU_SECRET
-			);
-			const records = JSON.parse(
-				await feishu.getRecords(
-					tenantToken,
-					process.env.CODE_BASE,
-					process.env.BETA_TESTER_ONE,
-					`AND(CurrentValue.[Codes] = "${activationCode}",NOT(CurrentValue.[Status] = "Binded"))`
-				)
-			);
 
-			const records2 = JSON.parse(
-				await feishu.getRecords(
-					tenantToken,
-					process.env.CODE_BASE,
-					process.env.BETA_TESTER_TWO,
-					`AND(CurrentValue.[Codes] = "${activationCode}",NOT(CurrentValue.[Status] = "Binded"))`
-				)
-			);
+			if (betaTesterCodes.hasOwnProperty(activationCode)) {
+				const subData = betaTesterCodes[activationCode].splt(",");
+				const recordId = subData[0];
+				const table = subData[1];
+				const tenantToken = await feishu.authorize(
+					process.env.FEISHU_ID,
+					process.env.FEISHU_SECRET
+				);
 
-			const records3 = JSON.parse(
-				await feishu.getRecords(
-					tenantToken,
-					process.env.CODE_BASE,
-					process.env.BETA_TESTER_THREE,
-					`AND(CurrentValue.[Codes] = "${activationCode}",NOT(CurrentValue.[Status] = "Binded"))`
-				)
-			);
-
-			const records4 = JSON.parse(
-				await feishu.getRecords(
-					tenantToken,
-					process.env.CODE_BASE,
-					process.env.BETA_TESTER_FOUR,
-					`AND(CurrentValue.[Codes] = "${activationCode}",NOT(CurrentValue.[Status] = "Binded"))`
-				)
-			);
-
-			const records5 = JSON.parse(
-				await feishu.getRecords(
-					tenantToken,
-					process.env.CODE_BASE,
-					process.env.BETA_TESTER_FIVE,
-					`AND(CurrentValue.[Codes] = "${activationCode}",NOT(CurrentValue.[Status] = "Binded"))`
-				)
-			);
-
-			const records6 = JSON.parse(
-				await feishu.getRecords(
-					tenantToken,
-					process.env.CODE_BASE,
-					process.env.BETA_TESTER_SIX,
-					`AND(CurrentValue.[Codes] = "${activationCode}",NOT(CurrentValue.[Status] = "Binded"))`
-				)
-			);
-
-			if (parseInt(records.data.total)) {
-				const recordId = records.data.items[0].record_id;
 				await feishu.updateRecord(
 					tenantToken,
 					process.env.CODE_BASE,
-					process.env.BETA_TESTER_ONE,
+					table,
 					recordId,
 					{
 						fields: {
@@ -1032,111 +982,13 @@ client.on("interactionCreate", async (interaction) => {
 						content: "Congrats! <#1018243733373866004> channels are unlocked!",
 					});
 				});
-			} else if (parseInt(records2.data.total)) {
-				const recordId = records2.data.items[0].record_id;
-				await feishu.updateRecord(
-					tenantToken,
-					process.env.CODE_BASE,
-					process.env.BETA_TESTER_TWO,
-					recordId,
-					{
-						fields: {
-							"Discord ID": interaction.user.id,
-							Status: "Binded",
-						},
-					}
-				);
-
-				await interaction.member.roles.add("1032238398829768735").then(() => {
-					interaction.editReply({
-						content: "Congrats! <#1018243733373866004> channels are unlocked!",
-					});
-				});
-			} else if (parseInt(records3.data.total)) {
-				const recordId = records3.data.items[0].record_id;
-				await feishu.updateRecord(
-					tenantToken,
-					process.env.CODE_BASE,
-					process.env.BETA_TESTER_THREE,
-					recordId,
-					{
-						fields: {
-							"Discord ID": interaction.user.id,
-							Status: "Binded",
-						},
-					}
-				);
-
-				await interaction.member.roles.add("1032238398829768735").then(() => {
-					interaction.editReply({
-						content: "Congrats! <#1018243733373866004> channels are unlocked!",
-					});
-				});
-			} else if (parseInt(records4.data.total)) {
-				const recordId = records4.data.items[0].record_id;
-				await feishu.updateRecord(
-					tenantToken,
-					process.env.CODE_BASE,
-					process.env.BETA_TESTER_FOUR,
-					recordId,
-					{
-						fields: {
-							"Discord ID": interaction.user.id,
-							Status: "Binded",
-						},
-					}
-				);
-
-				await interaction.member.roles.add("1032238398829768735").then(() => {
-					interaction.editReply({
-						content: "Congrats! <#1018243733373866004> channels are unlocked!",
-					});
-				});
-			} else if (parseInt(records5.data.total)) {
-				const recordId = records5.data.items[0].record_id;
-				await feishu.updateRecord(
-					tenantToken,
-					process.env.CODE_BASE,
-					process.env.BETA_TESTER_FIVE,
-					recordId,
-					{
-						fields: {
-							"Discord ID": interaction.user.id,
-							Status: "Binded",
-						},
-					}
-				);
-
-				await interaction.member.roles.add("1032238398829768735").then(() => {
-					interaction.editReply({
-						content: "Congrats! <#1018243733373866004> channels are unlocked!",
-					});
-				});
-			} else if (parseInt(records5.data.total)) {
-				const recordId = records6.data.items[0].record_id;
-				await feishu.updateRecord(
-					tenantToken,
-					process.env.CODE_BASE,
-					process.env.BETA_TESTER_SIX,
-					recordId,
-					{
-						fields: {
-							"Discord ID": interaction.user.id,
-							Status: "Binded",
-						},
-					}
-				);
-
-				await interaction.member.roles.add("1032238398829768735").then(() => {
-					interaction.editReply({
-						content: "Congrats! <#1018243733373866004> channels are unlocked!",
-					});
-				});
-			} else
+				delete betaTesterCodes[activationCode];
+			} else {
 				await interaction.editReply({
 					content:
 						"Invalid activation code. You haven't applied for the beta, click [here]( https://survey.isnssdk.com/q/51928/2lo2I2z9/d971) to sign-up!\nWe will draw 3300+ extra lucky players to get Beta access codes every Tuesday from 29th Nov 2022 by email.",
 				});
+			}
 		} else if (interaction.customId.startsWith("ca")) {
 			await interaction.deferReply({ ephemeral: true });
 
@@ -3663,20 +3515,25 @@ async function loadBetaTesterCodes() {
 
 		if (response.data.has_more == false) {
 			for (const item of response.data.items) {
-				betaTesterCodes.push(item.fields.Codes);
+				let code = item.fields.Codes;
+				let recordId = item.record_id;
+				let subData = recordId + "," + table;
+				betaTesterCodes[code] = subData;
 			}
 			continue;
 		}
 
 		while (response.data.has_more == true) {
 			for (const item of response.data.items) {
-				betaTesterCodes.push(item.fields.Codes);
+				let code = item.fields.Codes;
+				let recordId = item.record_id;
+				let subData = recordId + "," + table;
+				betaTesterCodes[code] = subData;
 			}
 
 			const pageToken = response.data.page_token;
 
-			logger.debug("Table: " + table);
-			logger.debug(`Beta Tester Codes: ${betaTesterCodes.length}`);
+			logger.debug(`Loading Beta Tester Codes: ${tempData.length}`);
 
 			response = JSON.parse(
 				await feishu.getRecords(
