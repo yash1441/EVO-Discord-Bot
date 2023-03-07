@@ -19,7 +19,7 @@ module.exports = {
 		const target = await interaction.options.getUser("user");
 		console.log(target);
 
-		const member = await interaction.guild.members.fetch(target.user.id);
+		const member = await interaction.guild.members.fetch(target.id);
 		await member.roles.add(process.env.BETA_ROLE);
 		await interaction.editReply({
 			content: `Added beta tester role to ${target}.`,
