@@ -3546,7 +3546,10 @@ async function loadBetaTesterCodes() {
 				`NOT(CurrentValue.[Status] = "Binded")`,
 				pageToken
 			);
-			if (response == undefined) continue;
+			if (response == undefined) {
+				await wait(5000);
+				logger.error("Error loading beta tester codes, retrying...");
+			}
 			response = JSON.parse(response);
 		}
 	}
