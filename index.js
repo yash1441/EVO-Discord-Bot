@@ -3662,7 +3662,7 @@ async function loadBetaTesterCodes() {
 	logger.debug(`Beta Tester Codes: ${tempData.length}`);
 
 	for (const item of tempData) {
-		if (item.fields.Codes == undefined) {
+		if (item.fields == undefined) {
 			logger.debug(JSON.stringify(item));
 			continue;
 		}
