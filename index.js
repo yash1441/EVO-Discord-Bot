@@ -3651,18 +3651,11 @@ async function loadBetaTesterCodes() {
 				`NOT(CurrentValue.[Status] = "Binded")`
 			)
 		);
-		if (response.data.total) {
-			tempData.push(response.data.items);
-		}
-	}
 
-	logger.debug(`1. Beta Tester Codes: ${tempData.length}`);
-
-	for (const data of tempData) {
-		for (const item of data) {
+		for (const item of response.data.items) {
 			betaTesterCodes.push(item.fields.Codes);
 		}
-	}
 
-	logger.debug(`2. Beta Tester Codes: ${betaTesterCodes.length}`);
+		logger.debug(`Beta Tester Codes in ${table}: ${betaTesterCodes.length}`);
+	}
 }
