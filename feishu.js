@@ -84,11 +84,11 @@ async function getRecords(token, app, table, filter, page_token) {
 		headers: { Authorization: `Bearer ${token}` },
 	};
 
-	if (page_token) options.qs.page_token = page_token;
+	if (filter && page_token)
+		options.qs = { filter: filter, page_token: page_token };
+	else if (filter) options.qs = { filter: filter };
 
-	if (filter) options.qs = { filter: filter };
-
-	logger.debug(page_token);
+	logger.debug(JSON.stringify(options));
 
 	return await request(options).catch((error) => console.error(error));
 }
