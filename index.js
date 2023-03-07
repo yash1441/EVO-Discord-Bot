@@ -3653,10 +3653,18 @@ async function loadBetaTesterCodes() {
 
 		if (!response.data.items) continue;
 
+		if (!response.data.has_more) {
+			for (const item of response.data.items) {
+				betaTesterCodes.push(item.fields.Codes);
+			}
+		}
+
 		while (response.data.has_more) {
 			for (const item of response.data.items) {
 				betaTesterCodes.push(item.fields.Codes);
 			}
+
+			logger.info(`Beta Tester Codes: ${betaTesterCodes.length}`);
 
 			response = JSON.parse(
 				await feishu.getRecords(
@@ -3667,12 +3675,6 @@ async function loadBetaTesterCodes() {
 					response.data.page_token
 				)
 			);
-		}
-
-		if (response.data.has_more) {
-			for (const item of response.data.items) {
-				betaTesterCodes.push(item.fields.Codes);
-			}
 		}
 	}
 
