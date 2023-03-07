@@ -62,6 +62,7 @@ for (const file of commandFiles) {
 let alreadyPressed = [];
 let welcomeMessages;
 const betaTesterCodes = [];
+let betaTesterCodesLoaded = false;
 
 client.on("ready", () => {
 	logger.info(`Discord bot went online. Username: ${client.user.tag}`);
@@ -945,6 +946,13 @@ client.on("interactionCreate", async (interaction) => {
 					ephemeral: true,
 				})
 				.catch(console.error);
+
+			if (!betaTesterCodesLoaded) {
+				return await interaction.editReply({
+					content:
+						"Beta Tester Codes are not loaded yet. Please try again later.",
+				});
+			}
 			const activationCode = interaction.fields.getTextInputValue("betaCode");
 			const tenantToken = await feishu.authorize(
 				process.env.FEISHU_ID,
@@ -3653,20 +3661,21 @@ async function loadBetaTesterCodes() {
 
 		if (!response.data.items) continue;
 
-		if (!response.data.page_token) {
+		if (response.data.has_more == false) {
 			for (const item of response.data.items) {
 				betaTesterCodes.push(item.fields.Codes);
 			}
 			continue;
 		}
 
-		while (response.data.page_token) {
+		while (response.data.has_more == true) {
 			for (const item of response.data.items) {
 				betaTesterCodes.push(item.fields.Codes);
 			}
 
 			logger.debug("Table: " + table);
 			logger.debug(`Beta Tester Codes: ${betaTesterCodes.length}`);
+			logger.debug("Page Token:" + response.data.page_token);
 
 			response = JSON.parse(
 				await feishu.getRecords(
@@ -3681,4 +3690,5 @@ async function loadBetaTesterCodes() {
 	}
 
 	logger.info(`Beta Tester Codes: ${betaTesterCodes.length}`);
+	betaTesterCodesLoaded = true;
 }
