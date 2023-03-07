@@ -88,7 +88,7 @@ async function getRecords(token, app, table, filter, page_token) {
 
 	if (filter) options.qs = { filter: filter };
 
-	logger.debug(JSON.stringify(options));
+	logger.debug(page_token);
 
 	return await request(options).catch((error) => console.error(error));
 }
