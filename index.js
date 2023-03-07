@@ -3623,7 +3623,7 @@ async function sendResponseToFeishu(interaction) {
 }
 
 async function loadBetaTesterCodes() {
-	const tempData = new Array();
+	const tempData = [];
 	const tablesToCheck = [
 		process.env.BETA_TESTER_ONE,
 		process.env.BETA_TESTER_TWO,
@@ -3643,20 +3643,17 @@ async function loadBetaTesterCodes() {
 			process.env.FEISHU_SECRET
 		);
 
-		const records = JSON.parse(
-			await feishu
-				.getRecords(
-					tenantToken,
-					process.env.CODE_BASE,
-					table,
-					`NOT(CurrentValue.[Status] = "Binded")`
-				)
-				.then(() => {
-					if (records.data.total) {
-						tempData.push(records.data.items);
-					}
-				})
+		const response = JSON.parse(
+			await feishu.getRecords(
+				tenantToken,
+				process.env.CODE_BASE,
+				table,
+				`NOT(CurrentValue.[Status] = "Binded")`
+			)
 		);
+		if (response.data.total) {
+			tempData.push(response.data.items);
+		}
 	}
 
 	logger.debug(`1. Beta Tester Codes: ${tempData.length}`);
