@@ -73,7 +73,7 @@ async function createRecords(token, app, table, records) {
 	return success;
 }
 
-async function getRecords(token, app, table, filter) {
+async function getRecords(token, app, table, filter, page_token) {
 	let options = {
 		method: "GET",
 		url: `https://open.feishu.cn/open-apis/bitable/v1/apps/${app}/tables/${table}/records`,
@@ -82,6 +82,8 @@ async function getRecords(token, app, table, filter) {
 		},
 		headers: { Authorization: `Bearer ${token}` },
 	};
+
+	if (page_token) options.qs.page_token = page_token;
 
 	if (filter) options.qs = { filter: filter };
 
