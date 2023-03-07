@@ -3657,6 +3657,7 @@ async function loadBetaTesterCodes() {
 			for (const item of response.data.items) {
 				betaTesterCodes.push(item.fields.Codes);
 			}
+			continue;
 		}
 
 		while (response.data.has_more) {
@@ -3664,7 +3665,9 @@ async function loadBetaTesterCodes() {
 				betaTesterCodes.push(item.fields.Codes);
 			}
 
-			logger.info(`Beta Tester Codes: ${betaTesterCodes.length}`);
+			logger.debug("Table: " + table);
+			logger.debug(`Beta Tester Codes: ${betaTesterCodes.length}`);
+			logger.debug("Has More: True");
 
 			response = JSON.parse(
 				await feishu.getRecords(
