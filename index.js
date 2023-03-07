@@ -3652,10 +3652,12 @@ async function loadBetaTesterCodes() {
 			)
 		);
 
+		if (!response.data.items) continue;
+
 		for (const item of response.data.items) {
 			betaTesterCodes.push(item.fields.Codes);
 		}
-
-		logger.debug(`Beta Tester Codes in ${table}: ${betaTesterCodes.length}`);
 	}
+
+	logger.info(`Beta Tester Codes: ${betaTesterCodes.length}`);
 }
