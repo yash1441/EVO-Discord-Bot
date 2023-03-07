@@ -3647,7 +3647,7 @@ async function loadBetaTesterCodes() {
 				tenantToken,
 				process.env.CODE_BASE,
 				table,
-				`AND(CurrentValue.[Codes] = "${activationCode}",NOT(CurrentValue.[Status] = "Binded"))`
+				`NOT(CurrentValue.[Status] = "Binded")`
 			)
 		);
 
