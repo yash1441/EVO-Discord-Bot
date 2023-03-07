@@ -3494,6 +3494,8 @@ async function loadBetaTesterCodes() {
 		process.env.BETA_TESTER_EIGHT,
 		process.env.BETA_TESTER_NINE,
 		process.env.BETA_TESTER_TEN,
+		process.env.BETA_TESTER_ELEVEN,
+		process.env.BETA_TESTER_TWELVE,
 	];
 
 	for (const table of tablesToCheck) {
