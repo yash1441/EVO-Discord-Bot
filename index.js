@@ -3539,17 +3539,14 @@ async function loadBetaTesterCodes() {
 				`Loading Beta Tester Codes: ${Object.keys(betaTesterCodes).length}`
 			);
 
-			response = JSON.parse(
-				await feishu.getRecords(
-					tenantToken,
-					process.env.CODE_BASE,
-					table,
-					`NOT(CurrentValue.[Status] = "Binded")`,
-					pageToken
-				)
-			).catch((error) => {
-				logger.error(error);
-			});
+			response = await feishu.getRecords(
+				tenantToken,
+				process.env.CODE_BASE,
+				table,
+				`NOT(CurrentValue.[Status] = "Binded")`,
+				pageToken
+			);
+			response = JSON.parse(response);
 		}
 	}
 
