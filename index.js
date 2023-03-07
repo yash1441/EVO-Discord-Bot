@@ -3659,7 +3659,13 @@ async function loadBetaTesterCodes() {
 		tempData.push(records.data.items);
 	}
 
+	logger.debug(`Beta Tester Codes: ${tempData.length}`);
+
 	for (const item of tempData) {
+		if (item.fields.Codes == undefined) {
+			logger.debug(JSON.stringify(item));
+			continue;
+		}
 		betaTesterCodes.push(item.fields.Codes);
 	}
 
