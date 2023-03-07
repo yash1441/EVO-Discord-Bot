@@ -3644,22 +3644,22 @@ async function loadBetaTesterCodes() {
 		);
 
 		const records = JSON.parse(
-			await feishu.getRecords(
-				tenantToken,
-				process.env.CODE_BASE,
-				table,
-				`NOT(CurrentValue.[Status] = "Binded")`
-			)
+			await feishu
+				.getRecords(
+					tenantToken,
+					process.env.CODE_BASE,
+					table,
+					`NOT(CurrentValue.[Status] = "Binded")`
+				)
+				.then(() => {
+					if (records.data.total) {
+						tempData.push(records.data.items);
+					}
+				})
 		);
-
-		if (!records.data.total) {
-			continue;
-		}
-
-		tempData.push(records.data.items);
 	}
 
-	logger.debug(`Beta Tester Codes: ${tempData.length}`);
+	logger.debug(`1. Beta Tester Codes: ${tempData.length}`);
 
 	for (const item of tempData) {
 		if (item.fields == undefined) {
@@ -3669,5 +3669,5 @@ async function loadBetaTesterCodes() {
 		betaTesterCodes.push(item.fields.Codes);
 	}
 
-	logger.debug(`Beta Tester Codes: ${betaTesterCodes.length}`);
+	logger.debug(`2. Beta Tester Codes: ${betaTesterCodes.length}`);
 }
