@@ -956,7 +956,7 @@ client.on("interactionCreate", async (interaction) => {
 			const activationCode = interaction.fields.getTextInputValue("betaCode");
 
 			if (betaTesterCodes.hasOwnProperty(activationCode)) {
-				const subData = betaTesterCodes[activationCode].splt(",");
+				const subData = betaTesterCodes[activationCode].split(",");
 				const recordId = subData[0];
 				const table = subData[1];
 				const tenantToken = await feishu.authorize(
