@@ -3623,6 +3623,7 @@ async function sendResponseToFeishu(interaction) {
 }
 
 async function loadBetaTesterCodes() {
+	const tempData = new Array();
 	const tablesToCheck = [
 		process.env.BETA_TESTER_ONE,
 		process.env.BETA_TESTER_TWO,
@@ -3655,6 +3656,12 @@ async function loadBetaTesterCodes() {
 			continue;
 		}
 
-		logger.debug(JSON.stringify(records.data.items[0].fields));
+		tempData.push(records.data.items);
 	}
+
+	for (const item of tempData) {
+		betaTesterCodes.push(item.fields.Codes);
+	}
+
+	logger.debug(`Beta Tester Codes: ${betaTesterCodes.length}`);
 }
