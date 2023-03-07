@@ -3677,7 +3677,7 @@ async function loadBetaTesterCodes() {
 
 			logger.debug("Table: " + table);
 			logger.debug(`Beta Tester Codes: ${betaTesterCodes.length}`);
-			logger.debug("Page Token:" + response.data.page_token);
+			logger.debug("Page Token:" + pageToken);
 
 			response = JSON.parse(
 				await feishu.getRecords(
