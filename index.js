@@ -3546,6 +3546,7 @@ async function loadBetaTesterCodes() {
 				`NOT(CurrentValue.[Status] = "Binded")`,
 				pageToken
 			);
+			if (response == undefined) continue;
 			response = JSON.parse(response);
 		}
 	}
