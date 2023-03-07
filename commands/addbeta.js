@@ -17,7 +17,8 @@ module.exports = {
 		await interaction.deferReply({ ephemeral: true });
 		const target = await interaction.options.getUser("user");
 
-		await target.roles.add(process.env.BETA_ROLE);
+		const member = await interaction.guild.members.fetch(target.user.id);
+		await member.roles.add(process.env.BETA_ROLE);
 		await interaction.editReply({
 			content: `Added beta tester role to ${target}.`,
 		});
