@@ -3673,6 +3673,8 @@ async function loadBetaTesterCodes() {
 				betaTesterCodes.push(item.fields.Codes);
 			}
 
+			const pageToken = response.data.page_token;
+
 			logger.debug("Table: " + table);
 			logger.debug(`Beta Tester Codes: ${betaTesterCodes.length}`);
 			logger.debug("Page Token:" + response.data.page_token);
@@ -3683,7 +3685,7 @@ async function loadBetaTesterCodes() {
 					process.env.CODE_BASE,
 					table,
 					`NOT(CurrentValue.[Status] = "Binded")`,
-					response.data.page_token
+					pageToken
 				)
 			);
 		}
