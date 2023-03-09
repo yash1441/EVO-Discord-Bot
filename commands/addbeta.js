@@ -18,7 +18,6 @@ module.exports = {
 	async execute(interaction, client) {
 		await interaction.deferReply({ ephemeral: true });
 		const target = await interaction.options.getUser("user");
-		console.log(target);
 
 		const member = await interaction.guild.members.fetch(target.id);
 		await member.roles.add(process.env.BETA_ROLE);
