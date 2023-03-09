@@ -59,34 +59,30 @@ module.exports = {
 				logger.warn("No VALID entries found.");
 				return;
 			}
-			let records = response.data.items;
+			const records = response.data.items;
 
-			let recordsSimplified = [];
-			records.forEach(function (record) {
-				recordsSimplified.push({
+			const uniqueRecords = [];
+			for (const record of records) {
+				let tempData = {
 					"Discord ID": record.fields["Discord ID"],
 					"Discord Name": record.fields["Discord Name"],
 					"CEC Member": record.fields["CEC Member"],
 					"Valid Views": parseInt(record.fields.Views),
 					"Valid Videos": 1,
-				});
-			});
+				};
 
-			let uniqueRecords = Object.values(
-				recordsSimplified.reduce((acc, item) => {
-					acc[item["Discord ID"]] = acc[item["Discord ID"]]
-						? {
-								...item,
-								"Valid Views":
-									item["Valid Views"] + acc[item["Discord ID"]]["Valid Views"],
-								"Valid Videos":
-									item["Valid Videos"] +
-									acc[item["Discord ID"]]["Valid Videos"],
-						  }
-						: item;
-					return acc;
-				}, {})
-			);
+				const existingData = uniqueRecords.find(
+					(r) => r["Discord ID"] === tempData["Discord ID"]
+				);
+				if (existingData) {
+					existingData["Valid Views"] += tempData["Valid Views"];
+					existingData["Valid Videos"] += tempData["Valid Videos"];
+				} else {
+					uniqueRecords.push(tempData);
+				}
+			}
+
+			logger.debug(uniqueRecords.length);
 
 			let finalData = {
 				records: [],
