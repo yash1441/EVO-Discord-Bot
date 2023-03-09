@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
 const feishu = require("../feishu.js");
+const logger = require("../logging/logger.js");
 require("dotenv").config();
 
 module.exports = {
