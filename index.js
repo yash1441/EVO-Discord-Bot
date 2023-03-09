@@ -938,6 +938,20 @@ client.on("interactionCreate", async (interaction) => {
 			await interaction.editReply({ components: [row] });
 		} else if (interaction.customId === "tiktokButton") {
 			await interaction.deferReply({ ephemeral: true });
+
+			if (
+				!checkMemberRole(
+					client,
+					process.env.EVO_SERVER,
+					interaction.user.id,
+					process.env.TTC_ROLE
+				)
+			) {
+				return await interaction.editReply({
+					content: "You are not a part of TikTok Creator Event.",
+				});
+			}
+
 			const tenantToken = await feishu.authorize(
 				process.env.FEISHU_ID,
 				process.env.FEISHU_SECRET
@@ -1055,12 +1069,6 @@ client.on("interactionCreate", async (interaction) => {
 					content: `\`${channel}\`\nPlease enter a **valid ${platform}** link.`,
 				});
 			}
-
-			/*if (c2.length < 4 || subCount < 1000 || isNaN(subCount)) {
-				return await interaction.editReply({
-					content: `\`${c2}\`\nPlease read the **Requirements** in <#1018239078094880908> for the number of subscribers needed.`,
-				});
-			}*/
 
 			let creators = {
 				fields: {
