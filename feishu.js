@@ -117,6 +117,21 @@ async function updateRecord(token, app, table, recordId, record) {
 	return await request(options);
 }
 
+async function updateRecords(token, app, table, record) {
+	const options = {
+		method: "POST",
+		url: `https://open.feishu.cn/open-apis/bitable/v1/apps/${app}/tables/${table}/records/batch_update`,
+		headers: {
+			"Content-Type": "application/json",
+			Authorization: `Bearer ${token}`,
+		},
+		body: record,
+		json: true,
+	};
+
+	return await request(options);
+}
+
 async function getFileToken(token, file) {
 	const options = {
 		method: "POST",
