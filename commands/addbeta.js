@@ -7,6 +7,7 @@ module.exports = {
 	data: new SlashCommandBuilder()
 		.setName("addbeta")
 		.setDescription("Give beta tester role to a user.")
+		.setDMPermission(false)
 		.addUserOption((option) =>
 			option
 				.setName("user")
