@@ -12,7 +12,7 @@ module.exports = {
 				.setDescription("The secret code for the function to test.")
 				.setRequired(true)
 				.addChoices(
-					{ name: "CCES Data Input", value: "CCESDATA" },
+					{ name: "CCES Data Calculation", value: "CCESDATA" },
 					{ name: "CCES Reward Calculation", value: "CCESREWARD" },
 					{ name: "CEC Check Review", value: "CECCHECK" },
 					{ name: "CEC Check Qualify", value: "CECQUALIFY" },
@@ -42,37 +42,34 @@ module.exports = {
 
 		const option = interaction.options.getString("secret-code");
 		if (option === "CCESDATA") {
-			let tenantToken = await feishu.authorize(
-				"cli_a3befa8417f9500d",
-				"II4y9Nn6d7C6RuZUxdOz2fxt4sSo6Rsu"
+			const tenantToken = await feishu.authorize(
+				process.env.FEISHU_ID,
+				process.env.FEISHU_SECRET
 			);
 			let response = JSON.parse(
 				await feishu.getRecords(
 					tenantToken,
-					"bascnxUOz7DdG9mcOUvFlH7BIPg",
-					"tbl3pXwSxiOrfj7W",
+					process.env.CEP_BASE,
+					process.env.CEP_SUBMISSION,
 					'AND(CurrentValue.[Validity] = "VALID")'
 				)
 			);
 
 			if (!response.data.total) {
-				console.log("No VALID entries found.");
-				//await CCESRewardCalculation(tenantToken);
+				logger.warn("No VALID entries found.");
 				return;
 			}
 			let records = response.data.items;
 
 			let recordsSimplified = [];
 			records.forEach(function (record) {
-				if (record.fields["Discord ID"] != undefined) {
-					recordsSimplified.push({
-						"Discord ID": record.fields["Discord ID"],
-						"Discord Name": record.fields["Discord Name"],
-						"CEC Member": record.fields["CEC Member"],
-						"Valid Views": parseInt(record.fields.Views),
-						"Valid Videos": 1,
-					});
-				}
+				recordsSimplified.push({
+					"Discord ID": record.fields["Discord ID"],
+					"Discord Name": record.fields["Discord Name"],
+					"CEC Member": record.fields["CEC Member"],
+					"Valid Views": parseInt(record.fields.Views),
+					"Valid Videos": 1,
+				});
 			});
 
 			let uniqueRecords = Object.values(
@@ -96,20 +93,18 @@ module.exports = {
 			};
 
 			for (const record of uniqueRecords) {
-				console.log(record["Discord ID"]);
-				let response = JSON.parse(
-					await feishu.getRecords(
-						tenantToken,
-						"bascnxUOz7DdG9mcOUvFlH7BIPg",
-						"tblYxVO5nDS8E519",
-						`CurrentValue.[Discord ID] = "${record["Discord ID"]}"`
-					)
+				let response = await feishu.getRecords(
+					tenantToken,
+					process.env.CEP_BASE,
+					process.env.CCES_DATA,
+					`CurrentValue.[Discord ID] = "${record["Discord ID"]}"`
 				);
+				response = JSON.parse(response);
 				if (response.data.total) {
 					await feishu.updateRecord(
 						tenantToken,
-						"bascnxUOz7DdG9mcOUvFlH7BIPg",
-						"tblYxVO5nDS8E519",
+						process.env.CEP_BASE,
+						process.env.CCES_DATA,
 						response.data.items[0].record_id,
 						{
 							fields: {
@@ -135,34 +130,43 @@ module.exports = {
 					}
 				});
 			} else {
-				console.log(
+				logger.info(
 					"Successfully entered CCES Data. Now calculating CCES Rewards..."
 				);
-				//await CCESRewardCalculation(tenantToken);
 				return;
 			}
 
 			if (finalData.records.length == 0) {
-				console.log(
+				logger.info(
 					"Successfully entered CCES Data. Now calculating CCES Rewards..."
 				);
-				//await CCESRewardCalculation(tenantToken);
 				return;
 			}
 
 			for (let i = 0; i < finalData.records.length; i++) {
-				let guild = client.guilds.cache.get("951777532003381278");
-				let member = guild.members.cache.get(
-					finalData.records[i].fields["Discord ID"]
+				let userId = finalData.records[i].fields["Discord ID"];
+
+				let hasCCRole = await checkMemberRole(
+					client,
+					process.env.EVO_SERVER,
+					userId,
+					process.env.CC_ROLE
 				);
 
-				if (member.roles.cache.has("952233385500229703")) {
+				let hasCECRole = await checkMemberRole(
+					client,
+					process.env.EVO_SERVER,
+					userId,
+					process.env.CEC_MEMBER_ROLE
+				);
+
+				if (hasCCRole) {
 					finalData.records[i].fields["Content Creators"] = "Content Creators";
 				} else {
 					finalData.records[i].fields["Content Creators"] = "NO";
 				}
 
-				if (member.roles.cache.has("1042700294603145257")) {
+				if (hasCECRole) {
 					finalData.records[i].fields["CEC Member"] = "CEC Member";
 				} else {
 					finalData.records[i].fields["CEC Member"] = "NO";
@@ -171,15 +175,15 @@ module.exports = {
 
 			let success = await feishu.createRecords(
 				tenantToken,
-				"bascnxUOz7DdG9mcOUvFlH7BIPg",
-				"tblYxVO5nDS8E519",
+				process.env.CEP_BASE,
+				process.env.CCES_DATA,
 				finalData
 			);
 			success
-				? console.log(
+				? logger.info(
 						"Successfully entered CCES Data. Now calculating CCES Rewards..."
 				  )
-				: console.log(
+				: logger.info(
 						"Failed to enter CCES Data. Now calculation CCES Rewards..."
 				  );
 		} else if (option === "CCESREWARD") {
