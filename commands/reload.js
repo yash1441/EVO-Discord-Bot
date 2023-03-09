@@ -32,11 +32,6 @@ module.exports = {
 				.setDescription("Add all Content Creators to the list.")
 		)
 		.addSubcommand((subcommand) =>
-			subcommand
-				.setName("cec-members")
-				.setDescription("Add CEC Member role to accepted users.")
-		)
-		.addSubcommand((subcommand) =>
 			subcommand.setName("cec-data").setDescription("Calculate CEC data.")
 		)
 		.addSubcommand((subcommand) =>
@@ -737,98 +732,6 @@ module.exports = {
 
 			await interaction.editReply({
 				content: "CEC BP Data Calculated.",
-				ephemeral: true,
-			});
-		} else if (subCommand === "cec-members") {
-			await interaction.reply({
-				content: "Updating the list of CEC Members...",
-				ephemeral: true,
-			});
-
-			let tenantToken = await feishu.authorize(
-				process.env.FEISHU_ID,
-				process.env.FEISHU_SECRET
-			);
-
-			let response = JSON.parse(
-				await feishu.getRecords(
-					tenantToken,
-					process.env.CEP_BASE,
-					process.env.CEC_APP,
-					`CurrentValue.[Qualification] = "Accepted"`
-				)
-			);
-
-			if (!response.data.total) {
-				return await interaction.editReply({
-					content: "No accepted records found.",
-					ephemeral: true,
-				});
-			}
-
-			for (const record of response.data.items) {
-				let shouldContinue = false;
-				const member = await interaction.guild.members
-					.fetch(record.fields["Discord ID"])
-					.catch((error) => {
-						logger.error(error);
-						shouldContinue = true;
-					});
-
-				if (shouldContinue) continue;
-
-				response = JSON.parse(
-					await feishu.getRecords(
-						tenantToken,
-						process.env.CEP_BASE,
-						process.env.CEC_BENEFIT,
-						`CurrentValue.[Discord ID] = "${record.fields["Discord ID"]}"`
-					)
-				);
-
-				let benefit_level;
-
-				if (!response.data.total) {
-					benefit_level = "NA";
-				} else benefit_level = response.data.items[0].fields["Benefit Level"];
-
-				let cecInvitationMessage = `**Congratulations! Now you have membership of Creator Evolution Club!**\n\nWe sincerely appreciate your efforts on EVO community and thanks for your love & passion on Project EVO!\n\nNow you get access to the exclusive benefits for club members:\n1. Beta codes for your fans (up to 200 / month)\n2. Earn 1000  Benefit Points and redeem a phone ($800 value)\n3. Official Support & Instructions\n4. And more!\n\nThe amount of benefits that you can enjoy (including how many Benefit Points you can earn) depends on your Benefit Level, which is \`${benefit_level}\`. The benefit level can be updated every month.\n\nPlease join our Club server to finish the membership registration, start to enjoy the benefits and meet more EVO creators! https://discord.gg/bexu5aVyrY`;
-
-				await member.roles
-					.add(process.env.CEC_MEMBER_ROLE)
-					.then(() => {
-						let qualification = "DONE";
-						member
-							.send({ content: cecInvitationMessage })
-							.then(() => {
-								qualification = "DONE";
-							})
-							.catch((error) => {
-								console.log(error);
-								qualification = "DONE (NO DM)";
-							});
-						feishu.updateRecord(
-							tenantToken,
-							process.env.CEP_BASE,
-							process.env.CEC_APP,
-							record.record_id,
-							{ fields: { Qualification: qualification } }
-						);
-					})
-					.catch((error) => {
-						console.log(error);
-						feishu.updateRecord(
-							tenantToken,
-							process.env.CEP_BASE,
-							process.env.CEC_APP,
-							record.record_id,
-							{ fields: { Qualification: "Left Server" } }
-						);
-					});
-			}
-
-			await interaction.editReply({
-				content: "Updated the list of CEC Members!",
 				ephemeral: true,
 			});
 		} else if (subCommand === "ask-reward") {
