@@ -939,17 +939,14 @@ client.on("interactionCreate", async (interaction) => {
 		} else if (interaction.customId === "tiktokButton") {
 			await interaction.deferReply({ ephemeral: true });
 
-			logger.debug("TikTok Button Clicked");
+			const checkTCCRole = await checkMemberRole(
+				client,
+				process.env.EVO_SERVER,
+				interaction.user.id,
+				process.env.TTC_ROLE
+			);
 
-			if (
-				!checkMemberRole(
-					client,
-					process.env.EVO_SERVER,
-					interaction.user.id,
-					process.env.TTC_ROLE
-				)
-			) {
-				logger.debug("User is not a part of TikTok Creator Event");
+			if (!checkTCCRole) {
 				return await interaction.editReply({
 					content: "You are not a part of TikTok Creator Event.",
 				});
