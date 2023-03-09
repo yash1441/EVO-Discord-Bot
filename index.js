@@ -81,8 +81,7 @@ client.on("ready", () => {
 		"0 0 0,12 * * *",
 		function () {
 			logger.info(`Starting scheduled cronjob. (Every 12 hours)`);
-			CCESDataCalculation();
-			//CECCheck();
+			//CCESDataCalculation();
 			checkOldFiles();
 		},
 		{
@@ -1301,28 +1300,6 @@ client.on("interactionCreate", async (interaction) => {
 				}
 			}
 
-			/*let response = await feishu.getRecords(
-				tenantToken,
-				process.env.CEP_BASE,
-				process.env.CCES_DATA,
-				`CurrentValue.[Discord ID] = "${interaction.user.id}"`
-			);
-			response = JSON.parse(response);
-			if (!response.data.total) {
-				return await interaction.editReply({
-					content: `Sorry, you didn't meet the requirement, the application failed. If you have submitted the required amount of videos and the total views have reached 10,000. Please ask for help in <#1036471894016278619> channel.`,
-				});
-			} else {
-				let views = parseInt(response.data.items[0].fields["Valid Views"]);
-				let videos = parseInt(response.data.items[0].fields["Valid Videos"]);
-
-				if (views < 10000 || videos < 3) {
-					return await interaction.editReply({
-						content: `Sorry, you didn't meet the requirement, the application failed. If you have submitted the required amount of videos and the total views have reached 10,000. Please ask for help in <#1036471894016278619> channel.`,
-					});
-				}
-			}*/
-
 			let success = await feishu.createRecord(
 				tenantToken,
 				process.env.CEP_BASE,
@@ -2403,59 +2380,6 @@ client.on("messageReactionRemove", async (reaction, user) => {
 
 client.login(process.env.DISCORD_TOKEN);
 
-// async function ChristmasEvent() {
-// 	let christmasEmbed = new EmbedBuilder()
-// 		.setTitle("❄️ **Christmas Event** ❄️")
-// 		.setColor(`C04946`)
-// 		.setImage(
-// 			"https://cdn.dribbble.com/users/707812/screenshots/4488314/gift-box-dribbble.gif"
-// 		)
-// 		.setTimestamp();
-
-// 	let christmasButton = new ButtonBuilder()
-// 		.setCustomId("christmasButton")
-// 		.setLabel("Open!")
-// 		.setStyle(ButtonStyle.Primary)
-// 		.setEmoji("🎁");
-
-// 	let christmasButtonDisabled = new ButtonBuilder()
-// 		.setCustomId("christmasButton")
-// 		.setLabel("Open!")
-// 		.setStyle(ButtonStyle.Secondary)
-// 		.setEmoji("🎁")
-// 		.setDisabled(true);
-
-// 	let christmasRow = new ActionRowBuilder().addComponents(christmasButton);
-// 	let christmasRowDisabled = new ActionRowBuilder().addComponents(
-// 		christmasButtonDisabled
-// 	);
-
-// 	await client.channels.fetch("1054640415342592001").then((channel) => {
-// 		channel.messages
-// 			.fetch({ limit: 1 })
-// 			.then((messages) => {
-// 				let lastMessage = messages.first();
-// 				lastMessage
-// 					.edit({
-// 						embeds: [christmasEmbed],
-// 						components: [christmasRowDisabled],
-// 					})
-// 					.then(() => {
-// 						channel
-// 							.send({
-// 								embeds: [christmasEmbed],
-// 								components: [christmasRow],
-// 							})
-// 							.catch(console.error);
-// 					})
-// 					.catch(console.error);
-// 			})
-// 			.catch(console.error);
-// 	});
-
-// 	alreadyPressed = [];
-// }
-
 async function CCESDataCalculation() {
 	const tenantToken = await feishu.authorize(
 		process.env.FEISHU_ID,
@@ -2704,67 +2628,6 @@ async function CCESRewardCalculation(tenantToken) {
 
 	console.log("Successfully entered CCES Reward Data.");
 }
-
-// async function CECCheck() {
-// 	let tenantToken = await feishu.authorize(
-// 		process.env.FEISHU_ID,
-// 		process.env.FEISHU_SECRET
-// 	);
-// 	let response = await feishu.getRecords(
-// 		tenantToken,
-// 		process.env.CEP_BASE,
-// 		process.env.CEC_APP,
-// 		`CurrentValue.[Data Review] = "CHECK"`
-// 	);
-// 	response = JSON.parse(response);
-
-// 	if (!response.data.total) {
-// 		console.log('No entries set to "CHECK" for review.');
-// 		//await CECQualifyCheck(tenantToken);
-// 		return;
-// 	}
-
-// 	let records = response.data.items;
-// 	let recordsSimplified = [];
-// 	records.forEach(function (record) {
-// 		recordsSimplified.push({
-// 			recordId: record.record_id,
-// 			"Discord ID": record.fields["Discord ID"],
-// 			"Total Views": 0,
-// 			"Total Videos": 0,
-// 		});
-// 	});
-
-// 	for (const record of recordsSimplified) {
-// 		let res = await feishu.getRecords(
-// 			tenantToken,
-// 			process.env.CEP_BASE,
-// 			process.env.CCES_DATA,
-// 			`CurrentValue.[Discord ID] = "${record["Discord ID"]}"`
-// 		);
-// 		res = JSON.parse(res);
-// 		if (res.data.total) {
-// 			record["Total Views"] = parseInt(res.data.items[0].fields["Valid Views"]);
-// 			record["Total Videos"] = parseInt(
-// 				res.data.items[0].fields["Valid Videos"]
-// 			);
-// 		}
-// 		let recordId = record.recordId;
-// 		delete record.recordId;
-// 		delete record["Discord ID"];
-// 		record["Data Review"] = "DONE";
-// 		console.log(record);
-// 		await feishu.updateRecord(
-// 			tenantToken,
-// 			process.env.CEP_BASE,
-// 			process.env.CEC_APP,
-// 			recordId,
-// 			{ fields: record }
-// 		);
-// 	}
-// 	console.log("Completed CEC Check.");
-// 	await CECQualifyCheck(tenantToken);
-// }
 
 async function CECQualifyCheck(tenantToken) {
 	let response = await feishu.getRecords(
