@@ -725,7 +725,7 @@ client.on("interactionCreate", async (interaction) => {
 			let messageId = interaction.message.id;
 			let discordId = interaction.user.id;
 
-			let tenantToken = await feishu.authorize(
+			const tenantToken = await feishu.authorize(
 				process.env.FEISHU_ID,
 				process.env.FEISHU_SECRET
 			);
@@ -936,6 +936,56 @@ client.on("interactionCreate", async (interaction) => {
 			const row = new ActionRowBuilder().addComponents(bugCategories);
 
 			await interaction.editReply({ components: [row] });
+		} else if (interaction.customId === "tiktokButton") {
+			await interaction.deferReply({ ephemeral: true });
+			const tenantToken = await feishu.authorize(
+				process.env.FEISHU_ID,
+				process.env.FEISHU_SECRET
+			);
+			let response = JSON.parse(
+				await feishu.getRecords(
+					tenantToken,
+					process.env.CEP_BASE,
+					process.env.TIKTOK_CODES,
+					`CurrentValue.[Discord ID] = "${interaction.user.id}"`
+				)
+			);
+
+			if (response.data.total) {
+				return await interaction.editReply({
+					content: "You have already redeemed a TikTok Creator Event code.",
+				});
+			}
+
+			response = JSON.parse(
+				await feishu.getRecords(
+					tenantToken,
+					process.env.CEP_BASE,
+					process.env.TIKTOK_CODES,
+					`CurrentValue.[Discord ID] = ""`
+				)
+			);
+
+			if (!response.data.total) {
+				return await interaction.editReply({
+					content: "There are no TikTok Creator Event codes left.",
+				});
+			}
+
+			const recordId = response.data.items[0].record_id;
+			const code = response.data.items[0].fields["Codes"];
+
+			await feishu.updateRecord(
+				tenantToken,
+				process.env.CEP_BASE,
+				process.env.TIKTOK_CODES,
+				recordId,
+				{ fields: { "Discord ID": interaction.user.id } }
+			);
+
+			await interaction.editReply({
+				content: `Code claimed successfully! Here is your code:\n\`${code}\`[Download EVO](http://bit.ly/3KPfIMq)\n\nThere are also other Content Creation events, learn more about details via <#${process.env.EVENT_NEWS_CHANNEL}>.\n\nWe are looking for potential EVO creators. Exclusive benefits are provided, learn more about details via <#${process.env.CC_CHANNEL}>.\n\n*Please note that we have the right to ban your code if we find fraudulent behaviors or code trading.*`,
+			});
 		}
 	} else if (interaction.isModalSubmit()) {
 		if (interaction.customId === "betaAccess") {
@@ -3151,7 +3201,6 @@ async function calculateBP() {
 			recordId: record.record_id,
 			discordId: record.fields["Discord ID"],
 			totalViews: parseInt(record.fields["CEC Total Views"]),
-			//missionViews: parseInt(record.fields["Mission Views"]),
 		});
 	}
 
@@ -3170,7 +3219,6 @@ async function calculateBP() {
 			bpRate = parseFloat(response.data.items[0].fields["BP Rate"]);
 		if (bpRate == NaN) bpRate = 0.0;
 		bp = (record.totalViews / 1000) * bpRate;
-		//bp += (record.missionViews / 1000) * bpRate * 1.5;
 
 		await feishu.updateRecord(
 			tenantToken,

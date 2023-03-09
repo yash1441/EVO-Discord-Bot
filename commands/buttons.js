@@ -164,6 +164,17 @@ module.exports = {
 						.setDescription("Input the channel.")
 						.setRequired(true)
 				)
+		)
+		.addSubcommand((subcommand) =>
+			subcommand
+				.setName("tiktok-event")
+				.setDescription("Setup TikTok Event announcement.")
+				.addChannelOption((option) =>
+					option
+						.setName("channel")
+						.setDescription("Input the channel.")
+						.setRequired(true)
+				)
 		),
 	async execute(interaction, client) {
 		await interaction.deferReply();
@@ -576,6 +587,28 @@ module.exports = {
 			client.channels.fetch(channel.id).then((channel) =>
 				channel.send({
 					embeds: [bugEmbed],
+					components: [row],
+				})
+			);
+		} else if (subCommand === "tiktok-event") {
+			const tiktokEmbed = new EmbedBuilder()
+				.setTitle("TikTok Creator Event")
+				.setDescription(
+					`Hi, <@&${TTC_ROLE}>! Are you going to join the **TikTok Creator Event**?\nWe prepared codes for participants to help them try the game and create better EVO content.\n\nClick **Apply** to apply for a beta code.\n\nIf you don't know what the event is about, learn more about the details [here](https://api.tiktokv.com/game_center/pop/deeplink?target=home-pop)\nYou can also join the event by checking the announcement [here](https://google.com)`
+				)
+				.setColor(`C04946`);
+
+			const tiktokButton = new ButtonBuilder()
+				.setCustomId("tiktokButton")
+				.setLabel("Apply")
+				.setStyle(ButtonStyle.Success)
+				.setEmoji("🎱");
+
+			const row = new ActionRowBuilder().addComponents([tiktokButton]);
+
+			client.channels.fetch(channel.id).then((channel) =>
+				channel.send({
+					embeds: [tiktokEmbed],
 					components: [row],
 				})
 			);
