@@ -984,7 +984,7 @@ client.on("interactionCreate", async (interaction) => {
 			);
 
 			await interaction.editReply({
-				content: `Code claimed successfully! Here is your code:\n\`${code}\`[Download EVO](http://bit.ly/3KPfIMq)\n\nThere are also other Content Creation events, learn more about details via <#${process.env.EVENT_NEWS_CHANNEL}>.\n\nWe are looking for potential EVO creators. Exclusive benefits are provided, learn more about details via <#${process.env.CC_CHANNEL}>.\n\n*Please note that we have the right to ban your code if we find fraudulent behaviors or code trading.*`,
+				content: `Code claimed successfully! Here is your code:\n\`${code}\`\n\n[**Download EVO**](http://bit.ly/3KPfIMq)\n\nThere are also other Content Creation events, learn more about details via <#${process.env.EVENT_NEWS_CHANNEL}>.\n\nWe are looking for potential EVO creators. Exclusive benefits are provided, learn more about details via <#${process.env.CC_CHANNEL}>.\n\n*Please note that we have the right to ban your code if we find fraudulent behaviors or code trading.*`,
 			});
 		}
 	} else if (interaction.isModalSubmit()) {
