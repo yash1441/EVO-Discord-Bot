@@ -686,11 +686,10 @@ module.exports = {
 			);
 
 			if (!response.data.total) {
-				await interaction.editReply({
+				return await interaction.editReply({
 					content: "CEC Data Not Found.",
 					ephemeral: true,
 				});
-				return;
 			}
 
 			let records = [];
@@ -700,7 +699,6 @@ module.exports = {
 					recordId: record.record_id,
 					discordId: record.fields["Discord ID"],
 					totalViews: parseInt(record.fields["CEC Total Views"]),
-					missionViews: parseInt(record.fields["Mission Views"]),
 				});
 			}
 
@@ -718,8 +716,7 @@ module.exports = {
 				if (response.data.total)
 					bpRate = parseFloat(response.data.items[0].fields["BP Rate"]);
 				if (bpRate == NaN) bpRate = 0.0;
-				bp = ((record.totalViews - record.missionViews) / 1000) * bpRate;
-				bp += (record.missionViews / 1000) * bpRate * 1.5;
+				bp = (record.totalViews / 1000) * bpRate;
 
 				await feishu.updateRecord(
 					tenantToken,
