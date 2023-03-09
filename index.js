@@ -2789,20 +2789,24 @@ function interactionRegionRole(interaction) {
 }
 
 async function checkMemberRole(client, guildId, userId, roleId) {
-	// logger.debug(`Checking if user ${userId} has role ${roleId} in guild ${guildId}`);
+	logger.debug(
+		`Checking if user ${userId} has role ${roleId} in guild ${guildId}`
+	);
 	const guild = client.guilds.cache.get(guildId);
 	const member = await guild.members.fetch(userId).catch((error) => {
 		logger.error(error);
 	});
 	if (member == undefined) {
-		// logger.debug(`User ${userId} not found in guild ${guildId}`);
+		logger.debug(`User ${userId} not found in guild ${guildId}`);
 		return false;
 	}
 	if (member.roles.cache.has(roleId)) {
-		// logger.debug(`User ${userId} has role ${roleId} in guild ${guildId}`);
+		logger.debug(`User ${userId} has role ${roleId} in guild ${guildId}`);
 		return true;
 	} else {
-		// logger.debug(`User ${userId} does not have role ${roleId} in guild ${guildId}`);
+		logger.debug(
+			`User ${userId} does not have role ${roleId} in guild ${guildId}`
+		);
 		return false;
 	}
 }
