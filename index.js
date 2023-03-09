@@ -948,7 +948,7 @@ client.on("interactionCreate", async (interaction) => {
 
 			if (!checkTCCRole) {
 				return await interaction.editReply({
-					content: "You are not a part of TikTok Creator Event.",
+					content: `You cannot get the beta code, possibly because you didn't choose **YES** in the question **Are you participants of TikTok Creator Event** or didn't click **Join Now** under the announcement of [TikTok Creator Event](https://google.com)`,
 				});
 			}
 
@@ -959,7 +959,7 @@ client.on("interactionCreate", async (interaction) => {
 			let response = JSON.parse(
 				await feishu.getRecords(
 					tenantToken,
-					process.env.CEP_BASE,
+					process.env.CODE_BASE,
 					process.env.TIKTOK_CODES,
 					`CurrentValue.[Discord ID] = "${interaction.user.id}"`
 				)
@@ -974,7 +974,7 @@ client.on("interactionCreate", async (interaction) => {
 			response = JSON.parse(
 				await feishu.getRecords(
 					tenantToken,
-					process.env.CEP_BASE,
+					process.env.CODE_BASE,
 					process.env.TIKTOK_CODES,
 					`CurrentValue.[Discord ID] = ""`
 				)
@@ -991,7 +991,7 @@ client.on("interactionCreate", async (interaction) => {
 
 			await feishu.updateRecord(
 				tenantToken,
-				process.env.CEP_BASE,
+				process.env.CODE_BASE,
 				process.env.TIKTOK_CODES,
 				recordId,
 				{ fields: { "Discord ID": interaction.user.id } }
