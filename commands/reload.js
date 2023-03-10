@@ -502,7 +502,7 @@ module.exports = {
 			);
 		} else if (subCommand === "cec-data") {
 			await interaction.reply({
-				content: "Calculating CEC Data...",
+				content: "Calculating CLUB Data...",
 				ephemeral: true,
 			});
 
@@ -534,6 +534,12 @@ module.exports = {
 					});
 
 				if (shouldContinue) continue;
+
+				if (
+					member == undefined ||
+					!member.roles.cache.has(process.env.VERIFIED_ROLE)
+				)
+					continue;
 
 				let tempRecord = {
 					"Discord ID": record.fields["Discord ID"],
