@@ -525,8 +525,8 @@ module.exports = {
 			for (const record of response.data.items) {
 				let shouldContinue = false;
 				if (!record.fields["Discord ID"]) continue;
-				logger.debug(record.fields["Discord ID"]);
-				const member = await interaction.guild.members
+				const guild = client.guilds.cache.get(process.env.EVO_CEC_SERVER);
+				const member = await guild.members
 					.fetch(record.fields["Discord ID"])
 					.catch((error) => {
 						logger.error(
