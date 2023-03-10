@@ -605,7 +605,7 @@ module.exports = {
 			const tiktokEmbed = new EmbedBuilder()
 				.setTitle("TikTok Creator Event")
 				.setDescription(
-					`Hi, <@&${process.env.TTC_ROLE}>! Are you going to join the **TikTok Creator Event**?\nWe prepared codes for participants to help them try the game and create better EVO content.\n\nClick **Apply** to apply for a beta code.\n\nIf you don't know what the event is about, learn more about the details [here](https://api.tiktokv.com/game_center/pop/deeplink?target=home-pop)\nYou can also join the event by checking the announcement [here](https://google.com)`
+					`Hi, <@&${process.env.TTC_ROLE}>! Are you going to join the **TikTok Creator Event**?\nWe prepared codes for participants to help them try the game and create better EVO content.\n\nClick **Apply** to apply for a beta code.\n\nIf you don't know what the event is about, learn more about the details [here](https://api.tiktokv.com/game_center/pop/deeplink?target=home-pop)\nYou can also join the event by checking the announcement [here](https://ptb.discord.com/channels/951777532003381278/1018235728515321996/1083714282702766090)`
 				)
 				.setImage(
 					"https://i.ibb.co/mRy5jhL/img-v2-03850b6f-8237-4c92-b71c-cd6e6652395g.jpg"
