@@ -616,16 +616,14 @@ module.exports = {
 				});
 			}
 
-			logger.debug(response.data.items.length);
-
 			let records = [];
 
 			for (const record of response.data.items) {
-				const guild = client.guilds.cache.get(process.env.EVO_CEC_SERVER);
+				const guild = await client.guilds.cache.get(process.env.EVO_CEC_SERVER);
 				const member = await guild.members
 					.fetch(record.fields["Discord ID"])
 					.catch((error) => {
-						logger.error(error);
+						logger.error(error + " " + record.fields["Discord ID"]);
 					});
 
 				if (
