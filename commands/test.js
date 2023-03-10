@@ -71,7 +71,7 @@ module.exports = {
 					"Valid Videos": 1,
 				};
 
-				const existingData = uniqueRecords.find(
+				let existingData = uniqueRecords.find(
 					(r) => r["Discord ID"] === tempData["Discord ID"]
 				);
 				if (existingData) {
@@ -81,8 +81,6 @@ module.exports = {
 					uniqueRecords.push(tempData);
 				}
 			}
-
-			logger.debug(uniqueRecords.length);
 
 			let finalData = {
 				records: [],
