@@ -1145,7 +1145,7 @@ client.on("interactionCreate", async (interaction) => {
 			const subCount = parseInt(onlyDigits(subs));
 			const platform = checkPlatform(interaction.customId.substring(2, 4));
 			const region = checkRegion(interaction.customId.slice(4, 6));
-			if (interaction.customId.slice(-2) == "RE") rerun = true;
+			if (interaction.customId.slice(-2) == "Re") rerun = true;
 
 			logger.debug(
 				interaction.customId + " " + platform + " " + region + " " + rerun
@@ -1868,7 +1868,6 @@ client.on("interactionCreate", async (interaction) => {
 					});
 			}
 		} else if (interaction.customId.startsWith("platformSelectMenu")) {
-			logger.debug(interaction.customId);
 			const type = interaction.customId.substring(18);
 			const selection = interaction.values[0];
 			const platform = checkPlatform(selection);
@@ -2780,14 +2779,13 @@ function checkRegion(code) {
 }
 
 async function showApplyModal(interaction) {
-	logger.debug(interaction.customId);
 	let rerun = false;
 	const selection = interaction.values[0];
-	if (interaction.customId.slice(-2) == "RE") rerun = true;
+	if (interaction.customId.slice(-2) == "Re") rerun = true;
 	const platform = checkPlatform(interaction.customId.substring(2, 4));
 	let formatSelection;
 	if (rerun)
-		formatSelection = interaction.customId.substring(0, 4) + selection + "RE";
+		formatSelection = interaction.customId.substring(0, 4) + selection + "Re";
 	else formatSelection = interaction.customId.substring(0, 4) + selection;
 
 	const creatorModal = new ModalBuilder()
