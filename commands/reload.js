@@ -535,11 +535,9 @@ module.exports = {
 
 				if (shouldContinue) continue;
 
-				if (
-					member == undefined ||
-					!member.roles.cache.has(process.env.VERIFIED_ROLE)
-				)
-					continue;
+				if (member == undefined) continue;
+
+				if (!member.roles.cache.has(process.env.VERIFIED_ROLE)) continue;
 
 				let tempRecord = {
 					"Discord ID": record.fields["Discord ID"],
