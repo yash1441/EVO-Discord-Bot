@@ -3296,9 +3296,9 @@ async function loadBetaTesterCodes() {
 
 			const pageToken = response.data.page_token;
 
-			logger.debug(
-				`Loading Beta Tester Codes: ${Object.keys(betaTesterCodes).length}`
-			);
+			// logger.debug(
+			// 	`Loading Beta Tester Codes: ${Object.keys(betaTesterCodes).length}`
+			// );
 
 			response = JSON.parse(
 				await feishu.getRecords(

@@ -525,6 +525,7 @@ module.exports = {
 			for (const record of response.data.items) {
 				let shouldContinue = false;
 				if (!record.fields["Discord ID"]) continue;
+				logger.debug(record.fields["Discord ID"]);
 				const member = await interaction.guild.members
 					.fetch(record.fields["Discord ID"])
 					.catch((error) => {
@@ -558,31 +559,33 @@ module.exports = {
 				}
 			}
 
+			console.log({ records });
+
 			for (const record of records) {
-				// response = JSON.parse(
-				// 	await feishu.getRecords(
-				// 		tenantToken,
-				// 		process.env.CEP_BASE,
-				// 		process.env.CEC_DATA,
-				// 		`CurrentValue.[Discord ID] = "${record["Discord ID"]}"`
-				// 	)
-				// );
-				// if (response.data.total) {
-				// 	await feishu.updateRecord(
-				// 		tenantToken,
-				// 		process.env.CEP_BASE,
-				// 		process.env.CEC_DATA,
-				// 		response.data.items[0].record_id,
-				// 		{ fields: record }
-				// 	);
-				// } else {
-				await feishu.createRecord(
-					tenantToken,
-					process.env.CEP_BASE,
-					process.env.CEC_DATA,
-					{ fields: record }
+				response = JSON.parse(
+					await feishu.getRecords(
+						tenantToken,
+						process.env.CEP_BASE,
+						process.env.CEC_DATA,
+						`CurrentValue.[Discord ID] = "${record["Discord ID"]}"`
+					)
 				);
-				// }
+				if (response.data.total) {
+					await feishu.updateRecord(
+						tenantToken,
+						process.env.CEP_BASE,
+						process.env.CEC_DATA,
+						response.data.items[0].record_id,
+						{ fields: record }
+					);
+				} else {
+					await feishu.createRecord(
+						tenantToken,
+						process.env.CEP_BASE,
+						process.env.CEC_DATA,
+						{ fields: record }
+					);
+				}
 			}
 
 			await interaction.editReply({
