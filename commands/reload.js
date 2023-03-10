@@ -507,7 +507,7 @@ module.exports = {
 				ephemeral: true,
 			});
 
-			let tenantToken = await feishu.authorize(
+			const tenantToken = await feishu.authorize(
 				process.env.FEISHU_ID,
 				process.env.FEISHU_SECRET
 			);
@@ -522,7 +522,6 @@ module.exports = {
 			);
 
 			let records = [];
-			await interaction.guild.members.fetch();
 
 			for (const record of response.data.items) {
 				let shouldContinue = false;
@@ -549,94 +548,21 @@ module.exports = {
 					"Discord Name": record.fields["Discord Name"],
 					"CEC Total Views": parseInt(record.fields["Views"]),
 					"CEC Videos": 1,
-					"Mission Videos": 0,
-					"Mission Views": 0,
 				};
-				records.push(tempRecord);
-			}
 
-			let uniqueRecords = Object.values(
-				records.reduce((acc, item) => {
-					acc[item["Discord ID"]] = acc[item["Discord ID"]]
-						? {
-								...item,
-								"CEC Total Views":
-									item["CEC Total Views"] +
-									acc[item["Discord ID"]]["CEC Total Views"],
-								"CEC Videos":
-									item["CEC Videos"] + acc[item["Discord ID"]]["CEC Videos"],
-						  }
-						: item;
-					return acc;
-				}, {})
-			);
-
-			for (const record of uniqueRecords) {
-				let response = JSON.parse(
-					await feishu.getRecords(
-						tenantToken,
-						process.env.CEP_BASE,
-						process.env.CEC_DATA,
-						`CurrentValue.[Discord ID] = "${record["Discord ID"]}"`
-					)
+				let existingData = records.find(
+					(r) => r["Discord ID"] === tempRecord["Discord ID"]
 				);
-				if (response.data.total) {
-					await feishu.updateRecord(
-						tenantToken,
-						process.env.CEP_BASE,
-						process.env.CEC_DATA,
-						response.data.items[0].record_id,
-						{ fields: record }
-					);
+				if (existingData) {
+					existingData["CEC Total Views"] += tempRecord["CEC Total Views"];
+					existingData["CEC Videos"] += tempRecord["CEC Videos"];
 				} else {
-					await feishu.createRecord(
-						tenantToken,
-						process.env.CEP_BASE,
-						process.env.CEC_DATA,
-						{ fields: record }
-					);
+					records.push(tempRecord);
 				}
 			}
 
-			response = JSON.parse(
-				await feishu.getRecords(
-					tenantToken,
-					process.env.CEP_BASE,
-					process.env.CEP_SUBMISSION,
-					`AND(CurrentValue.[Validity] = "VALID", CurrentValue.[Views] > 999, CurrentValue.[CEC Special Mission] = "CEC Special Mission", CurrentValue.[Submission Date] >= DATE(2022,12,1))`
-				)
-			);
-
-			let specialRecords = [];
-
-			for (const record of response.data.items) {
-				specialRecords.push({
-					"Discord ID": record.fields["Discord ID"],
-					"Discord Name": record.fields["Discord Name"],
-					"Mission Views": parseInt(record.fields["Views"]),
-					"Mission Videos": 1,
-				});
-			}
-
-			let specialUniqueRecords = Object.values(
-				specialRecords.reduce((acc, item) => {
-					acc[item["Discord ID"]] = acc[item["Discord ID"]]
-						? {
-								...item,
-								"Mission Views":
-									item["Mission Views"] +
-									acc[item["Discord ID"]]["Mission Views"],
-								"Mission Videos":
-									item["Mission Videos"] +
-									acc[item["Discord ID"]]["Mission Videos"],
-						  }
-						: item;
-					return acc;
-				}, {})
-			);
-
-			for (const record of specialUniqueRecords) {
-				let response = JSON.parse(
+			for (const record of records) {
+				response = JSON.parse(
 					await feishu.getRecords(
 						tenantToken,
 						process.env.CEP_BASE,

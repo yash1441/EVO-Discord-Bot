@@ -60,10 +60,9 @@ module.exports = {
 				logger.warn("No VALID entries found.");
 				return;
 			}
-			const records = response.data.items;
 
 			const uniqueRecords = [];
-			for (const record of records) {
+			for (const record of response.data.items) {
 				let tempData = {
 					"Discord ID": record.fields["Discord ID"],
 					"Discord Name": record.fields["Discord Name"],
