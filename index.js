@@ -1868,6 +1868,7 @@ client.on("interactionCreate", async (interaction) => {
 					});
 			}
 		} else if (interaction.customId.startsWith("platformSelectMenu")) {
+			logger.debug(interaction.customId);
 			const type = interaction.customId.substring(18);
 			const selection = interaction.values[0];
 			const platform = checkPlatform(selection);
@@ -2779,6 +2780,7 @@ function checkRegion(code) {
 }
 
 async function showApplyModal(interaction) {
+	logger.debug(interaction.customId);
 	let rerun = false;
 	const selection = interaction.values[0];
 	if (interaction.customId.slice(-2) == "RE") rerun = true;
