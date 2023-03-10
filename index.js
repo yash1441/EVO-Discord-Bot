@@ -1076,6 +1076,13 @@ client.on("interactionCreate", async (interaction) => {
 			await interaction.editReply({
 				content: `Code claimed successfully! Here is your code:\n\`${code}\`\n\n[**Download EVO**](http://bit.ly/3KPfIMq)\n\nThere are also other Content Creation events, learn more about details via <#${process.env.EVENT_NEWS_CHANNEL}>.\n\nWe are looking for potential EVO creators. Exclusive benefits are provided, learn more about details via <#${process.env.CC_CHANNEL}>.\n\n*Please note that we have the right to ban your code if we find fraudulent behaviors or code trading.*`,
 			});
+		} else if (interaction.customId === "ttcButton") {
+			await interaction.deferReply({ ephemeral: true });
+			await interaction.member.roles.add(process.env.TTC_ROLE).then(() => {
+				interaction.editReply({
+					content: `**TikTok Creator Event**\n\nJoined Successfully!\nLearn more about the event details [here](https://api.tiktokv.com/game_center/pop/deeplink?target=home-pop)\n\nIf you haven't got a code to get into the game and record the gameplay, please check the message in <#${process.env.ROLES_CHANNEL}>`,
+				});
+			});
 		}
 	} else if (interaction.isModalSubmit()) {
 		if (interaction.customId === "betaAccess") {
@@ -1142,10 +1149,6 @@ client.on("interactionCreate", async (interaction) => {
 			const platform = checkPlatform(interaction.customId.substring(2, 4));
 			const region = checkRegion(interaction.customId.slice(4, 6));
 			if (interaction.customId.slice(-2) == "Re") rerun = true;
-
-			logger.debug(
-				interaction.customId + " " + platform + " " + region + " " + rerun
-			);
 
 			if (!checkURL(channel)) {
 				return await interaction.editReply({
@@ -1256,7 +1259,7 @@ client.on("interactionCreate", async (interaction) => {
 						text: videoURL,
 						link: videoURL,
 					},
-					"Video Platform": platform,
+					Platform: platform,
 					Theme: theme,
 					Topic: topic,
 					"Submission Date": Date.now(),
@@ -2993,28 +2996,55 @@ async function calculateBP() {
 		await feishu.getRecords(
 			tenantToken,
 			process.env.CEP_BASE,
-			process.env.CEC_DATA
+			process.env.CEP_SUBMISSION,
+			`AND(CurrentValue.[Validity] = "VALID", OR(CurrentValue.[Platform] = "YouTube", CurrentValue.[Platform] = "YouTube Shorts", CurrentValue.[Platform] = "TikTok"), CurrentValue.[Views] > 999)`
 		)
 	);
 
 	if (!response.data.total) {
-		logger.error("CLUB Data Not Found.");
+		logger.error("No CEP Submissions Found.");
 		return;
 	}
 
 	let records = [];
 
 	for (const record of response.data.items) {
-		records.push({
+		const isVerified = await checkMemberRole(
+			client,
+			process.env.EVO_CEC_SERVER,
+			record.fields["Discord ID"],
+			process.env.VERIFIED_ROLE
+		);
+
+		if (!isVerified) continue;
+
+		if (
+			(record.fields["Platform"] === "YouTube Shorts" ||
+				record.fields["Platform"] === "TikTok") &&
+			parseInt(record.fields["Views"] < 5000)
+		)
+			continue;
+
+		let tempData = {
 			recordId: record.record_id,
 			discordId: record.fields["Discord ID"],
-			totalViews: parseInt(record.fields["CEC Total Views"]),
-		});
+			totalViews: parseInt(record.fields["Views"]),
+		};
+
+		let existingData = records.find(
+			(r) => r["Discord ID"] === tempData["Discord ID"]
+		);
+		if (existingData) {
+			existingData["Views"] += tempData["Views"];
+		} else {
+			records.push(tempData);
+		}
 	}
 
 	for (const record of records) {
 		let bp = 0.0,
 			bpRate = 1.0;
+
 		response = JSON.parse(
 			await feishu.getRecords(
 				tenantToken,
@@ -3023,10 +3053,17 @@ async function calculateBP() {
 				`CurrentValue.[Discord ID] = "${record.discordId}"`
 			)
 		);
-		if (response.data.total)
+
+		if (
+			response.data.total &&
+			(response.data.items[0].fields["Benefit Level"].includes("Senior") ||
+				response.data.items[0].fields["Benefit Level"].includes("Elite"))
+		) {
 			bpRate = parseFloat(response.data.items[0].fields["BP Rate"]);
+		} else continue;
+
 		if (bpRate == NaN) bpRate = 0.0;
-		bp = (record.totalViews / 1000) * bpRate;
+		bp = (record.totalViews / 5000) * bpRate;
 
 		await feishu.updateRecord(
 			tenantToken,
@@ -3037,7 +3074,7 @@ async function calculateBP() {
 		);
 	}
 
-	logger.info("CLUB BP Data Calculated.");
+	logger.info("BP Data Calculated.");
 }
 
 async function download(url, name) {

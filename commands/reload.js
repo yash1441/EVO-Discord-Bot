@@ -6,7 +6,6 @@ const {
 	ChannelType,
 	StringSelectMenuBuilder,
 } = require("discord.js");
-const Discord = require("discord.js");
 const feishu = require("../feishu.js");
 const logger = require("../logging/logger.js");
 require("dotenv").config();
@@ -600,30 +599,59 @@ module.exports = {
 				await feishu.getRecords(
 					tenantToken,
 					process.env.CEP_BASE,
-					process.env.CEC_DATA
+					process.env.CEP_SUBMISSION,
+					`AND(CurrentValue.[Validity] = "VALID", OR(CurrentValue.[Platform] = "YouTube", CurrentValue.[Platform] = "YouTube Shorts", CurrentValue.[Platform] = "TikTok"), CurrentValue.[Views] > 999)`
 				)
 			);
 
 			if (!response.data.total) {
 				return await interaction.editReply({
-					content: "CEC Data Not Found.",
-					ephemeral: true,
+					content: "No CEP Submissions Found.",
 				});
 			}
 
 			let records = [];
 
 			for (const record of response.data.items) {
-				records.push({
+				const member = await interaction.guild.members
+					.fetch(record.fields["Discord ID"])
+					.catch((error) => {
+						logger.error(error);
+					});
+
+				if (
+					member == undefined ||
+					!member.roles.cache.has(process.env.VERIFIED_ROLE)
+				)
+					continue;
+
+				if (
+					(record.fields["Platform"] === "YouTube Shorts" ||
+						record.fields["Platform"] === "TikTok") &&
+					parseInt(record.fields["Views"] < 5000)
+				)
+					continue;
+
+				let tempData = {
 					recordId: record.record_id,
 					discordId: record.fields["Discord ID"],
-					totalViews: parseInt(record.fields["CEC Total Views"]),
-				});
+					totalViews: parseInt(record.fields["Views"]),
+				};
+
+				let existingData = records.find(
+					(r) => r["Discord ID"] === tempData["Discord ID"]
+				);
+				if (existingData) {
+					existingData["Views"] += tempData["Views"];
+				} else {
+					records.push(tempData);
+				}
 			}
 
 			for (const record of records) {
 				let bp = 0.0,
 					bpRate = 1.0;
+
 				response = JSON.parse(
 					await feishu.getRecords(
 						tenantToken,
@@ -632,10 +660,17 @@ module.exports = {
 						`CurrentValue.[Discord ID] = "${record.discordId}"`
 					)
 				);
-				if (response.data.total)
+
+				if (
+					response.data.total &&
+					(response.data.items[0].fields["Benefit Level"].includes("Senior") ||
+						response.data.items[0].fields["Benefit Level"].includes("Elite"))
+				) {
 					bpRate = parseFloat(response.data.items[0].fields["BP Rate"]);
+				} else continue;
+
 				if (bpRate == NaN) bpRate = 0.0;
-				bp = (record.totalViews / 1000) * bpRate;
+				bp = (record.totalViews / 5000) * bpRate;
 
 				await feishu.updateRecord(
 					tenantToken,
@@ -647,8 +682,7 @@ module.exports = {
 			}
 
 			await interaction.editReply({
-				content: "CEC BP Data Calculated.",
-				ephemeral: true,
+				content: "BP Data Calculated.",
 			});
 		} else if (subCommand === "ask-reward") {
 			await interaction.reply({
