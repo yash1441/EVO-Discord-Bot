@@ -616,6 +616,8 @@ module.exports = {
 				});
 			}
 
+			logger.debug(response.data.items.length);
+
 			let records = [];
 
 			for (const record of response.data.items) {
@@ -654,6 +656,8 @@ module.exports = {
 					records.push(tempData);
 				}
 			}
+
+			logger.debug(records.length);
 
 			for (const record of records) {
 				let bp = 0.0,
