@@ -622,6 +622,7 @@ module.exports = {
 
 			client.channels.fetch(channel.id).then((channel) =>
 				channel.send({
+					content: `<@&${process.env.TTC_ROLE}>`,
 					embeds: [tiktokEmbed],
 					components: [row],
 				})
