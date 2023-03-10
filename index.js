@@ -1147,6 +1147,10 @@ client.on("interactionCreate", async (interaction) => {
 			const region = checkRegion(interaction.customId.slice(4, 6));
 			if (interaction.customId.slice(-2) == "RE") rerun = true;
 
+			logger.debug(
+				interaction.customId + " " + platform + " " + region + " " + rerun
+			);
+
 			if (!checkURL(channel)) {
 				return await interaction.editReply({
 					content: `\`${channel}\`\nPlease enter a **valid ${platform}** link.`,
@@ -1192,9 +1196,7 @@ client.on("interactionCreate", async (interaction) => {
 				return await interaction.editReply({
 					content: "Your application has been updated successfully.",
 				});
-			}
-
-			if (response.data.total) {
+			} else if (response.data.total) {
 				let submissionDate =
 					parseInt(
 						response.data.items[response.data.items.length - 1].fields[
