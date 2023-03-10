@@ -1869,7 +1869,7 @@ client.on("interactionCreate", async (interaction) => {
 			const type = interaction.customId.substring(18);
 			const selection = interaction.values[0];
 			const platform = checkPlatform(selection);
-			const formatSelection = "ca" + selection;
+			let formatSelection = "ca" + selection;
 			switch (type) {
 				case "Apply":
 					await interaction.deferReply({ ephemeral: true });
