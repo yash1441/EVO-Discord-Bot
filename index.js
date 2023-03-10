@@ -78,21 +78,10 @@ client.on("ready", () => {
 	});
 
 	cron.schedule(
-		"0 0 0,12 * * *",
-		function () {
-			logger.info(`Starting scheduled cronjob. (Every 12 hours)`);
-			//CCESDataCalculation();
-			checkOldFiles();
-		},
-		{
-			timezone: "Asia/Singapore",
-		}
-	);
-
-	cron.schedule(
 		"0 59 11 * * 1",
 		function () {
 			logger.info(`Starting scheduled cronjob. (Every Monday 11:59 AM)`);
+			checkOldFiles();
 			calculateBP();
 		},
 		{
@@ -454,6 +443,97 @@ client.on("interactionCreate", async (interaction) => {
 			});
 		} else if (interaction.customId === "clubButton") {
 			await interaction.deferReply({ ephemeral: true });
+
+			const tenantToken = await feishu.authorize(
+				process.env.FEISHU_ID,
+				process.env.FEISHU_SECRET
+			);
+
+			const response = JSON.parse(
+				await feishu.getRecords(
+					tenantToken,
+					process.env.CEP_BASE,
+					process.env.CEP_APP,
+					`CurrentValue.[Discord ID] = "${interaction.user.id}"`
+				)
+			);
+
+			if (!response.data.total)
+				return await interaction.editReply({
+					content: `You are not a Content Creator. Please apply for Content Creator first.`,
+				});
+
+			const correctButton = new ButtonBuilder()
+				.setCustomId("correctButton")
+				.setLabel("Everything is Corrct")
+				.setStyle(ButtonStyle.Success)
+				.setEmoji("✅");
+
+			const wrongButton = new ButtonBuilder()
+				.setCustomId("wrongButton")
+				.setLabel("I need to correct my info")
+				.setStyle(ButtonStyle.Danger)
+				.setEmoji("❌");
+
+			const row = new ActionRowBuilder().addComponents([
+				correctButton,
+				wrongButton,
+			]);
+
+			await interaction.editReply({
+				content: `**Please confirm your personal information and finish the registration:**\n\n**This is your channel link?**\n${response.data.items[0].fields.Channel.link}\n**This is the current region you live in?**\n${response.data.items[0].fields.Region}\n**This is the platform where you publish content?**\n${response.data.items[0].fields.Platform}`,
+				components: [row],
+			});
+		} else if (interaction.customId === "correctButton") {
+			await interaction.deferReply({ ephemeral: true });
+
+			let benefitLevel = "undefined";
+
+			const understoodButton = new ButtonBuilder()
+				.setCustomId("understoodButton")
+				.setLabel("Understood")
+				.setStyle(ButtonStyle.Success)
+				.setEmoji("☑️");
+
+			const row = new ActionRowBuilder().addComponents([understoodButton]);
+
+			const tenantToken = await feishu.authorize(
+				process.env.FEISHU_ID,
+				process.env.FEISHU_SECRET
+			);
+
+			const response = JSON.parse(
+				await feishu.getRecords(
+					tenantToken,
+					process.env.CEP_BASE,
+					process.env.CEP_CREATOR,
+					`CurrentValue.[Discord ID] = "${interaction.user.id}"`
+				)
+			);
+
+			if (response.data.total) {
+				benefitLevel = response.data.items[0].fields["Benefit Level"];
+			}
+
+			await interaction.editReply({
+				content: `**This is your benefit level:**\n${benefitLevel}\nNote: If it shows "undefined", it means you haven't been assigned a benefit level. You may not get access to some benefits without a benefit level, please contact <@${process.env.COSMOS_ID}> to get one.`,
+				components: [row],
+			});
+
+			await interaction.member.roles.add(process.env.VERIFIED_ROLE).then(() => {
+				interaction.editReply({
+					content: `Your club membership is granted! Please read <#${process.env.BENEFIT_CHANNEL}> to learn about what benefits you can get access to. Don't forget to say hi in <#${process.env.CHAT_CHANNEL}> and meet other creators!`,
+				});
+			});
+		} else if (interaction.customId === "wrongButton") {
+			await interaction.deferReply({ ephemeral: true });
+
+			const row = await platformMenu("platformSelectMenuApplyRe");
+			await interaction.editReply({
+				content: `**In which social media do you publish content?**`,
+				components: [row],
+			});
+
 			await interaction.member.roles.add(process.env.VERIFIED_ROLE).then(() => {
 				interaction.editReply({
 					content: `Your club membership is granted! Please read <#${process.env.BENEFIT_CHANNEL}> to learn about what benefits you can get access to. Don't forget to say hi in <#${process.env.CHAT_CHANNEL}> and meet other creators!`,
@@ -461,7 +541,7 @@ client.on("interactionCreate", async (interaction) => {
 			});
 		} else if (interaction.customId === "linkButton") {
 			await interaction.deferReply({ ephemeral: true });
-			let tenantToken = await feishu.authorize(
+			const tenantToken = await feishu.authorize(
 				process.env.FEISHU_ID,
 				process.env.FEISHU_SECRET
 			);
@@ -1056,13 +1136,16 @@ client.on("interactionCreate", async (interaction) => {
 		} else if (interaction.customId.startsWith("ca")) {
 			await interaction.deferReply({ ephemeral: true });
 
+			let rerun = false;
+
 			const channel = interaction.fields.getTextInputValue(
 				"creatorModalChannel"
 			);
 			const subs = interaction.fields.getTextInputValue("creatorModalSubs");
 			const subCount = parseInt(onlyDigits(subs));
 			const platform = checkPlatform(interaction.customId.substring(2, 4));
-			const region = checkRegion(interaction.customId.substring(4));
+			const region = checkRegion(interaction.customId.slice(4, 6));
+			if (interaction.customId.slice(-2) == "RE") rerun = true;
 
 			if (!checkURL(channel)) {
 				return await interaction.editReply({
@@ -1084,18 +1167,32 @@ client.on("interactionCreate", async (interaction) => {
 				},
 			};
 
-			let tenantToken = await feishu.authorize(
+			const tenantToken = await feishu.authorize(
 				process.env.FEISHU_ID,
 				process.env.FEISHU_SECRET
 			);
 
-			let response = await feishu.getRecords(
-				tenantToken,
-				process.env.CEP_BASE,
-				process.env.CEP_APP,
-				`CurrentValue.[Discord ID] = "${interaction.user.id}"`
+			const response = JSON.parse(
+				await feishu.getRecords(
+					tenantToken,
+					process.env.CEP_BASE,
+					process.env.CEP_APP,
+					`CurrentValue.[Discord ID] = "${interaction.user.id}"`
+				)
 			);
-			response = JSON.parse(response);
+
+			if (rerun) {
+				await feishu.updateRecord(
+					tenantToken,
+					process.env.CEP_BASE,
+					process.env.CEP_APP,
+					response.data.items[0].record_id,
+					creators
+				);
+				return await interaction.editReply({
+					content: "Your application has been updated successfully.",
+				});
+			}
 
 			if (response.data.total) {
 				let submissionDate =
@@ -1770,16 +1867,25 @@ client.on("interactionCreate", async (interaction) => {
 			}
 		} else if (interaction.customId.startsWith("platformSelectMenu")) {
 			const type = interaction.customId.substring(18);
+			const selection = interaction.values[0];
+			const platform = checkPlatform(selection);
+			const formatSelection = "ca" + selection;
 			switch (type) {
 				case "Apply":
-					const selection = interaction.values[0];
-					const platform = checkPlatform(selection);
-					const formatSelection = "ca" + selection;
 					await interaction.deferReply({ ephemeral: true });
 					const row = await showRegionMenu(formatSelection);
 					await interaction.editReply({
 						content: `**Platform** ${platform}\n`,
 						components: [row],
+					});
+					break;
+				case "ApplyRe":
+					formatSelection += "Re";
+					await interaction.deferReply({ ephemeral: true });
+					const row2 = await showRegionMenu(formatSelection);
+					await interaction.editReply({
+						content: `**Platform** ${platform}\n`,
+						components: [row2],
 					});
 					break;
 				case "Submit":
@@ -2438,316 +2544,6 @@ client.on("messageReactionRemove", async (reaction, user) => {
 
 client.login(process.env.DISCORD_TOKEN);
 
-async function CCESDataCalculation() {
-	const tenantToken = await feishu.authorize(
-		process.env.FEISHU_ID,
-		process.env.FEISHU_SECRET
-	);
-	let response = JSON.parse(
-		await feishu.getRecords(
-			tenantToken,
-			process.env.CEP_BASE,
-			process.env.CEP_SUBMISSION,
-			'AND(CurrentValue.[Validity] = "VALID")'
-		)
-	);
-
-	if (!response.data.total) {
-		console.log("No VALID entries found.");
-		await CCESRewardCalculation(tenantToken);
-		return;
-	}
-	let records = response.data.items;
-
-	let recordsSimplified = [];
-	records.forEach(function (record) {
-		recordsSimplified.push({
-			"Discord ID": record.fields["Discord ID"],
-			"Discord Name": record.fields["Discord Name"],
-			"CEC Member": record.fields["CEC Member"],
-			"Valid Views": parseInt(record.fields.Views),
-			"Valid Videos": 1,
-		});
-	});
-
-	let uniqueRecords = Object.values(
-		recordsSimplified.reduce((acc, item) => {
-			acc[item["Discord ID"]] = acc[item["Discord ID"]]
-				? {
-						...item,
-						"Valid Views":
-							item["Valid Views"] + acc[item["Discord ID"]]["Valid Views"],
-						"Valid Videos":
-							item["Valid Videos"] + acc[item["Discord ID"]]["Valid Videos"],
-				  }
-				: item;
-			return acc;
-		}, {})
-	);
-
-	let finalData = {
-		records: [],
-	};
-
-	for (const record of uniqueRecords) {
-		let response = await feishu.getRecords(
-			tenantToken,
-			process.env.CEP_BASE,
-			process.env.CCES_DATA,
-			`CurrentValue.[Discord ID] = "${record["Discord ID"]}"`
-		);
-		response = JSON.parse(response);
-		if (response.data.total) {
-			await feishu.updateRecord(
-				tenantToken,
-				process.env.CEP_BASE,
-				process.env.CCES_DATA,
-				response.data.items[0].record_id,
-				{
-					fields: {
-						"Discord ID": record["Discord ID"],
-						"CEC Member": record["CEC Member"],
-						"Valid Views": record["Valid Views"],
-						"Valid Videos": record["Valid Videos"],
-					},
-				}
-			);
-			record.updated = true;
-		} else record.updated = false;
-	}
-
-	if (uniqueRecords.length > 0) {
-		uniqueRecords.forEach(function (record) {
-			if (!record.updated) {
-				delete record.updated;
-				let tempObject = {
-					fields: record,
-				};
-				finalData.records.push(tempObject);
-			}
-		});
-	} else {
-		console.log(
-			"Successfully entered CCES Data. Now calculating CCES Rewards..."
-		);
-		await CCESRewardCalculation(tenantToken);
-		return;
-	}
-
-	if (finalData.records.length == 0) {
-		console.log(
-			"Successfully entered CCES Data. Now calculating CCES Rewards..."
-		);
-		await CCESRewardCalculation(tenantToken);
-		return;
-	}
-
-	for (let i = 0; i < finalData.records.length; i++) {
-		let userId = finalData.records[i].fields["Discord ID"];
-
-		let hasCCRole = await checkMemberRole(
-			client,
-			process.env.EVO_SERVER,
-			userId,
-			process.env.CC_ROLE
-		);
-
-		let hasCECRole = await checkMemberRole(
-			client,
-			process.env.EVO_SERVER,
-			userId,
-			process.env.CEC_MEMBER_ROLE
-		);
-
-		if (hasCCRole) {
-			finalData.records[i].fields["Content Creators"] = "Content Creators";
-		} else {
-			finalData.records[i].fields["Content Creators"] = "NO";
-		}
-
-		if (hasCECRole) {
-			finalData.records[i].fields["CEC Member"] = "CEC Member";
-		} else {
-			finalData.records[i].fields["CEC Member"] = "NO";
-		}
-	}
-
-	let success = await feishu.createRecords(
-		tenantToken,
-		process.env.CEP_BASE,
-		process.env.CCES_DATA,
-		finalData
-	);
-	success
-		? console.log(
-				"Successfully entered CCES Data. Now calculating CCES Rewards..."
-		  )
-		: console.log("Failed to enter CCES Data. Now calculation CCES Rewards...");
-
-	await CCESRewardCalculation(tenantToken);
-}
-
-async function CCESRewardCalculation(tenantToken) {
-	let response = await feishu.getRecords(
-		tenantToken,
-		process.env.CEP_BASE,
-		process.env.CCES_DATA
-	);
-	response = JSON.parse(response);
-
-	if (!response.data.total)
-		return console.log("No entries found in CCES Data Calculation bitable.");
-	let records = response.data.items;
-
-	let recordsSimplified = [];
-
-	for (const record of records) {
-		let discordId = record.fields["Discord ID"];
-		let views = parseInt(record.fields["Valid Views"]);
-		let videos = parseInt(record.fields["Valid Videos"]);
-		let recordId = record.record_id;
-		let proReward = 0;
-		let newbieReward = [];
-
-		if (views >= 1000 && views < 3000) {
-			proReward = 10;
-		} else if (views >= 3000 && views < 5000) {
-			proReward = 25;
-		} else if (views >= 5000 && views < 10000) {
-			proReward = 50;
-		} else if (views >= 10000 && views < 30000) {
-			proReward = 75;
-		} else if (views >= 30000) {
-			proReward = 200;
-		}
-
-		if (videos >= 1 && views >= 500) {
-			newbieReward.push("Beginners");
-		}
-
-		recordsSimplified.push({
-			recordId: recordId,
-			"Discord ID": discordId,
-			"Pro Reward Value": proReward,
-			"Title Reward": newbieReward,
-			"Other Reward Value": 0,
-			views: views,
-			videos: videos,
-		});
-	}
-
-	recordsSimplified.sort((a, b) => {
-		return b.views - a.views;
-	});
-
-	if (recordsSimplified[0]) {
-		recordsSimplified[0]["Title Reward"].push("Outstanding Creator TOP1");
-		recordsSimplified[0]["Other Reward Value"] += 100;
-	}
-	if (recordsSimplified[1]) {
-		recordsSimplified[1]["Title Reward"].push("Outstanding Creator TOP2");
-		recordsSimplified[1]["Other Reward Value"] += 50;
-	}
-	if (recordsSimplified[2]) {
-		recordsSimplified[2]["Title Reward"].push("Outstanding Creator TOP3");
-		recordsSimplified[2]["Other Reward Value"] += 25;
-	}
-
-	recordsSimplified.sort((a, b) => {
-		return b.videos - a.videos;
-	});
-
-	if (recordsSimplified[0]) {
-		recordsSimplified[0]["Title Reward"].push("Amazing Productivity TOP1");
-		recordsSimplified[0]["Other Reward Value"] += 100;
-	}
-	if (recordsSimplified[1]) {
-		recordsSimplified[1]["Title Reward"].push("Amazing Productivity TOP2");
-		recordsSimplified[1]["Other Reward Value"] += 50;
-	}
-	if (recordsSimplified[2]) {
-		recordsSimplified[2]["Title Reward"].push("Amazing Productivity TOP3");
-		recordsSimplified[2]["Other Reward Value"] += 25;
-	}
-
-	for (const record of recordsSimplified) {
-		let recordId = record.recordId;
-		delete record.recordId;
-		delete record.views;
-		delete record.videos;
-		await feishu.updateRecord(
-			tenantToken,
-			process.env.CEP_BASE,
-			process.env.CCES_DATA,
-			recordId,
-			{ fields: record }
-		);
-	}
-
-	console.log("Successfully entered CCES Reward Data.");
-}
-
-async function CECQualifyCheck(tenantToken) {
-	let response = await feishu.getRecords(
-		tenantToken,
-		process.env.CEP_BASE,
-		process.env.CEC_APP,
-		`CurrentValue.[Qualification] = "Accepted"`
-	);
-	response = JSON.parse(response);
-
-	if (!response.data.total) {
-		console.log('No entries set to "Accepted" for qualification.');
-		return;
-	}
-
-	let records = response.data.items;
-	for (const record of records) {
-		let guild = client.guilds.cache.get(process.env.EVO_SERVER);
-		let member = guild.members.cache.get(record.fields["Discord ID"]);
-		let cecEmbed = new EmbedBuilder()
-			.setTitle("Congrats! You become members of Creator Evolution Club!")
-			.setDescription(
-				"Now the following exclusive benefits are waiting for you to win!\n- Beta codes for your fans (up to 200 codes/month)\n- Creator foundation (including high-end phones worth $800+)\n- Official support from dev team\n\nStaff from dev team will contact you in private very soon!"
-			);
-
-		await member.roles
-			.add(process.env.CEC_MEMBER_ROLE)
-			.then(() => {
-				console.log(`Added role to ${member.user.tag}`);
-				let qualification = "DONE";
-				member
-					.send({ embeds: [cecEmbed] })
-					.then(() => {
-						console.log(`Sent message to ${member.user.tag}`);
-						qualification = "DONE";
-					})
-					.catch((error) => {
-						console.log(error);
-						qualification = "DONE (NO DM)";
-					});
-				feishu.updateRecord(
-					tenantToken,
-					process.env.CEP_BASE,
-					process.env.CEC_APP,
-					record.record_id,
-					{ fields: { Qualification: qualification } }
-				);
-			})
-			.catch((error) => {
-				console.log(error);
-				feishu.updateRecord(
-					tenantToken,
-					process.env.CEP_BASE,
-					process.env.CEC_APP,
-					record.record_id,
-					{ fields: { Qualification: "Left Server" } }
-				);
-			});
-	}
-	console.log("Successfully checked qualification data.");
-}
-
 function interactionRegionRole(interaction) {
 	let roles = [],
 		regions = "";
@@ -2981,9 +2777,14 @@ function checkRegion(code) {
 }
 
 async function showApplyModal(interaction) {
+	let rerun = false;
 	const selection = interaction.values[0];
-	const platform = checkPlatform(interaction.customId.substring(2));
-	const formatSelection = interaction.customId + selection;
+	if (interaction.customId.slice(-2) == "RE") rerun = true;
+	const platform = checkPlatform(interaction.customId.substring(2, 4));
+	let formatSelection;
+	if (rerun)
+		formatSelection = interaction.customId.substring(0, 4) + selection + "RE";
+	else formatSelection = interaction.customId.substring(0, 4) + selection;
 
 	const creatorModal = new ModalBuilder()
 		.setCustomId(formatSelection)

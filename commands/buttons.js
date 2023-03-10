@@ -288,10 +288,10 @@ module.exports = {
 					channel.send({ embeds: [lfgEmbed], components: [row] })
 				);
 		} else if (subCommand === "creator-application") {
-			let creatorPoster = new EmbedBuilder()
+			const creatorPoster = new EmbedBuilder()
 				.setImage("https://i.ibb.co/sJfH3Qj/20221201-114500-1.png")
 				.setColor(`C04946`);
-			let creatorEmbed = new EmbedBuilder()
+			const creatorEmbed = new EmbedBuilder()
 				.setTitle("BECOME EVO CREATOR NOW!")
 				.setDescription(
 					"We have launched **Creator Evolution Project(CEP)** to help potentials create better. Welcome to join us. Let's evolve together!"
