@@ -559,30 +559,30 @@ module.exports = {
 			}
 
 			for (const record of records) {
-				response = JSON.parse(
-					await feishu.getRecords(
-						tenantToken,
-						process.env.CEP_BASE,
-						process.env.CEC_DATA,
-						`CurrentValue.[Discord ID] = "${record["Discord ID"]}"`
-					)
+				// response = JSON.parse(
+				// 	await feishu.getRecords(
+				// 		tenantToken,
+				// 		process.env.CEP_BASE,
+				// 		process.env.CEC_DATA,
+				// 		`CurrentValue.[Discord ID] = "${record["Discord ID"]}"`
+				// 	)
+				// );
+				// if (response.data.total) {
+				// 	await feishu.updateRecord(
+				// 		tenantToken,
+				// 		process.env.CEP_BASE,
+				// 		process.env.CEC_DATA,
+				// 		response.data.items[0].record_id,
+				// 		{ fields: record }
+				// 	);
+				// } else {
+				await feishu.createRecord(
+					tenantToken,
+					process.env.CEP_BASE,
+					process.env.CEC_DATA,
+					{ fields: record }
 				);
-				if (response.data.total) {
-					await feishu.updateRecord(
-						tenantToken,
-						process.env.CEP_BASE,
-						process.env.CEC_DATA,
-						response.data.items[0].record_id,
-						{ fields: record }
-					);
-				} else {
-					await feishu.createRecord(
-						tenantToken,
-						process.env.CEP_BASE,
-						process.env.CEC_DATA,
-						{ fields: record }
-					);
-				}
+				// }
 			}
 
 			await interaction.editReply({
