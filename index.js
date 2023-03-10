@@ -519,12 +519,6 @@ client.on("interactionCreate", async (interaction) => {
 				content: `**This is your benefit level:**\n${benefitLevel}\nNote: If it shows "undefined", it means you haven't been assigned a benefit level. You may not get access to some benefits without a benefit level, please contact <@${process.env.COSMOS_ID}> to get one.`,
 				components: [row],
 			});
-
-			await interaction.member.roles.add(process.env.VERIFIED_ROLE).then(() => {
-				interaction.editReply({
-					content: `Your club membership is granted! Please read <#${process.env.BENEFIT_CHANNEL}> to learn about what benefits you can get access to. Don't forget to say hi in <#${process.env.CHAT_CHANNEL}> and meet other creators!`,
-				});
-			});
 		} else if (interaction.customId === "wrongButton") {
 			await interaction.deferReply({ ephemeral: true });
 
@@ -533,6 +527,8 @@ client.on("interactionCreate", async (interaction) => {
 				content: `**In which social media do you publish content?**`,
 				components: [row],
 			});
+		} else if (interaction.customId === "understoodButton") {
+			await interaction.deferReply({ ephemeral: true });
 
 			await interaction.member.roles.add(process.env.VERIFIED_ROLE).then(() => {
 				interaction.editReply({
@@ -1194,7 +1190,8 @@ client.on("interactionCreate", async (interaction) => {
 					creators
 				);
 				return await interaction.editReply({
-					content: "Your application has been updated successfully.",
+					content:
+						"Your application has been updated successfully. Please press **I Agree** again to verify the information.",
 				});
 			} else if (response.data.total) {
 				let submissionDate =
