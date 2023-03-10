@@ -1024,7 +1024,7 @@ client.on("interactionCreate", async (interaction) => {
 
 			if (!checkTCCRole) {
 				return await interaction.editReply({
-					content: `You cannot get the beta code, possibly because you didn't choose **YES** in the question **Are you participants of TikTok Creator Event** or didn't click **Join Now** under the announcement of [TikTok Creator Event](https://google.com)`,
+					content: `You cannot get the beta code, possibly because you didn't choose **YES** in the question **Are you participants of TikTok Creator Event** or didn't click **Join Now** under the announcement of [TikTok Creator Event](https://ptb.discord.com/channels/951777532003381278/1018235728515321996/1083714282702766090)`,
 				});
 			}
 
