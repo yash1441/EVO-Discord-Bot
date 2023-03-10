@@ -627,7 +627,7 @@ module.exports = {
 				})
 			);
 		} else if (subCommand === "tiktok-announcement") {
-			const message = `**Join TikTok Short Video Creator Event and Win up to 1500$**\n\nHi Survivors, We held a short video creator event on TikTok. Up to 1500$ are waiting for you who love Project EVO and has the ability of video creativity.\n\nDon't hesitate to click the link below and earn your rewards!\n\n**Event Link** https://api.tiktokv.com/game_center/pop/deeplink?target=home-pop\n\n*Players from the Philippines and Brazil can participate in this event. We will hold short video events for players in more regions in the future, If you are interested, you can follow our TikTok official account below:*\n**TikTok** https://www.tiktok.com/@projectevo_official`;
+			const message = `<@&1074185209643278448>\n**Join TikTok Short Video Creator Event and Win up to 1500$**\n\nHi Survivors, We held a short video creator event on TikTok. Up to 1500$ are waiting for you who love Project EVO and has the ability of video creativity.\n\nDon't hesitate to click the link below and earn your rewards!\n\n**Event Link** https://api.tiktokv.com/game_center/pop/deeplink?target=home-pop\n\n*Players from the Philippines and Brazil can participate in this event. We will hold short video events for players in more regions in the future, If you are interested, you can follow our TikTok official account below:*\n**TikTok** https://www.tiktok.com/@projectevo_official`;
 
 			const tiktokButton = new ButtonBuilder()
 				.setCustomId("ttcButton")
