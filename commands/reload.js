@@ -621,7 +621,8 @@ module.exports = {
 			let records = [];
 
 			for (const record of response.data.items) {
-				const member = await interaction.guild.members
+				const guild = client.guilds.cache.get(process.env.EVO_CEC_SERVER);
+				const member = await guild.members
 					.fetch(record.fields["Discord ID"])
 					.catch((error) => {
 						logger.error(error);
