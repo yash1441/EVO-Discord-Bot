@@ -524,6 +524,7 @@ module.exports = {
 
 			for (const record of response.data.items) {
 				let shouldContinue = false;
+				if (!record.fields["Discord ID"]) continue;
 				const member = await interaction.guild.members
 					.fetch(record.fields["Discord ID"])
 					.catch((error) => {
