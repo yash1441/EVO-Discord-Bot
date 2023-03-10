@@ -541,19 +541,43 @@ module.exports = {
 
 				if (!member.roles.cache.has(process.env.VERIFIED_ROLE)) continue;
 
-				let tempRecord = {
-					"Discord ID": record.fields["Discord ID"],
-					"Discord Name": record.fields["Discord Name"],
-					"CEC Total Views": parseInt(record.fields["Views"]),
-					"CEC Videos": 1,
-				};
+				if (
+					(record.fields["Platform"] == "TikTok" ||
+						record.fields["Platform"] == "YouTube Shorts") &&
+					record.fields["Views"] < 5000
+				)
+					continue;
+
+				let tempRecord = {};
+				if (
+					record.fields["Platform"] == "TikTok" ||
+					record.fields["Platform"] == "YouTube Shorts"
+				) {
+					tempRecord = {
+						"Discord ID": record.fields["Discord ID"],
+						"Discord Name": record.fields["Discord Name"],
+						"Short Views": parseInt(record.fields["Views"]),
+						Views: 0,
+						Videos: 1,
+					};
+				} else {
+					tempRecord = {
+						"Discord ID": record.fields["Discord ID"],
+						"Discord Name": record.fields["Discord Name"],
+						"Short Views": 0,
+						Views: parseInt(record.fields["Views"]),
+						Videos: 1,
+					};
+				}
 
 				let existingData = records.find(
 					(r) => r["Discord ID"] === tempRecord["Discord ID"]
 				);
+
 				if (existingData) {
-					existingData["CEC Total Views"] += tempRecord["CEC Total Views"];
-					existingData["CEC Videos"] += tempRecord["CEC Videos"];
+					existingData["Short Views"] += tempRecord["Short Views"];
+					existingData["Views"] += tempRecord["Views"];
+					existingData["Videos"] += tempRecord["Videos"];
 				} else {
 					records.push(tempRecord);
 				}
