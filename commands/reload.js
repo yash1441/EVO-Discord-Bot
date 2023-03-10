@@ -536,13 +536,6 @@ module.exports = {
 
 				if (shouldContinue) continue;
 
-				if (
-					member &&
-					member instanceof Discord.GuildMember &&
-					!member.roles.cache.has(process.env.CEC_MEMBER_ROLE)
-				)
-					continue;
-
 				let tempRecord = {
 					"Discord ID": record.fields["Discord ID"],
 					"Discord Name": record.fields["Discord Name"],
