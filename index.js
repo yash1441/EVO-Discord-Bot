@@ -2823,18 +2823,6 @@ async function showSubmitModal(interaction) {
 		.setPlaceholder("Select a topic")
 		.addOptions(
 			{
-				label: "Game Update Explained",
-				value: formatSelection + "Game Update Explained",
-			},
-			{
-				label: "Kill New Boss Tutorial",
-				value: formatSelection + "Kill New Boss Tutorial",
-			},
-			{
-				label: "In-Game Event Guide",
-				value: formatSelection + "In-Game Event Guide",
-			},
-			{
 				label: "ECC - Gameplay Guide",
 				value: formatSelection + "ECC - Gameplay Guide",
 			},
