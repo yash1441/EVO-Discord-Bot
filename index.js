@@ -458,10 +458,13 @@ client.on("interactionCreate", async (interaction) => {
 				)
 			);
 
-			if (!response.data.total)
+			if (!response.data.total) {
+				const row = await platformMenu("platformSelectMenuApply");
 				return await interaction.editReply({
-					content: `You are not a Content Creator. Please apply for Content Creator first.`,
+					content: `**In which social media do you publish content?**`,
+					components: [row],
 				});
+			}
 
 			const correctButton = new ButtonBuilder()
 				.setCustomId("correctButton")
