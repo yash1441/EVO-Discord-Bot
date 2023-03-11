@@ -478,10 +478,19 @@ client.on("interactionCreate", async (interaction) => {
 				.setStyle(ButtonStyle.Danger)
 				.setEmoji("❌");
 
-			const row = new ActionRowBuilder().addComponents([
-				correctButton,
-				wrongButton,
-			]);
+			let row;
+
+			if (
+				response.data.items[0].fields.Channel.link == undefined ||
+				response.data.items[0].fields.Region == undefined ||
+				response.data.items[0].fields.Platform == undefined
+			) {
+				row = new ActionRowBuilder().addComponents([wrongButton]);
+			} else
+				row = new ActionRowBuilder().addComponents([
+					correctButton,
+					wrongButton,
+				]);
 
 			await interaction.editReply({
 				content: `**Please confirm your personal information and finish the registration:**\n\n**This is your channel link?**\n${response.data.items[0].fields.Channel.link}\n**This is the current region you live in?**\n${response.data.items[0].fields.Region}\n**This is the platform where you publish content?**\n${response.data.items[0].fields.Platform}`,
