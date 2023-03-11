@@ -493,7 +493,7 @@ client.on("interactionCreate", async (interaction) => {
 				]);
 
 			await interaction.editReply({
-				content: `**Please confirm your personal information and finish the registration:**\n\n**This is your channel link?**\n${response.data.items[0].fields.Channel.link}\n**This is the current region you live in?**\n${response.data.items[0].fields.Region}\n**This is the platform where you publish content?**\n${response.data.items[0].fields.Platform}`,
+				content: `**Please confirm your personal information and finish the registration:**\n\n**This is your channel link?**\n\`${response.data.items[0].fields.Channel.link}\`\n**This is the current region you live in?**\n\`${response.data.items[0].fields.Region}\`\n**This is the platform where you publish content?**\n\`${response.data.items[0].fields.Platform}\``,
 				components: [row],
 			});
 		} else if (interaction.customId === "correctButton") {
