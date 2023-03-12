@@ -158,7 +158,7 @@ module.exports = {
 					logger.info(`Updating the list of rewards.`);
 				});
 
-			let tenantToken = await feishu.authorize(
+			const tenantToken = await feishu.authorize(
 				process.env.FEISHU_ID,
 				process.env.FEISHU_SECRET
 			);
@@ -334,6 +334,7 @@ module.exports = {
 									{ fields: { "Card Code": codes } }
 								);
 								logger.info(`${creator.discord_id} - Codes generated.`);
+								continue;
 							} else codes = creator.reward_code.replace(/ /g, "\n");
 							if (creator.winner_type == "Player") {
 								message = `**BETA CODES ARE HERE!**\nHey! Dear players!\nYou have earned ${creator.number_codes} code(s) from Discord events. Thanks for your partcipation! The codes are below:\n\n\`${codes}\`\n\nThe beta will open on 1 Dec 2022. Please stay tuned to the official announcement on Discord and download the game in advance. This is the download link: http://bit.ly/3ESJHhS\n\nIf you encounter problems when downloading the game, please reach out to our staff on #support channel in our official Discord: https://discord.gg/projectevogame`;
@@ -450,7 +451,10 @@ module.exports = {
 					}
 				}
 				interaction
-					.editReply({ content: "Updated!", ephemeral: true })
+					.editReply({
+						content: "Updated! Please use the command once again.",
+						ephemeral: true,
+					})
 					.then(() => {
 						logger.info(
 							`Reward sending finished. ${response.data.total} rewards sent.`
@@ -929,3 +933,5 @@ async function privateChannel(creator, client, message, attachment, button) {
 			"**Once you click CLAIM, this thread would be DELETED.**\nPlease copy the reward/code somewhere and only then press the button.",
 	});
 }
+
+async function generateCodes() {}
