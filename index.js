@@ -1095,6 +1095,14 @@ client.on("interactionCreate", async (interaction) => {
 					content: `**TikTok Creator Event**\n\nJoined Successfully!\nLearn more about the event details [here](https://api.tiktokv.com/game_center/pop/deeplink?target=home-pop)\n\nIf you haven't got a code to get into the game and record the gameplay, please check the message in <#${process.env.ROLES_CHANNEL}>`,
 				});
 			});
+		} else if (interaction.customId === "shortsButton") {
+			await interaction.deferReply({ ephemeral: true });
+
+			await interaction.member.roles.add(process.env.TTC_ROLE).then(() => {
+				interaction.editReply({
+					content: `You have successfully entered the Make-EVO-Shorts Event! You have access to the <#1084823394631024761> channel now.`,
+				});
+			});
 		}
 	} else if (interaction.isModalSubmit()) {
 		if (interaction.customId === "betaAccess") {

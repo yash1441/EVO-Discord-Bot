@@ -644,6 +644,32 @@ module.exports = {
 					components: [row],
 				})
 			);
+		} else if (subCommand === "shorts-announcement") {
+			const shortsEmbed = new EmbedBuilder()
+				.setTitle(`Make-EVO-Shorts Event is Coming! 🎬`)
+				.setDescription(
+					`Take a look at our **Make-EVO-Shorts Event**! If you're good at capturing viewers' attention in a short video, come and prove yourself with your work and win gift cards!\n\n**WHO CAN PARTICIPATE?**\nEveryone\n\n**WHEN TO START AND END?**\nThe event starts \`from 13 Mar to 26 Mar\`\nThe Result will be announced on \`28 Mar\`\n\n**HOW TO PARTICIPATE?**\n1. Click **Join Now** below\n2. Create short videos to post on **Youtube Shorts** or **Tiktok**\n3. Submit content via #submit-content (a MUST step)\n\n**WHAT CAN YOU GET?**\n\n🎁 **Newbie Award:**(giftcards as rewards)\n- Get 2k+ total views to earn **Beta Lottery Tickets\*20! (Lucky draw for Gun Skins)**\n- Get 5k+ total views to earn **$10**\n- Get 20k+ total views to earn **$25**\n- Get 50k+ total views to earn **$50**\n\n🎊 **Pro Award:**(giftcards as rewards)\n- Rank in top 1-10% of total views to earn **$100**\n- Rank in top 10-20% of total views to earn **$75**\n- Rrank in top 20-30% of total views to earn **$50**\n\nNote: You can upload as many videos as you want. But you cannot receive both the Newbie Award and the Pro Award at the same time.\n\n**GUIDANCE:**\nThere is no limit to the themes/topics you choose to create. Come and pick your preferred direction: Funny moments, Highlight Montage, Gameplay Guide, Game Introduction, Movie, etc.\n\nIf you still don't know how to start, JUST go to our limited time event channel for guidance:\n<#1084823394631024761>: we will send out regular short video creation tips and some creation topics in this channel\n\n	Here are the detailed rules of video submission <#1084793563885346836>`
+				)
+				.setImage(
+					`https://i.ibb.co/PttNB85/img-v2-7cc1b2f8-f2c4-4c35-90d3-418e4334026g.jpg`
+				)
+				.setColor(`C04946`);
+
+			const shortsButton = new ButtonBuilder()
+				.setCustomId("shortsButton")
+				.setLabel("Join Now")
+				.setStyle(ButtonStyle.Success)
+				.setEmoji("☑️");
+
+			const row = new ActionRowBuilder().addComponents([shortsButton]);
+
+			client.channels.fetch(channel.id).then((channel) =>
+				channel.send({
+					content: "<@&1074185209643278448>",
+					embeds: [shortsEmbed],
+					components: [row],
+				})
+			);
 		}
 		await interaction.deleteReply();
 	},
