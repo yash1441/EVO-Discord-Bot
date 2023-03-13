@@ -2847,6 +2847,10 @@ async function showSubmitModal(interaction) {
 		.setPlaceholder("Select a topic")
 		.addOptions(
 			{
+				label: "Make EVO Shorts Event",
+				value: formatSelection + "Make EVO Shorts Event",
+			},
+			{
 				label: "ECC - Gameplay Guide",
 				value: formatSelection + "ECC - Gameplay Guide",
 			},
