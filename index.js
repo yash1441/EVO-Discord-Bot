@@ -1347,6 +1347,10 @@ client.on("interactionCreate", async (interaction) => {
 						});
 					} else {
 						download(attachment.url, `${interaction.user.id}-bug.jpg`);
+						interaction.editReply({
+							content:
+								"Image uploaded. Please wait while we try to submit your application...",
+						});
 						sendResponseToFeishu(interaction);
 					}
 					collected.first().delete();
