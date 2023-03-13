@@ -186,6 +186,17 @@ module.exports = {
 						.setDescription("Input the channel.")
 						.setRequired(true)
 				)
+		)
+		.addSubcommand((subcommand) =>
+			subcommand
+				.setName("shorts-announcement")
+				.setDescription("Setup TikTok Event announcement.")
+				.addChannelOption((option) =>
+					option
+						.setName("channel")
+						.setDescription("Input the channel.")
+						.setRequired(true)
+				)
 		),
 	async execute(interaction, client) {
 		await interaction.deferReply();
