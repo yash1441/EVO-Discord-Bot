@@ -1260,12 +1260,15 @@ client.on("interactionCreate", async (interaction) => {
 				return await interaction.editReply({
 					content: `\`${videoURL}\`\nPlease enter a valid link. If you have \`www\` in your link, please remove it.`,
 				});
-			} else if (videoURL.includes("youtube")) {
+			} else if (videoURL.includes("youtube") && !videoURL.includes("shorts")) {
 				let url = new URL(videoURL);
 				let videoId = url.searchParams.get("v");
 				let modifiedUrl = `https://www.youtube.com/watch?v=${videoId}`;
 				videoURL = modifiedUrl;
-			} else if (videoURL.includes("youtu.be")) {
+			} else if (
+				videoURL.includes("youtu.be") &&
+				!videoURL.includes("shorts")
+			) {
 				let videoId = videoURL.split("/").pop().split("?")[0];
 				let modifiedUrl = `https://youtu.be/${videoId}`;
 				videoURL = modifiedUrl;
