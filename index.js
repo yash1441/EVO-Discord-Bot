@@ -20,7 +20,6 @@ const request = require("request-promise");
 const cron = require("node-cron");
 const feishu = require("./feishu.js");
 const logger = require("./logging/logger.js");
-const wait = require("node:timers/promises").setTimeout;
 require("dotenv").config();
 
 const client = new Client({
