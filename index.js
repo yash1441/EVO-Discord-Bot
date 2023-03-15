@@ -61,7 +61,6 @@ for (const file of commandFiles) {
 }
 
 let alreadyPressed = [];
-let welcomeMessages;
 let betaTesterCodes = {};
 let betaTesterCodesLoaded = false;
 
@@ -2105,43 +2104,6 @@ client.on("messageCreate", async (message) => {
 });
 
 client.on("guildMemberUpdate", async (oldMember, newMember) => {
-	let rolesToCheck = [
-		process.env.CIS_ROLE,
-		process.env.PT_ROLE,
-		process.env.ES_ROLE,
-		process.env.TH_ROLE,
-		"972375574406385705",
-		"973040050063417376",
-		"973040245119524915",
-		"973042080823783464",
-		"976940106961272994",
-		"976940260200169502",
-		"984111719292993628",
-		"989240355071348746",
-		"996876611926364250",
-		"996882291945111602",
-		"972350125844336680",
-		"1017922224776286269",
-	];
-	let messages = {
-		"973278649698648135": "У нас всё готово! 🎉 Сервер открыт.",
-		"972350401863122974": "ESTÁS PRONTO!  🎉 O servidor está desbloqueado!",
-		"972350282455453756": "¡ESTAS LISTO! 🎉 ¡El servidor está desbloqueado!",
-		"972375372660346910": "คุณพร้อมแล้ว! 🎉 เซิร์ฟเวอร์ถูกล็อก",
-		"972375574406385705": "YOU ARE ALL SET! 🎉 The server is unlocked!",
-		"973040050063417376": "YOU ARE ALL SET! 🎉 The server is unlocked!",
-		"973040245119524915": "YOU ARE ALL SET! 🎉 The server is unlocked!",
-		"973042080823783464": "YOU ARE ALL SET! 🎉 The server is unlocked!",
-		"976940106961272994": "YOU ARE ALL SET! 🎉 The server is unlocked!",
-		"976940260200169502": "YOU ARE ALL SET! 🎉 The server is unlocked!",
-		"984111719292993628": "YOU ARE ALL SET! 🎉 The server is unlocked!",
-		"989240355071348746": "YOU ARE ALL SET! 🎉 The server is unlocked!",
-		"996876611926364250": "YOU ARE ALL SET! 🎉 The server is unlocked!",
-		"996882291945111602": "YOU ARE ALL SET! 🎉 The server is unlocked!",
-		"972350125844336680": "YOU ARE ALL SET! 🎉 The server is unlocked!",
-		"1017922224776286269": "YOU ARE ALL SET! 🎉 The server is unlocked!",
-	};
-
 	const guild = client.guilds.cache.get(process.env.EVO_SERVER);
 	const member = await guild.members.fetch(newMember.user.id);
 
@@ -2250,54 +2212,6 @@ client.on("guildMemberUpdate", async (oldMember, newMember) => {
 			.catch((error) => console.error(error));
 
 		return;
-	}
-
-	for (let roleID of rolesToCheck) {
-		const role = member.guild.roles.cache.get(roleID);
-
-		if (
-			role &&
-			!oldMember.roles.cache.has(role.id) &&
-			newMember.roles.cache.has(role.id)
-		) {
-			let userID = newMember.user.id;
-			if (!welcomeMessages.has(userID)) {
-				let reactEmbed = new EmbedBuilder()
-					.setImage(
-						"https://media.discordapp.net/attachments/360776228199727105/1024621626970615818/20220928-152953.jpg"
-					)
-					.setTitle(messages[roleID]);
-				await newMember
-					.send({
-						content: `${newMember.user}`,
-						embeds: [reactEmbed],
-					})
-					.then(() => {
-						// logger.debug(
-						// 	`Sent welcome embed to ${newMember.user.tag} (${newMember.user.id})`
-						// );
-					})
-					.catch(() => {
-						client.channels.fetch("1017550771052617860").then((channel) => {
-							channel
-								.send({
-									content: `${newMember.user}`,
-									embeds: [reactEmbed],
-								})
-								.then((msg) => {
-									setTimeout(() => msg.delete(), 5000);
-								})
-								.catch(console.error);
-						});
-					});
-				welcomeMessages.set(userID, true);
-				fs.writeFileSync(
-					"welcomeMessages.json",
-					JSON.stringify([...welcomeMessages])
-				);
-			}
-			break;
-		}
 	}
 });
 
