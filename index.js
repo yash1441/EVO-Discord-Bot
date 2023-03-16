@@ -1117,7 +1117,7 @@ client.on("interactionCreate", async (interaction) => {
 			/// QUESTION 1 ///
 
 			const q1 = shuffledQuestions[0].question;
-			const q1options = shuffleArray(shuffledQuestions[0].options);
+			const q1options = await shuffleArray(shuffledQuestions[0].options);
 			console.log(q1options);
 			const q1correct = q1options.indexOf(shuffledQuestions[0].options[0]);
 
