@@ -15,6 +15,6 @@ module.exports = {
 		.setDescription("Take part in quiz!"),
 	async execute(interaction) {
 		await interaction.reply("Ping Pong!");
-		logger.debug(JSON.stringify(questionBank));
+		logger.debug(JSON.stringify(questionBank[0]));
 	},
 };
