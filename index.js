@@ -1236,7 +1236,7 @@ client.on("interactionCreate", async (interaction) => {
 				components: [q2row],
 			});
 
-			q2message
+			await q2message
 				.awaitMessageComponent({
 					filter,
 					componentType: ComponentType.Button,
@@ -1270,8 +1270,76 @@ client.on("interactionCreate", async (interaction) => {
 			if (lost) return;
 
 			const q3 = shuffledQuestions[2].question;
-			const q3options = shuffledQuestions[2].options;
-			const q3correct = q3options.indexOf(shuffledQuestions[2].options[0]);
+			const q3correctoption = shuffledQuestions[2].options[0];
+			const q3options = await shuffleArray(shuffledQuestions[2].options);
+			const q3correct = q3options.indexOf(q2correctoption);
+
+			const q3button1 = new ButtonBuilder()
+				.setCustomId("quiz0" + q3correct.toString())
+				.setLabel(q3options[0])
+				.setStyle(ButtonStyle.Primary);
+			const q3button2 = new ButtonBuilder()
+				.setCustomId("quiz1" + q3correct.toString())
+				.setLabel(q3options[1])
+				.setStyle(ButtonStyle.Primary);
+			const q3button3 = new ButtonBuilder()
+				.setCustomId("quiz2" + q3correct.toString())
+				.setLabel(q3options[2])
+				.setStyle(ButtonStyle.Primary);
+
+			const q3button4 = new ButtonBuilder()
+				.setCustomId("quiz3" + q3correct.toString())
+				.setLabel(q3options[3])
+				.setStyle(ButtonStyle.Primary);
+
+			const q3row = new ActionRowBuilder().addComponents([
+				q3button1,
+				q3button2,
+				q3button3,
+				q3button4,
+			]);
+
+			const q3embed = new EmbedBuilder()
+				.setTitle("Question 3")
+				.setDescription(q3);
+
+			const q3message = await interaction.editReply({
+				embeds: [q3embed],
+				components: [q3row],
+			});
+
+			await q3message
+				.awaitMessageComponent({
+					filter,
+					componentType: ComponentType.Button,
+					time: 5000,
+				})
+				.then((interaction2) => {
+					if (interaction2.customId[4] == interaction2.customId[5]) {
+						interaction.editReply({
+							content: "Correct!",
+							components: [],
+							embeds: [],
+						});
+					} else {
+						lost = true;
+						interaction.editReply({
+							content: "Incorrect!",
+							components: [],
+							embeds: [],
+						});
+					}
+				})
+				.catch((err) => {
+					lost = true;
+					interaction.editReply({
+						content: "Time's up!",
+						components: [],
+						embeds: [],
+					});
+				});
+
+			if (lost) return;
 		}
 	} else if (interaction.isModalSubmit()) {
 		if (interaction.customId === "betaAccess") {
