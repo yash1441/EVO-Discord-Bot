@@ -1126,6 +1126,7 @@ client.on("interactionCreate", async (interaction) => {
 			const q1correct = q1options.indexOf(shuffledQuestions[0].options[0]);
 
 			console.log({ q1options, q1correct });
+			logger.debug(shuffledQuestions[0].options[0]);
 
 			const q1button1 = new ButtonBuilder()
 				.setCustomId("quiz1" + q1correct.toString())
