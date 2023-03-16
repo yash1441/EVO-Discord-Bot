@@ -1,0 +1,31 @@
+[
+	{
+		"question": "What is the capital city of France?",
+		"options": ["Paris", "New York", "London", "Berlin"]
+	},
+	{
+		"question": "What is the largest planet in our solar system?",
+		"options": ["Jupiter", "Earth", "Mars", "Saturn"]
+	},
+	{
+		"question": "What is the largest ocean on Earth?",
+		"options": [
+			"Pacific Ocean",
+			"Atlantic Ocean",
+			"Arctic Ocean",
+			"Indian Ocean"
+		]
+	},
+	{
+		"question": "What is the tallest mammal?",
+		"options": ["Giraffe", "Elephant", "Hippopotamus", "Rhino"]
+	},
+	{
+		"question": "What is the capital city of Spain?",
+		"options": ["Madrid", "Barcelona", "Valencia", "Seville"]
+	},
+	{
+		"question": "What is the largest country by area?",
+		"options": ["Russia", "China", "United States", "Canada"]
+	}
+]
