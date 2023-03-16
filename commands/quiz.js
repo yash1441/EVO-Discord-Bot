@@ -1,4 +1,6 @@
 const { SlashCommandBuilder } = require("discord.js");
+const fs = require("fs");
+const path = require("path");
 const logger = require("../logging/logger.js");
 require("dotenv").config();
 
