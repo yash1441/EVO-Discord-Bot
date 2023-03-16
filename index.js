@@ -1126,23 +1126,21 @@ client.on("interactionCreate", async (interaction) => {
 			const q1options = await shuffleArray(shuffledQuestions[0].options);
 			const q1correct = q1options.indexOf(q1correctoption);
 
-			console.log({ q1options, q1correct });
-
 			const q1button1 = new ButtonBuilder()
-				.setCustomId("quiz1" + q1correct.toString())
+				.setCustomId("quiz0" + q1correct.toString())
 				.setLabel(q1options[0])
 				.setStyle(ButtonStyle.Primary);
 			const q1button2 = new ButtonBuilder()
-				.setCustomId("quiz2" + q1correct.toString())
+				.setCustomId("quiz1" + q1correct.toString())
 				.setLabel(q1options[1])
 				.setStyle(ButtonStyle.Primary);
 			const q1button3 = new ButtonBuilder()
-				.setCustomId("quiz3" + q1correct.toString())
+				.setCustomId("quiz2" + q1correct.toString())
 				.setLabel(q1options[2])
 				.setStyle(ButtonStyle.Primary);
 
 			const q1button4 = new ButtonBuilder()
-				.setCustomId("quiz4" + q1correct.toString())
+				.setCustomId("quiz3" + q1correct.toString())
 				.setLabel(q1options[3])
 				.setStyle(ButtonStyle.Primary);
 
@@ -1169,7 +1167,6 @@ client.on("interactionCreate", async (interaction) => {
 					time: 5000,
 				})
 				.then((interaction2) => {
-					logger.debug(interaction2.customId);
 					if (interaction2.customId[4] == interaction2.customId[5]) {
 						interaction.editReply({
 							content: "Correct!",
