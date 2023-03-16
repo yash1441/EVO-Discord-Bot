@@ -1114,6 +1114,11 @@ client.on("interactionCreate", async (interaction) => {
 				.sort(() => Math.random() - 0.5)
 				.slice(0, 3);
 
+			const filter = (i) => {
+				i.deferUpdate();
+				return i.user.id === interaction.user.id;
+			};
+
 			/// QUESTION 1 ///
 
 			const q1 = shuffledQuestions[0].question;
@@ -1134,10 +1139,16 @@ client.on("interactionCreate", async (interaction) => {
 				.setLabel(q1options[2])
 				.setStyle(ButtonStyle.Primary);
 
+			const q1button4 = new ButtonBuilder()
+				.setCustomId("quiz4" + q1correct.toString())
+				.setLabel(q1options[3])
+				.setStyle(ButtonStyle.Primary);
+
 			const q1row = new ActionRowBuilder().addComponents([
 				q1button1,
 				q1button2,
 				q1button3,
+				q1button4,
 			]);
 
 			const q1embed = new EmbedBuilder()
@@ -1149,7 +1160,23 @@ client.on("interactionCreate", async (interaction) => {
 				components: [q1row],
 			});
 
-			console.log(q1message);
+			q1message
+				.awaitMessageComponent({
+					filter,
+					componentType: ComponentType.Button,
+					time: 5000,
+				})
+				.then((interaction) => {
+					if (interaction.customId[4] == interaction.customId[5]) {
+						interaction.editReply({
+							content: "Correct!",
+						});
+					} else {
+						interaction.editReply({
+							content: "Incorrect!",
+						});
+					}
+				});
 
 			/// QUESTION 2 ///
 
