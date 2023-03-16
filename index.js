@@ -1162,7 +1162,7 @@ client.on("interactionCreate", async (interaction) => {
 				components: [q1row],
 			});
 
-			q1message
+			await q1message
 				.awaitMessageComponent({
 					filter,
 					componentType: ComponentType.Button,
@@ -1231,7 +1231,7 @@ client.on("interactionCreate", async (interaction) => {
 				.setTitle("Question 2")
 				.setDescription(q2);
 
-			const q2message = await interaction.followUp({
+			const q2message = await interaction.editReply({
 				embeds: [q2embed],
 				components: [q2row],
 			});
