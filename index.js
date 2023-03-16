@@ -1231,7 +1231,7 @@ client.on("interactionCreate", async (interaction) => {
 				.setTitle("Question 2")
 				.setDescription(q2);
 
-			const q2message = await interaction.editReply({
+			const q2message = await interaction.followUp({
 				embeds: [q2embed],
 				components: [q2row],
 			});
