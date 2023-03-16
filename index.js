@@ -3,6 +3,7 @@ const {
 	Collection,
 	GatewayIntentBits,
 	Partials,
+	ComponentType,
 	ChannelType,
 	ActionRowBuilder,
 	EmbedBuilder,
@@ -1101,6 +1102,63 @@ client.on("interactionCreate", async (interaction) => {
 					content: `You have successfully entered the Make-EVO-Shorts Event! You have access to the <#1084823394631024761> channel now.`,
 				});
 			});
+		} else if (interaction.customId === "startQuiz") {
+			await interaction.deferReply({ ephemeral: true });
+
+			const dataDirectory = path.join(__dirname, "../data");
+			const questionBank = JSON.parse(
+				fs.readFileSync(path.join(dataDirectory, "questions.json"))
+			);
+
+			const shuffledQuestions = questionBank
+				.sort(() => Math.random() - 0.5)
+				.slice(0, 3);
+
+			/// QUESTION 1 ///
+
+			const q1 = shuffledQuestions[0].question;
+			const q1options = shuffleArray(shuffledQuestions[0].options);
+			const q1correct = q1options.indexOf(shuffledQuestions[0].options[0]);
+
+			const q1button1 = new ButtonBuilder()
+				.setCustomId("quiz1" + q1correct.toString())
+				.setLabel(q1options[0])
+				.setStyle(ButtonStyle.Primary);
+			const q1button2 = new ButtonBuilder()
+				.setCustomId("quiz2" + q1correct.toString())
+				.setLabel(q1options[1])
+				.setStyle(ButtonStyle.Primary);
+			const q1button3 = new ButtonBuilder()
+				.setCustomId("quiz3" + q1correct.toString())
+				.setLabel(q1options[2])
+				.setStyle(ButtonStyle.Primary);
+
+			const q1row = new ActionRowBuilder().addComponents([
+				q1button1,
+				q1button2,
+				q1button3,
+			]);
+
+			const q1embed = new EmbedBuilder()
+				.setTitle("Question 1")
+				.setDescription(q1);
+
+			const q1message = await interaction.editReply({
+				embeds: [q1embed],
+				components: [q1row],
+			});
+
+			console.log(q1message);
+
+			/// QUESTION 2 ///
+
+			const q2 = shuffledQuestions[1].question;
+			const q2options = shuffledQuestions[1].options;
+			const q2correct = q2options.indexOf(shuffledQuestions[1].options[0]);
+
+			const q3 = shuffledQuestions[2].question;
+			const q3options = shuffledQuestions[2].options;
+			const q3correct = q3options.indexOf(shuffledQuestions[2].options[0]);
 		}
 	} else if (interaction.isModalSubmit()) {
 		if (interaction.customId === "betaAccess") {
@@ -3246,4 +3304,12 @@ async function loadBetaTesterCodes() {
 
 	logger.info(`Beta Tester Codes: ${Object.keys(betaTesterCodes).length}`);
 	betaTesterCodesLoaded = true;
+}
+
+async function shuffleArray(array) {
+	for (let i = array.length - 1; i > 0; i--) {
+		const j = Math.floor(Math.random() * (i + 1));
+		[array[i], array[j]] = [array[j], array[i]];
+	}
+	return array;
 }
