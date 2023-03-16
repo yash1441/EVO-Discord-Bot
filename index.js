@@ -1166,6 +1166,7 @@ client.on("interactionCreate", async (interaction) => {
 					time: 5000,
 				})
 				.then((interaction2) => {
+					logger.debug(interaction2.customId);
 					if (interaction2.customId[4] == interaction2.customId[5]) {
 						interaction.editReply({
 							content: "Correct!",
@@ -1179,7 +1180,11 @@ client.on("interactionCreate", async (interaction) => {
 					}
 				})
 				.catch((err) =>
-					interaction.editReply({ content: "Time's up!", components: [] })
+					interaction.editReply({
+						content: "Time's up!",
+						components: [],
+						embeds: [],
+					})
 				);
 
 			/// QUESTION 2 ///
