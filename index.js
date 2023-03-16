@@ -1272,7 +1272,7 @@ client.on("interactionCreate", async (interaction) => {
 			const q3 = shuffledQuestions[2].question;
 			const q3correctoption = shuffledQuestions[2].options[0];
 			const q3options = await shuffleArray(shuffledQuestions[2].options);
-			const q3correct = q3options.indexOf(q2correctoption);
+			const q3correct = q3options.indexOf(q3correctoption);
 
 			const q3button1 = new ButtonBuilder()
 				.setCustomId("quiz0" + q3correct.toString())
@@ -1340,6 +1340,14 @@ client.on("interactionCreate", async (interaction) => {
 				});
 
 			if (lost) return;
+
+			await member.roles.add("1085629746186031225").then(() => {
+				interaction.editReply({
+					content: "You have won the <@&1085629746186031225> role!",
+					components: [],
+					embeds: [],
+				});
+			});
 		}
 	} else if (interaction.isModalSubmit()) {
 		if (interaction.customId === "betaAccess") {
