@@ -1198,7 +1198,7 @@ client.on("interactionCreate", async (interaction) => {
 			/// QUESTION 2 ///
 
 			const q2 = shuffledQuestions[1].question;
-			const q2correctoption = shuffledQuestions[10].options[0];
+			const q2correctoption = shuffledQuestions[1].options[0];
 			const q2options = await shuffleArray(shuffledQuestions[1].options);
 			const q2correct = q2options.indexOf(q2correctoption);
 
