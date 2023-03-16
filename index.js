@@ -1165,18 +1165,22 @@ client.on("interactionCreate", async (interaction) => {
 					componentType: ComponentType.Button,
 					time: 5000,
 				})
-				.then((interaction) => {
-					if (interaction.customId[4] == interaction.customId[5]) {
+				.then((interaction2) => {
+					if (interaction2.customId[4] == interaction2.customId[5]) {
 						interaction.editReply({
 							content: "Correct!",
+							components: [],
 						});
 					} else {
 						interaction.editReply({
 							content: "Incorrect!",
+							components: [],
 						});
 					}
 				})
-				.catch((err) => interaction.editReply({ content: "Time's up!" }));
+				.catch((err) =>
+					interaction.editReply({ content: "Time's up!", components: [] })
+				);
 
 			/// QUESTION 2 ///
 
