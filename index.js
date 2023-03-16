@@ -1122,30 +1122,29 @@ client.on("interactionCreate", async (interaction) => {
 			/// QUESTION 1 ///
 
 			const q1 = shuffledQuestions[0].question;
-			const q1options = shuffledQuestions[0].options;
-			const q1shuffledoptions = await shuffleArray(q1options);
-			const q1correct = q1shuffledoptions.indexOf(
-				shuffledQuestions[0].options[0]
-			);
+			logger.debug(shuffledQuestions[0].options[0]);
+			const q1options = await shuffleArray(shuffledQuestions[0].options);
+			const q1correct = q1options.indexOf(shuffledQuestions[0].options[0]);
 
-			console.log({ q1options, q1shuffledoptions, q1correct });
+			console.log({ q1options, q1correct });
+			logger.debug(shuffledQuestions[0].options[0]);
 
 			const q1button1 = new ButtonBuilder()
 				.setCustomId("quiz1" + q1correct.toString())
-				.setLabel(q1shuffledoptions[0])
+				.setLabel(q1options[0])
 				.setStyle(ButtonStyle.Primary);
 			const q1button2 = new ButtonBuilder()
 				.setCustomId("quiz2" + q1correct.toString())
-				.setLabel(q1shuffledoptions[1])
+				.setLabel(q1options[1])
 				.setStyle(ButtonStyle.Primary);
 			const q1button3 = new ButtonBuilder()
 				.setCustomId("quiz3" + q1correct.toString())
-				.setLabel(q1shuffledoptions[2])
+				.setLabel(q1options[2])
 				.setStyle(ButtonStyle.Primary);
 
 			const q1button4 = new ButtonBuilder()
 				.setCustomId("quiz4" + q1correct.toString())
-				.setLabel(q1shuffledoptions[3])
+				.setLabel(q1options[3])
 				.setStyle(ButtonStyle.Primary);
 
 			const q1row = new ActionRowBuilder().addComponents([
