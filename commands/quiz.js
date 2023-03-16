@@ -1,5 +1,6 @@
 const {
 	SlashCommandBuilder,
+	ActionRowBuilder,
 	ButtonBuilder,
 	ButtonStyle,
 } = require("discord.js");
