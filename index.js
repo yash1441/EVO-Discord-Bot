@@ -1119,6 +1119,8 @@ client.on("interactionCreate", async (interaction) => {
 				return i.user.id === interaction.user.id;
 			};
 
+			let lost = false;
+
 			/// QUESTION 1 ///
 
 			const q1 = shuffledQuestions[0].question;
@@ -1171,27 +1173,101 @@ client.on("interactionCreate", async (interaction) => {
 						interaction.editReply({
 							content: "Correct!",
 							components: [],
+							embeds: [],
 						});
 					} else {
+						lost = true;
 						interaction.editReply({
 							content: "Incorrect!",
 							components: [],
+							embeds: [],
 						});
 					}
 				})
-				.catch((err) =>
+				.catch((err) => {
+					lost = true;
 					interaction.editReply({
 						content: "Time's up!",
 						components: [],
 						embeds: [],
-					})
-				);
+					});
+				});
+
+			if (lost) return;
 
 			/// QUESTION 2 ///
 
 			const q2 = shuffledQuestions[1].question;
-			const q2options = shuffledQuestions[1].options;
-			const q2correct = q2options.indexOf(shuffledQuestions[1].options[0]);
+			const q2correctoption = shuffledQuestions[10].options[0];
+			const q2options = await shuffleArray(shuffledQuestions[1].options);
+			const q2correct = q2options.indexOf(q2correctoption);
+
+			const q2button1 = new ButtonBuilder()
+				.setCustomId("quiz0" + q2correct.toString())
+				.setLabel(q2options[0])
+				.setStyle(ButtonStyle.Primary);
+			const q2button2 = new ButtonBuilder()
+				.setCustomId("quiz1" + q2correct.toString())
+				.setLabel(q2options[1])
+				.setStyle(ButtonStyle.Primary);
+			const q2button3 = new ButtonBuilder()
+				.setCustomId("quiz2" + q2correct.toString())
+				.setLabel(q2options[2])
+				.setStyle(ButtonStyle.Primary);
+
+			const q2button4 = new ButtonBuilder()
+				.setCustomId("quiz3" + q2correct.toString())
+				.setLabel(q2options[3])
+				.setStyle(ButtonStyle.Primary);
+
+			const q2row = new ActionRowBuilder().addComponents([
+				q2button1,
+				q2button2,
+				q2button3,
+				q2button4,
+			]);
+
+			const q2embed = new EmbedBuilder()
+				.setTitle("Question 2")
+				.setDescription(q2);
+
+			const q2message = await interaction.editReply({
+				embeds: [q2embed],
+				components: [q2row],
+			});
+
+			q2message
+				.awaitMessageComponent({
+					filter,
+					componentType: ComponentType.Button,
+					time: 5000,
+				})
+				.then((interaction2) => {
+					if (interaction2.customId[4] == interaction2.customId[5]) {
+						interaction.editReply({
+							content: "Correct!",
+							components: [],
+							embeds: [],
+						});
+					} else {
+						lost = true;
+						interaction.editReply({
+							content: "Incorrect!",
+							components: [],
+							embeds: [],
+						});
+					}
+				})
+				.catch((err) => {
+					lost = true;
+					interaction.editReply({
+						content: "Time's up!",
+						components: [],
+						embeds: [],
+					});
+				});
+
+			if (lost) return;
 
 			const q3 = shuffledQuestions[2].question;
 			const q3options = shuffledQuestions[2].options;
