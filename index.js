@@ -1341,7 +1341,7 @@ client.on("interactionCreate", async (interaction) => {
 
 			if (lost) return;
 
-			await member.roles.add("1085629746186031225").then(() => {
+			await interaction.member.roles.add("1085629746186031225").then(() => {
 				interaction.editReply({
 					content: "You have won the <@&1085629746186031225> role!",
 					components: [],

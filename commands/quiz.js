@@ -10,7 +10,8 @@ require("dotenv").config();
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName("quiz")
-		.setDescription("Take part in quiz!"),
+		.setDescription("Take part in quiz!")
+		.setDMPermission(false),
 	async execute(interaction, client) {
 		const startQuizButton = new ButtonBuilder()
 			.setCustomId("startQuiz")
