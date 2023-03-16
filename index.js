@@ -1105,7 +1105,7 @@ client.on("interactionCreate", async (interaction) => {
 		} else if (interaction.customId === "startQuiz") {
 			await interaction.deferReply({ ephemeral: true });
 
-			const dataDirectory = path.join(__dirname, "../data");
+			const dataDirectory = path.join(__dirname, "./data");
 			const questionBank = JSON.parse(
 				fs.readFileSync(path.join(dataDirectory, "questions.json"))
 			);
