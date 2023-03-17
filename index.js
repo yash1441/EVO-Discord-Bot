@@ -2810,7 +2810,7 @@ function checkURL(text, log) {
 		text = text.replace("www.", "");
 	}
 	const expression =
-		/^(https?\:\/\/)?((www\.)?youtube\.com|youtu\.be|tiktok\.com|taptap\.io|twitter\.com|instagram\.com|twitch\.com)\/.+$/;
+		/^(https?\:\/\/)?((www\.|vm\.)?youtube\.com|youtu\.be|tiktok\.com|taptap\.io|twitter\.com|instagram\.com|twitch\.com)\/.+$/;
 	const regex = new RegExp(expression);
 
 	if (text.match(regex)) {
