@@ -1,31 +1,43 @@
 [
 	{
-		"question": "What is the capital city of France?",
-		"options": ["Paris", "New York", "London", "Berlin"]
+		"question": "How many GREEN rooms are in Emberland?",
+		"options": ["10", "8", "5", "12"]
 	},
 	{
-		"question": "What is the largest planet in our solar system?",
-		"options": ["Jupiter", "Earth", "Mars", "Saturn"]
+		"question": "The PPSH is in what category of guns?"
+		"options": ["SMG", "Assault Rifle", "Snipers", "Pistols"]
 	},
 	{
-		"question": "What is the largest ocean on Earth?",
+		"question": "What color is a ember?",
 		"options": [
-			"Pacific Ocean",
-			"Atlantic Ocean",
-			"Arctic Ocean",
-			"Indian Ocean"
+			"Red",
+			"Blue",
+			"Green",
+			"Invisible"
 		]
 	},
 	{
-		"question": "What is the tallest mammal?",
-		"options": ["Giraffe", "Elephant", "Hippopotamus", "Rhino"]
+		"question": "Where is RED vault located?",
+		"options": ["Port Tackson", "Silver City", "Mt. Bedford", "Port Harlow"]
 	},
 	{
-		"question": "What is the capital city of Spain?",
-		"options": ["Madrid", "Barcelona", "Valencia", "Seville"]
+		"question": "In which biome has the most green rooms?",
+		"options": ["Fields", "Desert", "Ocean", "Snow"]
 	},
 	{
-		"question": "What is the largest country by area?",
-		"options": ["Russia", "China", "United States", "Canada"]
+		"question": "Which gun is not like the others?",
+		"options": ["MPX", "ARX", "AKM", "AUG"]
+	},
+	{	
+		"question": "Which of these items needs to be learned at the workbench?",
+		"options": ["Screen Divider", "Sketching Table", "Vending Machine", "Ember Chest"]
+	},
+	{	
+		"question": "How much scrap is needed to research dynamite?",
+		"options": ["600", "350", "700", "450"]
+	},
+	{	
+		"question": "How much durability does a Sleeping Bag have?",
+		"options": ["300", "200", "500", "50"]
 	}
 ]
