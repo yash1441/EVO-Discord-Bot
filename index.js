@@ -2805,15 +2805,16 @@ async function checkRoles(interaction, userId, rolesToCheck) {
 	return roles;
 }
 
-function checkURL(text) {
+function checkURL(text, log) {
 	if (text.includes("www.")) {
 		text = text.replace("www.", "");
 	}
 	const expression =
-		/^(https?\:\/\/)?((www\.)?youtube\.com|youtu\.be|tiktok\.com|vm\.tiktok\.com|taptap\.io|twitter\.com|instagram\.com|twitch\.com)\/.+$/;
+		/^(https?\:\/\/)?((www\.)?youtube\.com|youtu\.be|tiktok\.com|taptap\.io|twitter\.com|instagram\.com|twitch\.com)\/.+$/;
 	const regex = new RegExp(expression);
 
 	if (text.match(regex)) {
+		if (log) logger.debug(text + " is a valid URL");
 		return true;
 	} else return false;
 }
