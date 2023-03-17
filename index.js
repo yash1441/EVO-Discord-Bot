@@ -1166,7 +1166,7 @@ client.on("interactionCreate", async (interaction) => {
 				.awaitMessageComponent({
 					filter,
 					componentType: ComponentType.Button,
-					time: 5000,
+					time: 10000,
 				})
 				.then((interaction2) => {
 					if (interaction2.customId[4] == interaction2.customId[5]) {
@@ -1240,7 +1240,7 @@ client.on("interactionCreate", async (interaction) => {
 				.awaitMessageComponent({
 					filter,
 					componentType: ComponentType.Button,
-					time: 5000,
+					time: 10000,
 				})
 				.then((interaction2) => {
 					if (interaction2.customId[4] == interaction2.customId[5]) {
@@ -1312,7 +1312,7 @@ client.on("interactionCreate", async (interaction) => {
 				.awaitMessageComponent({
 					filter,
 					componentType: ComponentType.Button,
-					time: 5000,
+					time: 10000,
 				})
 				.then((interaction2) => {
 					if (interaction2.customId[4] == interaction2.customId[5]) {
