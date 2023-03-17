@@ -1534,19 +1534,6 @@ client.on("interactionCreate", async (interaction) => {
 				},
 			};
 
-			let hasCECRole = await checkMemberRole(
-				client,
-				process.env.EVO_SERVER,
-				interaction.user.id,
-				process.env.CEC_MEMBER_ROLE
-			);
-
-			if (interaction.guild.id == "1042081538784903278" || hasCECRole) {
-				content.fields["CEC Member"] = "CEC Member";
-			} else {
-				content.fields["CEC Member"] = "NO";
-			}
-
 			let tenantToken = await feishu.authorize(
 				process.env.FEISHU_ID,
 				process.env.FEISHU_SECRET
@@ -1568,8 +1555,7 @@ client.on("interactionCreate", async (interaction) => {
 				tenantToken,
 				process.env.CEP_BASE,
 				process.env.CEP_SUBMISSION,
-				content,
-				true
+				content
 			);
 
 			if (success) {
