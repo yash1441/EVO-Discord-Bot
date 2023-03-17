@@ -2809,8 +2809,13 @@ function checkURL(text, log) {
 	if (text.includes("www.")) {
 		text = text.replace("www.", "");
 	}
+
+	if (text.includes("vm.")) {
+		text = text.replace("vm.", "");
+	}
+
 	const expression =
-		/^(https?\:\/\/)?((www\.|vm\.)?youtube\.com|youtu\.be|tiktok\.com|taptap\.io|twitter\.com|instagram\.com|twitch\.com)\/.+$/;
+		/^(https?\:\/\/)?((www\.)?youtube\.com|youtu\.be|tiktok\.com|taptap\.io|twitter\.com|instagram\.com|twitch\.com)\/.+$/;
 	const regex = new RegExp(expression);
 
 	if (text.match(regex)) {
