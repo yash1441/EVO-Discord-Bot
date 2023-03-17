@@ -4,17 +4,12 @@
 		"options": ["10", "8", "5", "12"]
 	},
 	{
-		"question": "The PPSH is in what category of guns?"
+		"question": "The PPSH is in what category of guns?",
 		"options": ["SMG", "Assault Rifle", "Snipers", "Pistols"]
 	},
 	{
 		"question": "What color is a ember?",
-		"options": [
-			"Red",
-			"Blue",
-			"Green",
-			"Invisible"
-		]
+		"options": ["Red", "Blue", "Green", "Invisible"]
 	},
 	{
 		"question": "Where is RED vault located?",
@@ -28,15 +23,20 @@
 		"question": "Which gun is not like the others?",
 		"options": ["MPX", "ARX", "AKM", "AUG"]
 	},
-	{	
+	{
 		"question": "Which of these items needs to be learned at the workbench?",
-		"options": ["Screen Divider", "Sketching Table", "Vending Machine", "Ember Chest"]
+		"options": [
+			"Screen Divider",
+			"Sketching Table",
+			"Vending Machine",
+			"Ember Chest"
+		]
 	},
-	{	
+	{
 		"question": "How much scrap is needed to research dynamite?",
 		"options": ["600", "350", "700", "450"]
 	},
-	{	
+	{
 		"question": "How much durability does a Sleeping Bag have?",
 		"options": ["300", "200", "500", "50"]
 	}

@@ -197,6 +197,17 @@ module.exports = {
 						.setDescription("Input the channel.")
 						.setRequired(true)
 				)
+		)
+		.addSubcommand((subcommand) =>
+			subcommand
+				.setName("100k-announcement")
+				.setDescription("Setup 100k Event announcement.")
+				.addChannelOption((option) =>
+					option
+						.setName("channel")
+						.setDescription("Input the channel.")
+						.setRequired(true)
+				)
 		),
 	async execute(interaction, client) {
 		await interaction.deferReply();
@@ -678,6 +689,29 @@ module.exports = {
 				channel.send({
 					content: "<@&1074185209643278448>",
 					embeds: [shortsEmbed],
+					components: [row],
+				})
+			);
+		} else if (subCommand === "100k-announcement") {
+			const quizEmbed = new EmbedBuilder()
+				.setTitle(`100K`)
+				.setDescription(
+					`Cheers to 100k! We are so excited to see the community, as well as the support for the Project, continue to grow. We are still working hard on delivering the best Survival Mobile game we can, and have prepared some trivia to test how much people have picked up about EVO. Complete the quiz successfully, and you can show off your knowledge with the **LIMITED EDITION** 100k Celebration Badge. You can only earn this badge in the next week, so get it quick!\n\nTo play, click the button below. You will have 3 questions given to you. Get them all correct, and you win!\n\nWinners will receive the <&@1085629746186031225> role/badge and be entered into a Discord Nitro giveaway. We will select __20 winners__ to receive **1 Month of Nitro** at random, and will announce the winners on 3/25.\n\nThanks for being such a dedicated community, we are glad to have you!`
+				)
+				.setColor(`C04946`);
+
+			const startQuizButton = new ButtonBuilder()
+				.setCustomId("startQuiz")
+				.setLabel("Start Quiz")
+				.setStyle(ButtonStyle.Success)
+				.setEmoji("❓");
+
+			const row = new ActionRowBuilder().addComponents([startQuizButton]);
+
+			client.channels.fetch(channel.id).then((channel) =>
+				channel.send({
+					content: "<@&1074185209643278448>",
+					embeds: [quizEmbed],
 					components: [row],
 				})
 			);
