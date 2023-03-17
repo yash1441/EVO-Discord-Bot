@@ -1568,7 +1568,8 @@ client.on("interactionCreate", async (interaction) => {
 				tenantToken,
 				process.env.CEP_BASE,
 				process.env.CEP_SUBMISSION,
-				content
+				content,
+				true
 			);
 
 			if (success) {
