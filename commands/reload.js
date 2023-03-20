@@ -616,7 +616,7 @@ module.exports = {
 			}
 
 			await interaction.editReply({
-				content: "CEC Data Calculated.",
+				content: "CLUB Data Calculated.",
 				ephemeral: true,
 			});
 		} else if (subCommand === "cec-bp") {

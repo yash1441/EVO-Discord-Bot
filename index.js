@@ -3170,6 +3170,8 @@ async function showRegionMenu(customId) {
 }
 
 async function calculateBP() {
+	logger.info("Calculating CLUB Data...");
+
 	const tenantToken = await feishu.authorize(
 		process.env.FEISHU_ID,
 		process.env.FEISHU_SECRET
@@ -3180,84 +3182,101 @@ async function calculateBP() {
 			tenantToken,
 			process.env.CEP_BASE,
 			process.env.CEP_SUBMISSION,
-			`AND(CurrentValue.[Validity] = "VALID", OR(CurrentValue.[Platform] = "YouTube", CurrentValue.[Platform] = "YouTube Shorts", CurrentValue.[Platform] = "TikTok"), CurrentValue.[Views] > 999)`
+			`AND(CurrentValue.[Validity] = "VALID", CurrentValue.[Views] > 999, CurrentValue.[Submission Date] >= DATE(2022,12,1))`
 		)
 	);
-
-	if (!response.data.total) {
-		logger.error("No CEP Submissions Found.");
-		return;
-	}
 
 	let records = [];
 
 	for (const record of response.data.items) {
-		const isVerified = await checkMemberRole(
-			client,
-			process.env.EVO_CEC_SERVER,
-			record.fields["Discord ID"],
-			process.env.VERIFIED_ROLE
-		);
+		let shouldContinue = false;
+		if (!record.fields["Discord ID"]) continue;
+		const guild = client.guilds.cache.get(process.env.EVO_CEC_SERVER);
+		const member = await guild.members
+			.fetch(record.fields["Discord ID"])
+			.catch((error) => {
+				logger.error(
+					`Error fetching member ${record.fields["Discord ID"]}. ${error}`
+				);
+				shouldContinue = true;
+			});
 
-		if (!isVerified) continue;
+		if (shouldContinue) continue;
+
+		if (member == undefined) continue;
+
+		if (!member.roles.cache.has(process.env.VERIFIED_ROLE)) continue;
 
 		if (
-			(record.fields["Platform"] === "YouTube Shorts" ||
-				record.fields["Platform"] === "TikTok") &&
-			parseInt(record.fields["Views"] < 5000)
+			(record.fields["Platform"] == "TikTok" ||
+				record.fields["Platform"] == "YouTube Shorts") &&
+			record.fields["Views"] < 5000
 		)
 			continue;
 
-		let tempData = {
-			recordId: record.record_id,
-			discordId: record.fields["Discord ID"],
-			totalViews: parseInt(record.fields["Views"]),
-		};
+		let tempRecord = {};
+		if (
+			record.fields["Platform"] == "TikTok" ||
+			record.fields["Platform"] == "YouTube Shorts"
+		) {
+			tempRecord = {
+				"Discord ID": record.fields["Discord ID"],
+				"Discord Name": record.fields["Discord Name"],
+				"Short Views": parseInt(record.fields["Views"]),
+				Views: 0,
+				Videos: 1,
+			};
+		} else {
+			tempRecord = {
+				"Discord ID": record.fields["Discord ID"],
+				"Discord Name": record.fields["Discord Name"],
+				"Short Views": 0,
+				Views: parseInt(record.fields["Views"]),
+				Videos: 1,
+			};
+		}
 
 		let existingData = records.find(
-			(r) => r["Discord ID"] === tempData["Discord ID"]
+			(r) => r["Discord ID"] === tempRecord["Discord ID"]
 		);
+
 		if (existingData) {
-			existingData["Views"] += tempData["Views"];
+			existingData["Short Views"] += tempRecord["Short Views"];
+			existingData["Views"] += tempRecord["Views"];
+			existingData["Videos"] += tempRecord["Videos"];
 		} else {
-			records.push(tempData);
+			records.push(tempRecord);
 		}
 	}
 
 	for (const record of records) {
-		let bp = 0.0,
-			bpRate = 1.0;
-
 		response = JSON.parse(
 			await feishu.getRecords(
 				tenantToken,
 				process.env.CEP_BASE,
-				process.env.CEC_BENEFIT,
-				`CurrentValue.[Discord ID] = "${record.discordId}"`
+				process.env.CEC_DATA,
+				`CurrentValue.[Discord ID] = "${record["Discord ID"]}"`
 			)
 		);
-
-		if (
-			response.data.total &&
-			(response.data.items[0].fields["Benefit Level"].includes("Senior") ||
-				response.data.items[0].fields["Benefit Level"].includes("Elite"))
-		) {
-			bpRate = parseFloat(response.data.items[0].fields["BP Rate"]);
-		} else continue;
-
-		if (bpRate == NaN) bpRate = 0.0;
-		bp = (record.totalViews / 5000) * bpRate;
-
-		await feishu.updateRecord(
-			tenantToken,
-			process.env.CEP_BASE,
-			process.env.CEC_DATA,
-			record.recordId,
-			{ fields: { "BP Amount": bp } }
-		);
+		if (response.data.total) {
+			await feishu.updateRecord(
+				tenantToken,
+				process.env.CEP_BASE,
+				process.env.CEC_DATA,
+				response.data.items[0].record_id,
+				{ fields: record }
+			);
+		} else {
+			await feishu.createRecord(
+				tenantToken,
+				process.env.CEP_BASE,
+				process.env.CEC_DATA,
+				{ fields: record }
+			);
+		}
 	}
 
-	logger.info("BP Data Calculated.");
+	logger.info("Calculating CLUB Data Completed.");
 }
 
 async function download(url, name) {
