@@ -18,7 +18,8 @@ module.exports = {
 					{ name: "CEC Check Review", value: "CECCHECK" },
 					{ name: "CEC Check Qualify", value: "CECQUALIFY" },
 					{ name: "CCES Weekly Data Calculation", value: "CCESWEEKLYDATA" },
-					{ name: "CCES Weekly Reward Calculation", value: "CCESWEEKLYREWARD" }
+					{ name: "CCES Weekly Reward Calculation", value: "CCESWEEKLYREWARD" },
+					{ name: "Test", value: "TEST" }
 				)
 		)
 		.addStringOption((option) =>
@@ -543,6 +544,12 @@ module.exports = {
 			}
 
 			console.log("Successfully entered CCES Weekly Reward Data.");
+		} else if (option === "TEST") {
+			client.channels.fetch("360776228199727105").then((channel) =>
+				channel.send({
+					content: "Hi",
+				})
+			);
 		}
 
 		await interaction.editReply({ content: "Testing complete." });
