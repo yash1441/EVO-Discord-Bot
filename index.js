@@ -1545,17 +1545,20 @@ client.on("interactionCreate", async (interaction) => {
 				},
 			};
 
-			let tenantToken = await feishu.authorize(
+			console.log({ content });
+
+			const tenantToken = await feishu.authorize(
 				process.env.FEISHU_ID,
 				process.env.FEISHU_SECRET
 			);
-			let submissions = await feishu.getRecords(
-				tenantToken,
-				process.env.CEP_BASE,
-				process.env.CEP_SUBMISSION,
-				`CurrentValue.[Video] = "${videoURL}"`
+			let submissions = JSON.parse(
+				await feishu.getRecords(
+					tenantToken,
+					process.env.CEP_BASE,
+					process.env.CEP_SUBMISSION,
+					`CurrentValue.[Video] = "${videoURL}"`
+				)
 			);
-			submissions = JSON.parse(submissions);
 			if (submissions.data.total)
 				return await interaction.editReply({
 					content:
