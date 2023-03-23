@@ -1545,8 +1545,6 @@ client.on("interactionCreate", async (interaction) => {
 				},
 			};
 
-			console.log({ content });
-
 			const tenantToken = await feishu.authorize(
 				process.env.FEISHU_ID,
 				process.env.FEISHU_SECRET
@@ -3462,6 +3460,24 @@ async function loadBetaTesterCodes() {
 		process.env.BETA_TESTER_TEN,
 		process.env.BETA_TESTER_ELEVEN,
 		process.env.BETA_TESTER_TWELVE,
+		process.env.BETA_TESTER_THIRTEEN,
+		process.env.BETA_TESTER_FOURTEEN,
+		process.env.BETA_TESTER_FIFTEEN,
+		process.env.BETA_TESTER_SIXTEEN,
+		process.env.BETA_TESTER_SEVENTEEN,
+		process.env.BETA_TESTER_EIGHTEEN,
+		process.env.BETA_TESTER_NINETEEN,
+		process.env.BETA_TESTER_TWENTY,
+		process.env.BETA_TESTER_TWENTYONE,
+		process.env.BETA_TESTER_TWENTYTWO,
+		process.env.BETA_TESTER_TWENTYTHREE,
+		process.env.BETA_TESTER_TWENTYFOUR,
+		process.env.BETA_TESTER_TWENTYFIVE,
+		process.env.BETA_TESTER_TWENTYSIX,
+		process.env.BETA_TESTER_TWENTYSEVEN,
+		process.env.BETA_TESTER_TWENTYEIGHT,
+		process.env.BETA_TESTER_TWENTYNINE,
+		process.env.BETA_TESTER_THIRTY,
 	];
 
 	for (const table of tablesToCheck) {
