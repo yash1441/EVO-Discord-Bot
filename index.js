@@ -1409,31 +1409,38 @@ client.on("interactionCreate", async (interaction) => {
 				} else if (subscriberCount < 1000) {
 					await submitted.member.roles.add(process.env.EAE_ROLE).then(() => {
 						submitted.reply({
-							content: `Signed up successfully! You have been added to an <@&${process.env.EAE_ROLE}> role and will receive event notifications.
-							Your audience may ask where to download the game. That's why we suggest you add the download link to your video description! This is also the place where players can pre-register the game! 
-							👉 https://bit.ly/downloadprojectevo 👈
-						The bot has also sent you the code in DM, in case you cannot find this message.
-							Now, feel free to start making videos and recommend Project EVO to your friends & fans & family! `,
+							content: `Signed up successfully! You have been added to an <@&${process.env.EAE_ROLE}> role and will receive event notifications.\nYour audience may ask where to download the game. That's why we suggest you add the download link to your video description! This is also the place where players can pre-register the game!\n👉 https://bit.ly/downloadprojectevo 👈\nNow, feel free to start making videos and recommend Project EVO to your friends & fans & family!`,
 							ephemeral: true,
 						});
 					});
 				} else if (subscriberCount >= 1000) {
-					await submitted.member.roles.add(process.env.EAE_ROLE).then(() => {
-						submitted.reply({
-							content: `Signed up successfully! Since your channel meets the requirement, you have won a Beta code (can be used by 1000 players). Don't forget to add it to your video. Your fans will like it!
-    👉 \`EAE1000\` 👈
-    Your audience may ask where to download the game. That's why we suggest you add the download link to your video description! This is also the place where players can pre-register the game! 
-    👉 https://bit.ly/downloadprojectevo 👈
-The bot has also sent you the code in DM, in case you cannot find this message.
-    Now, feel free to start making videos and recommend Project EVO to your friends & fans & family! `,
-							ephemeral: true,
-						});
-					});
-
 					const tenantToken = await feishu.authorize(
 						process.env.FEISHU_ID,
 						process.env.FEISHU_SECRET
 					);
+
+					const response = JSON.parse(
+						await feishu.getRecords(
+							tenantToken,
+							process.env.CEP_BASE,
+							process.env.EAE_PLAYERS,
+							`CurrentValue.[Discord ID] = "${submitted.user.id}"`
+						)
+					);
+
+					if (response.data.total)
+						return await submitted.reply({
+							content:
+								"You have already signed up! Your beta code is `EAE1000`. Don't forget to add it to your video. Your fans will like it!\nYour audience may ask where to download the game. That's why we suggest you add the download link to your video description! This is also the place where players can pre-register the game!\n👉 https://bit.ly/downloadprojectevo 👈\nNow, feel free to start making videos and recommend Project EVO to your friends & fans & family!",
+							ephemeral: true,
+						});
+
+					await submitted.member.roles.add(process.env.EAE_ROLE).then(() => {
+						submitted.reply({
+							content: `Signed up successfully! Since your channel meets the requirement, you have won a Beta code (can be used by 1000 players). Don't forget to add it to your video. Your fans will like it!\n👉 \`EAE1000\` 👈\nYour audience may ask where to download the game. That's why we suggest you add the download link to your video description! This is also the place where players can pre-register the game! \n👉 https://bit.ly/downloadprojectevo 👈\nNow, feel free to start making videos and recommend Project EVO to your friends & fans & family!`,
+							ephemeral: true,
+						});
+					});
 
 					await feishu.createRecord(
 						tenantToken,
