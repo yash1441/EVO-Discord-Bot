@@ -699,7 +699,7 @@ module.exports = {
 				.setImage("https://i.ibb.co/F0v1ByD/signup-en.jpg")
 				.setColor(`C04946`);
 
-			const signupButton = new ButtonBuilder()
+			const signUpButton = new ButtonBuilder()
 				.setCustomId("signUp")
 				.setLabel("Sign Up")
 				.setStyle(ButtonStyle.Success)
@@ -712,7 +712,7 @@ module.exports = {
 				.setEmoji("🔍");
 
 			const row = new ActionRowBuilder().addComponents([
-				signupButton,
+				signUpButton,
 				checkButton,
 			]);
 

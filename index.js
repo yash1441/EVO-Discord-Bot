@@ -1385,16 +1385,12 @@ client.on("interactionCreate", async (interaction) => {
 
 			await interaction.showModal(signUpModal);
 
-			const filter = (i) =>
-				i.customId === "signUp" && i.user.id === interaction.user.id;
-
 			const submitted = await interaction
 				.awaitModalSubmit({
 					filter: (i) => i.user.id === interaction.user.id,
 					time: 60000,
 				})
 				.catch((error) => {
-					logger.error(error);
 					return null;
 				});
 
@@ -1404,10 +1400,57 @@ client.on("interactionCreate", async (interaction) => {
 				const subscriberCount = parseInt(
 					submitted.fields.getTextInputValue("subscriberCount")
 				);
-				await submitted.reply({
-					content: `Your channel is ${youtubeChannel} and you have ${subscriberCount} subscribers.`,
-					ephemeral: true,
-				});
+
+				if (subscriberCount == NaN) {
+					return await submitted.reply({
+						content: "Please enter a valid number.",
+						ephemeral: true,
+					});
+				} else if (subscriberCount < 1000) {
+					await submitted.member.roles.add(process.env.EAE_ROLE).then(() => {
+						submitted.reply({
+							content: `Signed up successfully! You have been added to an <@&${process.env.EAE_ROLE}> role and will receive event notifications.
+							Your audience may ask where to download the game. That's why we suggest you add the download link to your video description! This is also the place where players can pre-register the game! 
+							👉 https://bit.ly/downloadprojectevo 👈
+						The bot has also sent you the code in DM, in case you cannot find this message.
+							Now, feel free to start making videos and recommend Project EVO to your friends & fans & family! `,
+							ephemeral: true,
+						});
+					});
+				} else if (subscriberCount >= 1000) {
+					await submitted.member.roles.add(process.env.EAE_ROLE).then(() => {
+						submitted.reply({
+							content: `Signed up successfully! Since your channel meets the requirement, you have won a Beta code (can be used by 1000 players). Don't forget to add it to your video. Your fans will like it!
+    👉 \`EAE1000\` 👈
+    Your audience may ask where to download the game. That's why we suggest you add the download link to your video description! This is also the place where players can pre-register the game! 
+    👉 https://bit.ly/downloadprojectevo 👈
+The bot has also sent you the code in DM, in case you cannot find this message.
+    Now, feel free to start making videos and recommend Project EVO to your friends & fans & family! `,
+							ephemeral: true,
+						});
+					});
+
+					const tenantToken = await feishu.authorize(
+						process.env.FEISHU_ID,
+						process.env.FEISHU_SECRET
+					);
+
+					await feishu.createRecord(
+						tenantToken,
+						process.env.CEP_BASE,
+						process.env.EAE_PLAYERS,
+						{
+							fields: {
+								"Discord ID": submitted.user.id,
+								"Discord Name": submitted.user.tag,
+								Channel: {
+									text: youtubeChannel,
+									link: youtubeChannel,
+								},
+							},
+						}
+					);
+				}
 			}
 		}
 	} else if (interaction.isModalSubmit()) {
