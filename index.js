@@ -1381,7 +1381,7 @@ client.on("interactionCreate", async (interaction) => {
 			let firstQuestion = new ActionRowBuilder().addComponents(channel);
 			let secondQuestion = new ActionRowBuilder().addComponents(subs);
 
-			sdModal.addComponents(firstQuestion, secondQuestion);
+			signUpModal.addComponents(firstQuestion, secondQuestion);
 
 			await interaction.showModal(signUpModal);
 
