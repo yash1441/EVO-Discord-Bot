@@ -98,7 +98,11 @@ module.exports = {
 
 				for (const creator of creatorList) {
 					const guild = client.guilds.cache.get(process.env.EVO_SERVER);
-					const member = await guild.members.fetch(creator.discordId);
+					const member = await guild.members
+						.fetch(creator.discordId)
+						.catch((error) => {
+							logger.error(error);
+						});
 					if (member == undefined) {
 						await feishu.updateRecord(
 							tenantToken,
