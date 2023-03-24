@@ -208,6 +208,28 @@ module.exports = {
 						.setDescription("Input the channel.")
 						.setRequired(true)
 				)
+		)
+		.addSubcommand((subcommand) =>
+			subcommand
+				.setName("ambassador-info")
+				.setDescription("Setup Ambassador Event Info announcement.")
+				.addChannelOption((option) =>
+					option
+						.setName("channel")
+						.setDescription("Input the channel.")
+						.setRequired(true)
+				)
+		)
+		.addSubcommand((subcommand) =>
+			subcommand
+				.setName("ambassador-signup")
+				.setDescription("Setup Ambassador Event Signup announcement.")
+				.addChannelOption((option) =>
+					option
+						.setName("channel")
+						.setDescription("Input the channel.")
+						.setRequired(true)
+				)
 		),
 	async execute(interaction, client) {
 		await interaction.deferReply();
@@ -484,91 +506,6 @@ module.exports = {
 				.then((channel) =>
 					channel.send({ embeds: [linkEmbed], components: [linkRow] })
 				);
-		} else if (subCommand === "seven-day") {
-			const sdButton = new ButtonBuilder()
-				.setCustomId("sdButton")
-				.setLabel("Sign Up")
-				.setStyle(ButtonStyle.Success)
-				.setEmoji("📝");
-
-			const sdEmbed = new EmbedBuilder()
-				.setTitle(`7 DAY SURVIVAL CHALLENGE`)
-				.setDescription(`**SIGN UP NOW!**`)
-				.setImage(
-					"https://i.ibb.co/mJgG68c/img-v2-61e4a6a3-ce7f-47fe-b9b2-8084e9c2f7ag.jpg"
-				)
-				.addFields(
-					{
-						name: "Brief Intro",
-						value:
-							"**2000** Gold will be split among **10** Youtubers (200 Gold each). You will try to survive **7** days without dying. If you succeed, the amount of Gold you own will be doubled. Every time you dies, you drop **50** Gold.\n\nPlayers will hunt you. Do everything you can to keep alive! __Each time you die, you lose 50 Gold__.\nSounds impossible? Call your fan for help! Build an army for defense!\nStrong enough? Try the following missions to earn more Gold!",
-					},
-					{
-						name: "\u200B",
-						value:
-							"Mission 1: Kill Kane.\n<:ember:993888291218784286> Kill **Kane** to earn an extra **50** Gold.\n<:ember:993888291218784286> Use **the shortest time** to kill? Get **100** Gold instead!",
-					},
-					{
-						name: "\u200B",
-						value:
-							"Mission 2: Raid for embers.\n<:ember:993888291218784286> Among **10** youtubers, whoever gets **the most embers** earns an extra **100** Gold.\n<:ember:993888291218784286> Whoever gets **the most embers in a single raid** earns an extra **50** Gold.",
-					},
-					{
-						name: "\u200B",
-						value:
-							"Mission 3: Kill The Rest.\n<:ember:993888291218784286> Whenever you meet other Youtuber participants, kill them and you get **100** Gold.",
-					},
-					{
-						name: "\u200B",
-						value:
-							"**PERKS FOR PARTICIPANTS:**\n<:diamond:993888292498055208> Redeem gift card using Gold! (1 Gold = $1)\n<:diamond:993888292498055208> Get a personal poster made by the official team!\n<:diamond:993888292498055208> Get a video decoration frame made by the official team!\n<:diamond:993888292498055208> During the challenge, get 10 - 20 codes each day for giveaways!",
-					},
-					{
-						name: "\u200B",
-						value:
-							"**WHEN IT STARTS?**\nFrom 17 Dec 00:00 to 23 Dec 23:59 (UTC+8)\nYoutubers have to open a new session from 17 Dec 00:00 to 18:00 (UTC+8)",
-					},
-					{
-						name: "\u200B",
-						value:
-							"**SIGN UP REQUIREMENT:**\n1. Have > 1000 subscribers, average video views > 1000.\n2. For Youtuber participants, you have to make **at least 4 videos relevant to the challenge**. Or, **stream at least 90 minutes every day during the challenge** (highly recommended).  (If you meet the requirement, 100 Gold will not be lost no matter how many times you die)",
-					},
-					{
-						name: "\u200B",
-						value:
-							"**READ RULES CAREFULLY BEFORE THE CHALLENGE STARTS:**\n<#1052206159802683402>",
-					}
-				)
-				.setColor(`C04946`);
-
-			const sdRow = new ActionRowBuilder().addComponents([sdButton]);
-
-			client.channels
-				.fetch(channel.id)
-				.then((channel) =>
-					channel.send({ embeds: [sdEmbed], components: [sdRow] })
-				);
-		} else if (subCommand === "seven-day-2") {
-			const sdButton2 = new ButtonBuilder()
-				.setCustomId("sdButton2")
-				.setLabel("Submit Info")
-				.setStyle(ButtonStyle.Success)
-				.setEmoji("📇");
-
-			const sdEmbed2 = new EmbedBuilder()
-				.setTitle(`7 DAY SURVIVAL CHALLENGE`)
-				.setDescription(
-					`**Please enter the relevant info about the challenge**\nYou need to fill in the region, role name, role id, session id carefully and accurately.\nPlease do not fill in the form before 18:00 17 Dec (UTC+8)`
-				)
-				.setColor(`C04946`);
-
-			const sdRow2 = new ActionRowBuilder().addComponents([sdButton2]);
-
-			client.channels
-				.fetch(channel.id)
-				.then((channel) =>
-					channel.send({ embeds: [sdEmbed2], components: [sdRow2] })
-				);
 		} else if (subCommand === "ecc-application") {
 			const eccEmbed = new EmbedBuilder()
 				.setTitle("EVO Creator Competition Starts Now!")
@@ -712,6 +649,76 @@ module.exports = {
 				channel.send({
 					content: "<@&1074185209643278448>",
 					embeds: [quizEmbed],
+					components: [row],
+				})
+			);
+		} else if (subCommand === "ambassador-info") {
+		} else if (subCommand === "ambassador-signup") {
+			const ambassadorEmbed = new EmbedBuilder()
+				.setTitle(
+					`EVO Ambassador Event: Recommend EVO and Share the $5000 Prize Pool! :loudspeaker:`
+				)
+				.setDescription(
+					`Do you like Project EVO? How about recommending the game to your fans & friends & family? To appreciate your support, we are offering a $5000 gift card pool for players who make game recommendation videos for the game! Let's enlarge the community together. Join events now!
+
+					WHO CAN PARTICIPATE? 
+					Everyone
+					Note: We have also prepared massive beta codes for creators (with 1000+ followers and 1000+ average views). One code per creator. This code can be used up to 1000 times. 
+					
+					WHEN TO START AND END? 
+					1. The event starts from 26 Mar to 11 Apr.
+					2. The result will be announced on 13 Apr.
+					
+					HOW TO PARTICIPATE? 
+					1. Click "Sign Up"
+					2. Create and post your EVO videos on YouTube（Shorts Not Included）
+					3. Submit your content via #submit-content channel, and select the "EVO Ambassador Event" tag (a MUST step) 
+					
+					WHAT CAN YOU WIN?
+					Win rewards according to the views of each video (Multiple videos can be submitted)
+					1. >= 1000 views, 30 in-game lottery tickets :beta_lottery_ticket: 
+					2. > = 3000 views, $20
+					3. >= 5,000 views, $50
+					4. >= 10,000 views, $150
+					
+					In addition, we have upgraded rewards for the most popular works:
+					1. Total views reach 300k, get an extra $300
+					2. Total views reach 200k, get an extra $200
+					3. Total views reach 100k, get an extra $100
+					
+					TOPIC REQUIREMENT:  
+					1. The video should revolve around the following topics, such as game recommendation, introduction, walkthrough, first impression, etc. 
+					2. We have also prepared <#1076037107300184125>, in case you need some high-quality materials!
+					 Must Read <#1088672298585817128> Before Creation❗️❗️❗️. Your video might risk being invalid if it doesn't follow the rules
+					
+					<#1088747569003384873>
+					<#1088748018192371775>
+					<#1088748403405627392>
+					<#1088748878825783307>`
+				)
+				.setImage("https://i.ibb.co/F0v1ByD/signup-en.jpg")
+				.setColor(`C04946`);
+
+			const signupButton = new ButtonBuilder()
+				.setCustomId("signUp")
+				.setLabel("Sign Up")
+				.setStyle(ButtonStyle.Success)
+				.setEmoji("🪧");
+
+			const checkButton = new ButtonBuilder()
+				.setCustomId("checkSubmission")
+				.setLabel("Check Submission")
+				.setStyle(ButtonStyle.Primary)
+				.setEmoji("🔍");
+
+			const row = new ActionRowBuilder().addComponents([
+				signupButton,
+				checkButton,
+			]);
+
+			client.channels.fetch(channel.id).then((channel) =>
+				channel.send({
+					embeds: [ambassadorEmbed],
 					components: [row],
 				})
 			);

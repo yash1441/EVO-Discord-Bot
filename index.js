@@ -1359,6 +1359,56 @@ client.on("interactionCreate", async (interaction) => {
 					embeds: [],
 				});
 			});
+		} else if (interaction.customId === "signUp") {
+			const signUpModal = new ModalBuilder()
+				.setTitle("Sign Up")
+				.setCustomId("signUp");
+
+			const channel = new TextInputBuilder()
+				.setCustomId("youtubeChannel")
+				.setLabel("YouTube Channel Link")
+				.setPlaceholder("For example, https://www.youtube.com/@PROJECTEVOGAME")
+				.setStyle(TextInputStyle.Short)
+				.setRequired(true);
+
+			const subs = new TextInputBuilder()
+				.setCustomId("subscriberCount")
+				.setLabel("Subscribers")
+				.setPlaceholder("For example, 500, 1000, 5000, 10000")
+				.setStyle(TextInputStyle.Short)
+				.setRequired(true);
+
+			let firstQuestion = new ActionRowBuilder().addComponents(channel);
+			let secondQuestion = new ActionRowBuilder().addComponents(subs);
+
+			sdModal.addComponents(firstQuestion, secondQuestion);
+
+			await interaction.showModal(signUpModal);
+
+			const filter = (i) =>
+				i.customId === "signUp" && i.user.id === interaction.user.id;
+
+			const submitted = await interaction
+				.awaitModalSubmit({
+					filter: (i) => i.user.id === interaction.user.id,
+					time: 60000,
+				})
+				.catch((error) => {
+					logger.error(error);
+					return null;
+				});
+
+			if (submitted) {
+				const youtubeChannel =
+					submitted.fields.getTextInputValue("youtubeChannel");
+				const subscriberCount = parseInt(
+					submitted.fields.getTextInputValue("subscriberCount")
+				);
+				await submitted.reply({
+					content: `Your channel is ${youtubeChannel} and you have ${subscriberCount} subscribers.`,
+					ephemeral: true,
+				});
+			}
 		}
 	} else if (interaction.isModalSubmit()) {
 		if (interaction.customId === "betaAccess") {
