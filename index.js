@@ -1468,6 +1468,28 @@ client.on("interactionCreate", async (interaction) => {
 					);
 				}
 			}
+		} else if (interaction.customId === "checkSubmission") {
+			await interaction.deferReply({ ephemeral: true });
+
+			const tenantToken = await feishu.authorize(
+				process.env.FEISHU_ID,
+				process.env.FEISHU_SECRET
+			);
+
+			const response = JSON.parse(
+				await feishu.getRecords(
+					tenantToken,
+					process.env.CEP_BASE,
+					process.env.CEP_SUBMISSION,
+					`CurrentValue.[Discord ID] = "${interaction.user.id}"`
+				)
+			);
+
+			const videos = parseInt(response.data.total);
+
+			await interaction.editReply({
+				content: `You have submitted ${videos} videos, keep up the good work! We will review your video and record the views on 17th April. You will be able to check the event result by using this button!`,
+			});
 		}
 	} else if (interaction.isModalSubmit()) {
 		if (interaction.customId === "betaAccess") {
