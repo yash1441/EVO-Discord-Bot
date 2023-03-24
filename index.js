@@ -1398,7 +1398,7 @@ client.on("interactionCreate", async (interaction) => {
 				const youtubeChannel =
 					submitted.fields.getTextInputValue("youtubeChannel");
 				const subscriberCount = parseInt(
-					submitted.fields.getTextInputValue("subscriberCount")
+					onlyDigits(submitted.fields.getTextInputValue("subscriberCount"))
 				);
 
 				if (subscriberCount == NaN) {
