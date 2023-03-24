@@ -1406,7 +1406,16 @@ client.on("interactionCreate", async (interaction) => {
 						content: "Please enter a valid number.",
 						ephemeral: true,
 					});
-				} else if (subscriberCount < 1000) {
+				}
+
+				if (!checkURL(youtubeChannel)) {
+					return await submitted.reply({
+						content: `\`${youtubeChannel}\`\nPlease enter a **valid YouTube** link.`,
+						ephemeral: true,
+					});
+				}
+
+				if (subscriberCount < 1000) {
 					await submitted.member.roles.add(process.env.EAE_ROLE).then(() => {
 						submitted.reply({
 							content: `Signed up successfully! You have been added to an <@&${process.env.EAE_ROLE}> role and will receive event notifications.\nYour audience may ask where to download the game. That's why we suggest you add the download link to your video description! This is also the place where players can pre-register the game!\n👉 https://bit.ly/downloadprojectevo 👈\nNow, feel free to start making videos and recommend Project EVO to your friends & fans & family!`,
