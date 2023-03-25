@@ -1396,7 +1396,7 @@ client.on("interactionCreate", async (interaction) => {
 					});
 				}
 
-				if (!checkURL(youtubeChannel)) {
+				if (!checkURL(youtubeChannel) || !youtubeChannel.includes("youtube")) {
 					return await submitted.reply({
 						content: `\`${youtubeChannel}\`\nPlease enter a **valid YouTube** link.`,
 						ephemeral: true,
@@ -1450,6 +1450,7 @@ client.on("interactionCreate", async (interaction) => {
 									text: youtubeChannel,
 									link: youtubeChannel,
 								},
+								Subscribers: subscriberCount,
 							},
 						}
 					);
