@@ -94,7 +94,7 @@ client.on("ready", () => {
 		function () {
 			logger.info(`Starting scheduled cronjob. (Every 6 hours)`);
 			//sendShortsEvent();
-			//sendAmbassadorEvent();
+			sendAmbassadorEvent();
 		},
 		{
 			timezone: "Asia/Singapore",
