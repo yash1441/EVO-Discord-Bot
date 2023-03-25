@@ -1468,7 +1468,7 @@ client.on("interactionCreate", async (interaction) => {
 					tenantToken,
 					process.env.CEP_BASE,
 					process.env.CEP_SUBMISSION,
-					`CurrentValue.[Discord ID] = "${interaction.user.id}"`
+					`AND(CurrentValue.[Discord ID] = "${interaction.user.id}", CurrentValue.[Topic] = "EVO Ambassador Event")`
 				)
 			);
 
@@ -3132,6 +3132,10 @@ async function showSubmitModal(interaction) {
 		.setCustomId("submitContentSelectMenu")
 		.setPlaceholder("Select a topic")
 		.addOptions(
+			{
+				label: "EVO Ambassador Event",
+				value: formatSelection + "EVO Ambassador Event",
+			},
 			{
 				label: "EVO Guider Team",
 				value: formatSelection + "EVO Guider Team",
