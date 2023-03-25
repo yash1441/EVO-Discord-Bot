@@ -93,7 +93,7 @@ client.on("ready", () => {
 		"0 0 */6 * * *",
 		function () {
 			logger.info(`Starting scheduled cronjob. (Every 6 hours)`);
-			sendShortsEvent();
+			//sendShortsEvent();
 			//sendAmbassadorEvent();
 		},
 		{
