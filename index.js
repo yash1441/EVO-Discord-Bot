@@ -2931,6 +2931,10 @@ function checkURL(text, log) {
 		text = text.replace("vm.", "");
 	}
 
+	if (text.includes("m.")) {
+		text = text.replace("m.", "");
+	}
+
 	const expression =
 		/^(https?\:\/\/)?((www\.)?youtube\.com|youtu\.be|tiktok\.com|taptap\.io|twitter\.com|instagram\.com|twitch\.com)\/.+$/;
 	const regex = new RegExp(expression);
