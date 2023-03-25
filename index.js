@@ -3727,7 +3727,7 @@ async function sendAmbassadorEvent() {
 	const thChannel = "972375158583091241";
 
 	const enAttachment = new AttachmentBuilder(
-		"https://i.ibb.co/F0v1ByD/signup-en.jpg"
+		"https://i.ibb.co/SxKqj0g/signup-en.jpg"
 	);
 	const ptAttachment = new AttachmentBuilder(
 		"https://i.ibb.co/SdWWdLR/signup-pt.jpg"
