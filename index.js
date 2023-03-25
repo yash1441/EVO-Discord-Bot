@@ -107,20 +107,6 @@ client.on("ready", () => {
 	checkOldFiles();
 
 	loadWelcomeMessages();
-
-	// cron.schedule(
-	// 	"0 */30 * * * *",
-	// 	function () {
-	// 		let newDate = new Date().toLocaleString("en-US", {
-	// 			timeZone: "Asia/Singapore",
-	// 		});
-	// 		console.log(newDate + "\nChristmas event every 30 minutes...");
-	// 		ChristmasEvent();
-	// 	},
-	// 	{
-	// 		timezone: "Asia/Singapore",
-	// 	}
-	// );
 });
 
 client.on("interactionCreate", async (interaction) => {
