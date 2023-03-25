@@ -14,6 +14,7 @@ const {
 	ActivityType,
 	ButtonBuilder,
 	ButtonStyle,
+	AttachmentBuilder,
 } = require("discord.js");
 const fs = require("fs");
 const path = require("path");
@@ -93,6 +94,7 @@ client.on("ready", () => {
 		function () {
 			logger.info(`Starting scheduled cronjob. (Every 6 hours)`);
 			sendShortsEvent();
+			//sendAmbassadorEvent();
 		},
 		{
 			timezone: "Asia/Singapore",
@@ -3727,6 +3729,113 @@ async function sendShortsEvent() {
 		channel.send({
 			content: esMessage,
 			components: [row],
+		})
+	);
+}
+
+async function sendAmbassadorEvent() {
+	const enChannel = "951852948038746172";
+	const ruChannel = "973279421723209738";
+	const ptChannel = "971615587186929685";
+	const esChannel = "971614668764377118";
+	const thChannel = "972375158583091241";
+
+	const enAttachment = new AttachmentBuilder(
+		"https://i.ibb.co/F0v1ByD/signup-en.jpg"
+	);
+	const ptAttachment = new AttachmentBuilder(
+		"https://i.ibb.co/SdWWdLR/signup-pt.jpg"
+	);
+
+	const enMessage = `**EVO Ambassador Event**\n\n**Recommend EVO and Share the $5000 Prize Pool** :loudspeaker:\n\nDo you like Project EVO? How about recommending the game to your fans & friends & family? To appreciate your support, we are offering a **$5000 prize pool** for players who make **game recommendation videos** for the game! Let's enlarge the community together. Join events now!\n\nMultiple videos can be submitted, each of which can be used to claim rewards:\n>= 1000 views, **30  lottery tickets** <:beta_lottery_ticket:1088358927672033360>\n>= 3000 views, **$20**\n>= 5,000 views, **$50**\n>= 10,000 views, **$150**\n\nIn addition, we have upgraded rewards for the most popular works: :tada:\nTotal views reach 300k, get an extra **$300**\nTotal views reach 200k, get an extra **$200**\nTotal views reach 100k, get an extra **$100**\n\n<#1088675985907519538>\n<#1088676463257079910>\n<#1088676929999229060>\n<#1088677798769594428>\n\nClick "**Learn More**" below to check details and sign up for the event!`;
+
+	const ruMessage = `**Мероприятие EVO Ambassador: Рекомендуйте EVO и получите награды!**\n\nВам нравится Project EVO? Как насчет рекомендации игры своим фанатам, друзьям и семье? В знак благодарности за вашу поддержку мы предлагаем призовой фонд в размере $5000 для игроков, которые создадут видео с рекомендациями игры! Давайте увеличим сообщество вместе. Присоединяйтесь к мероприятию прямо сейчас!\n\n**Вас ждет призовой фонд в размере $5000!**\n\nМожно представлять несколько видео, каждое из которых может быть использовано для получения вознаграждения:\n>= 1000 просмотров - 30 лотерейных билетов\n>= 3000 просмотров - $20\n>= 5000 просмотров - $50\n>= 10000 просмотров - $150\n\nКроме того, у нас есть улучшенные вознаграждения за наиболее популярные работы:\nОбщее количество просмотров достигает 300 тыс., получите дополнительно $300\nОбщее количество просмотров достигает 200 тыс., получите дополнительно $200\nОбщее количество просмотров достигает 100 тыс., получите дополнительно $100\n\nНажмите "**Узнать больше**" ниже, чтобы проверить детали и зарегистрироваться на мероприятие!`;
+
+	const ptMessage = `**Evento EVO Ambassador: Recomende EVO e ganhe recompensas!**\n\nVocê gosta do Project EVO? Que tal recomendar o jogo para seus fãs, amigos e familiares? Para agradecer seu apoio, estamos oferecendo um prêmio de **$5000** em dinheiro para jogadores que criarem vídeos recomendando o jogo! Vamos aumentar a comunidade juntos. Junte-se aos eventos agora!\n\n
+	Múltiplos vídeos podem ser submetidos, cada um dos quais pode ser usado para reivindicar recompensas:\n>= 1000 visualizações, 30 bilhetes de loteria\n>= 3000 visualizações, $20\n>= 5,000 visualizações, $50\n>= 10,000 visualizações, $150\n\nAlém disso, atualizamos as recompensas para as obras mais populares:\nAlcançando um total de 300k visualizações, receba um extra de $300\nAlcançando um total de 200k visualizações, receba um extra de $200\nAlcançando um total de 100k visualizações, receba um extra de $100\n\nClique em "**Saiba Mais**" abaixo para verificar os detalhes e se inscrever para o evento!`;
+
+	const esMessage = `**Evento Embajador de EVO: ¡Recomienda EVO y obtén recompensas!**\n\n¿Te gusta Project EVO? ¿Qué tal si recomendás el juego a tus fans, amigos y familiares? Para agradecer tu apoyo, ¡ofrecemos un premio de $5000 para los jugadores que hagan videos de recomendación del juego! ¡Ampliemos la comunidad juntos! ¡Únete a los eventos ahora!\n\n**¡Un premio de tarjeta de regalo de $5000 te está esperando!**\n\nSe pueden presentar varios videos, cada uno de los cuales se puede utilizar para reclamar recompensas:\n>= 1000 vistas, 30 boletos de lotería\n>= 3000 vistas, $20\n>= 5000 vistas, $50\n>= 10.000 vistas, $150\n\nAdemás, tenemos recompensas mejoradas para las obras más populares:\nAlcanza un total de 300.000 vistas, obtené $300 adicionales\nAlcanza un total de 200.000 vistas, obtené $200 adicionales\nAlcanza un total de 100.000 vistas, obtené $100 adicionales\n\n¡Haz clic en "**Más información**" a continuación para consultar los detalles e inscribirte en el evento!`;
+
+	const thMessage = `**กิจกรรมนักเตะ EVO: แนะนำ EVO และรับรางวัล!**\n\nคุณชอบ Project EVO หรือไม่? อยากแนะนำเกมให้กับแฟน มิตรภาพ และครอบครัวของคุณหรือไม่? เพื่อแสดงความยินดีในการสนับสนุนของคุณ เรามีโปรโมชั่นพิเศษ มูลค่า 5,000 ดอลลาร์สหรัฐสำหรับผู้เล่นที่สร้างวิดีโอแนะนำเกม! มาเข้าร่วมกิจกรรมกันเถอะ ช่วยกันขยายกลุ่มชุมชนใหญ่ขึ้น\n\n**มีรางวัลรวมมูลค่า 5,000 ดอลลาร์สหรัฐรอคุณอยู่!**\n\nสามารถส่งวิดีโอหลายวิดีโอได้ แต่ละวิดีโอสามารถใช้ขอรับรางวัลได้:\n>= 1000 วิว, ได้ 30 ตั๋วสลากออนไลน์\n>= 3000 วิว, ได้ $20\n>= 5,000 วิว, ได้ $50\n>= 10,000 วิว, ได้ $150\n\nนอกจากนี้เรามีรางวัลเพิ่มเติมสำหรับงานที่ได้รับความนิยมสูงสุด:\nรวมวิวเท่ากับ 300k, ได้เงินเพิ่มอีก $300\nรวมวิวเท่ากับ 200k, ได้เงินเพิ่มอีก $200\nรวมวิวเท่ากับ 100k, ได้เงินเพิ่มอีก $100\n\nคลิก "**เรียนรู้เพิ่มเติม**" ด้านล่างเพื่อตรวจสอบรายละเอียดและลงทะเบียนเข้าร่วมกิจกรรม!`;
+
+	const enButton = new ButtonBuilder()
+		.setLabel("Learn More")
+		.setStyle(ButtonStyle.Link)
+		.setURL(
+			"https://discord.com/channels/951777532003381278/1088791299622174801"
+		);
+
+	const ruButton = new ButtonBuilder()
+		.setLabel("Узнать больше")
+		.setStyle(ButtonStyle.Link)
+		.setURL(
+			"https://discord.com/channels/951777532003381278/1088791299622174801"
+		);
+
+	const ptButton = new ButtonBuilder()
+		.setLabel("Saiba Mais")
+		.setStyle(ButtonStyle.Link)
+		.setURL(
+			"https://discord.com/channels/951777532003381278/1088791299622174801"
+		);
+
+	const esButton = new ButtonBuilder()
+		.setLabel("Más información")
+		.setStyle(ButtonStyle.Link)
+		.setURL(
+			"https://discord.com/channels/951777532003381278/1088791299622174801"
+		);
+
+	const thButton = new ButtonBuilder()
+		.setLabel("เรียนรู้เพิ่มเติมe")
+		.setStyle(ButtonStyle.Link)
+		.setURL(
+			"https://discord.com/channels/951777532003381278/1088791299622174801"
+		);
+
+	const enRow = new ActionRowBuilder().addComponents([enButton]);
+	const ruRow = new ActionRowBuilder().addComponents([ruButton]);
+	const ptRow = new ActionRowBuilder().addComponents([ptButton]);
+	const esRow = new ActionRowBuilder().addComponents([esButton]);
+	const thRow = new ActionRowBuilder().addComponents([thButton]);
+
+	client.channels.fetch(enChannel).then((channel) =>
+		channel.send({
+			content: enMessage,
+			files: [enAttachment],
+			components: [enRow],
+		})
+	);
+
+	client.channels.fetch(ruChannel).then((channel) =>
+		channel.send({
+			content: ruMessage,
+			files: [enAttachment],
+			components: [ruRow],
+		})
+	);
+
+	client.channels.fetch(ptChannel).then((channel) =>
+		channel.send({
+			content: ptMessage,
+			files: [ptAttachment],
+			components: [ptRow],
+		})
+	);
+
+	client.channels.fetch(esChannel).then((channel) =>
+		channel.send({
+			content: esMessage,
+			files: [enAttachment],
+			components: [esRow],
+		})
+	);
+
+	client.channels.fetch(thChannel).then((channel) =>
+		channel.send({
+			content: thMessage,
+			files: [enAttachment],
+			components: [thRow],
 		})
 	);
 }
