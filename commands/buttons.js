@@ -4,6 +4,7 @@ const {
 	ButtonBuilder,
 	ButtonStyle,
 	EmbedBuilder,
+	MessageAttachment,
 } = require("discord.js");
 require("dotenv").config();
 
