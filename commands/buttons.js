@@ -659,42 +659,7 @@ module.exports = {
 					`EVO Ambassador Event: Recommend EVO and Share the $5000 Prize Pool! :loudspeaker:`
 				)
 				.setDescription(
-					`Do you like Project EVO? How about recommending the game to your fans & friends & family? To appreciate your support, we are offering a $5000 gift card pool for players who make game recommendation videos for the game! Let's enlarge the community together. Join events now!
-
-					WHO CAN PARTICIPATE? 
-					Everyone
-					Note: We have also prepared massive beta codes for creators (with 1000+ followers and 1000+ average views). One code per creator. This code can be used up to 1000 times. 
-					
-					WHEN TO START AND END? 
-					1. The event starts from 26 Mar to 11 Apr.
-					2. The result will be announced on 13 Apr.
-					
-					HOW TO PARTICIPATE? 
-					1. Click "Sign Up"
-					2. Create and post your EVO videos on YouTube（Shorts Not Included）
-					3. Submit your content via #submit-content channel, and select the "EVO Ambassador Event" tag (a MUST step) 
-					
-					WHAT CAN YOU WIN?
-					Win rewards according to the views of each video (Multiple videos can be submitted)
-					1. >= 1000 views, 30 in-game lottery tickets :beta_lottery_ticket: 
-					2. > = 3000 views, $20
-					3. >= 5,000 views, $50
-					4. >= 10,000 views, $150
-					
-					In addition, we have upgraded rewards for the most popular works:
-					1. Total views reach 300k, get an extra $300
-					2. Total views reach 200k, get an extra $200
-					3. Total views reach 100k, get an extra $100
-					
-					TOPIC REQUIREMENT:  
-					1. The video should revolve around the following topics, such as game recommendation, introduction, walkthrough, first impression, etc. 
-					2. We have also prepared <#1076037107300184125>, in case you need some high-quality materials!
-					 Must Read <#1088672298585817128> Before Creation❗️❗️❗️. Your video might risk being invalid if it doesn't follow the rules
-					
-					<#1088747569003384873>
-					<#1088748018192371775>
-					<#1088748403405627392>
-					<#1088748878825783307>`
+					`Do you like Project EVO? How about recommending the game to your fans & friends & family? To appreciate your support, we are offering a **$5000 gift card pool** for players who make game recommendation videos for the game! Let's enlarge the community together. Join events now!\n\n**WHO CAN PARTICIPATE?**\n**Everyone**\nNote: We have also prepared massive beta codes for creators (with 1000+ followers and 1000+ average views). One code per creator. This code can be used up to 1000 times.\n\n**WHEN TO START AND END?**\n1. The event starts from \`26 Mar\` to \`11 Apr\`.\n2. The result will be announced on \`13 Apr\`.\n\nHOW TO PARTICIPATE?\n1. Click "**Sign Up**"\n2. Create and post your EVO videos on **YouTube (Shorts Not Included)**\n3. Submit your content via #submit-content channel, and select the "EVO Ambassador Event" tag (a MUST step)\n\n**WHAT CAN YOU WIN?**\n**Win rewards according to the views of each video (Multiple videos can be submitted)**\n1. >= 1000 views, 30 in-game lottery tickets <:beta_lottery_ticket:1088358927672033360>\n2. > = 3000 views, $20\n3. >= 5,000 views, $50\n4. >= 10,000 views, $150\n\n**In addition, we have upgraded rewards for the most popular works:**\n1. Total views reach 300k, get an extra $300\n2. Total views reach 200k, get an extra $200\n3. Total views reach 100k, get an extra $100\n\n**TOPIC REQUIREMENT:**\n1. The video should revolve around the following topics, such as game recommendation, introduction, walkthrough, first impression, etc.\n2. We have also prepared <#1076037107300184125>, in case you need some high-quality materials!\n**Must Read <#1088672298585817128> Before Creation❗❗❗. Your video might risk being invalid if it doesn't follow the rules**\n\n<#1088747569003384873>\n<#1088748018192371775>\n<#1088748403405627392>\n<#1088748878825783307>`
 				)
 				.setImage("https://i.ibb.co/F0v1ByD/signup-en.jpg")
 				.setColor(`C04946`);
