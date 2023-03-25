@@ -723,7 +723,7 @@ module.exports = {
 				})
 			);
 		} else if (subCommand === "ambassador-info-text") {
-			const ambassadorMessage = `**EVO Ambassador Event**\n\n**Recommend EVO and Share the $5000 Prize Pool** :loudspeaker:\n\nDo you like Project EVO? How about recommending the game to your fans & friends & family? To appreciate your support, we are offering a **$5000 prize pool** for players who make **game recommendation videos** for the game! Let's enlarge the community together. Join events now!\n\nMultiple videos can be submitted, each of which can be used to claim rewards:\n<:ember:993888291218784286> >= 1000 views, **30  lottery tickets** <:beta_lottery_ticket:1088358927672033360>\n<:ember:993888291218784286> >= 3000 views, **$20**\n<:ember:993888291218784286> >= 5,000 views, **$50**\n<:ember:993888291218784286> >= 10,000 views, **$150**\n\nIn addition, we have upgraded rewards for the most popular works: :tada:\n<:ember:993888291218784286> Total views reach 300k, get an extra **$300**\n<:ember:993888291218784286> Total views reach 200k, get an extra **$200**\n<:ember:993888291218784286> Total views reach 100k, get an extra **$100**\n\n<#1088675985907519538>\n<#1088676463257079910>\n<#1088676929999229060>\n<#1088677798769594428>\n\nClick "**Learn More**" below to check details and sign up for the event!`;
+			const ambassadorMessage = `**EVO Ambassador Event**\n@everyone\n\n**Recommend EVO and Share the $5000 Prize Pool** :loudspeaker:\n\nDo you like Project EVO? How about recommending the game to your fans & friends & family? To appreciate your support, we are offering a **$5000 prize pool** for players who make **game recommendation videos** for the game! Let's enlarge the community together. Join events now!\n\nMultiple videos can be submitted, each of which can be used to claim rewards:\n<:ember:993888291218784286> >= 1000 views, **30  lottery tickets** <:beta_lottery_ticket:1088358927672033360>\n<:ember:993888291218784286> >= 3000 views, **$20**\n<:ember:993888291218784286> >= 5,000 views, **$50**\n<:ember:993888291218784286> >= 10,000 views, **$150**\n\nIn addition, we have upgraded rewards for the most popular works: :tada:\n<:ember:993888291218784286> Total views reach 300k, get an extra **$300**\n<:ember:993888291218784286> Total views reach 200k, get an extra **$200**\n<:ember:993888291218784286> Total views reach 100k, get an extra **$100**\n\n<#1088675985907519538>\n<#1088676463257079910>\n<#1088676929999229060>\n<#1088677798769594428>\n\nClick "**Learn More**" below to check details and sign up for the event!`;
 
 			const attachment = new AttachmentBuilder(
 				"https://i.ibb.co/SxKqj0g/signup-en.jpg"
@@ -740,7 +740,7 @@ module.exports = {
 
 			client.channels.fetch(channel.id).then((channel) =>
 				channel.send({
-					content: `@everyone\n` + ambassadorMessage,
+					content: ambassadorMessage,
 					files: [attachment],
 					components: [row],
 				})
