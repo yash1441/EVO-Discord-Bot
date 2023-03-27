@@ -25,17 +25,6 @@ module.exports = {
 		)
 		.addSubcommand((subcommand) =>
 			subcommand
-				.setName("apply-for-codes")
-				.setDescription("Setup Apply-for-Codes application.")
-				.addChannelOption((option) =>
-					option
-						.setName("channel")
-						.setDescription("Input the channel.")
-						.setRequired(true)
-				)
-		)
-		.addSubcommand((subcommand) =>
-			subcommand
 				.setName("unlock-lfg")
 				.setDescription("Setup Unlock LFG application.")
 				.addChannelOption((option) =>
@@ -113,96 +102,8 @@ module.exports = {
 		)
 		.addSubcommand((subcommand) =>
 			subcommand
-				.setName("claim-link")
-				.setDescription("Setup Claim Link Application.")
-				.addChannelOption((option) =>
-					option
-						.setName("channel")
-						.setDescription("Input the channel.")
-						.setRequired(true)
-				)
-		)
-		.addSubcommand((subcommand) =>
-			subcommand
-				.setName("seven-day")
-				.setDescription("Setup 7 Day Challenge Application.")
-				.addChannelOption((option) =>
-					option
-						.setName("channel")
-						.setDescription("Input the channel.")
-						.setRequired(true)
-				)
-		)
-		.addSubcommand((subcommand) =>
-			subcommand
-				.setName("seven-day-2")
-				.setDescription("Setup 7 Day Challenge-2 Application.")
-				.addChannelOption((option) =>
-					option
-						.setName("channel")
-						.setDescription("Input the channel.")
-						.setRequired(true)
-				)
-		)
-		.addSubcommand((subcommand) =>
-			subcommand
-				.setName("ecc-application")
-				.setDescription("Setup ECC Application.")
-				.addChannelOption((option) =>
-					option
-						.setName("channel")
-						.setDescription("Input the channel.")
-						.setRequired(true)
-				)
-		)
-		.addSubcommand((subcommand) =>
-			subcommand
 				.setName("bug-report")
 				.setDescription("Setup Bug Report.")
-				.addChannelOption((option) =>
-					option
-						.setName("channel")
-						.setDescription("Input the channel.")
-						.setRequired(true)
-				)
-		)
-		.addSubcommand((subcommand) =>
-			subcommand
-				.setName("tiktok-event")
-				.setDescription("Setup TikTok Event announcement.")
-				.addChannelOption((option) =>
-					option
-						.setName("channel")
-						.setDescription("Input the channel.")
-						.setRequired(true)
-				)
-		)
-		.addSubcommand((subcommand) =>
-			subcommand
-				.setName("tiktok-announcement")
-				.setDescription("Setup TikTok Event announcement.")
-				.addChannelOption((option) =>
-					option
-						.setName("channel")
-						.setDescription("Input the channel.")
-						.setRequired(true)
-				)
-		)
-		.addSubcommand((subcommand) =>
-			subcommand
-				.setName("shorts-announcement")
-				.setDescription("Setup TikTok Event announcement.")
-				.addChannelOption((option) =>
-					option
-						.setName("channel")
-						.setDescription("Input the channel.")
-						.setRequired(true)
-				)
-		)
-		.addSubcommand((subcommand) =>
-			subcommand
-				.setName("100k-announcement")
-				.setDescription("Setup 100k Event announcement.")
 				.addChannelOption((option) =>
 					option
 						.setName("channel")
@@ -295,27 +196,6 @@ module.exports = {
 				.fetch(channel.id)
 				.then((channel) =>
 					channel.send({ embeds: [cecPoster, cecEmbed], components: [row] })
-				);
-		} else if (subCommand === "apply-for-codes") {
-			let afcEmbed = new EmbedBuilder()
-				.setTitle("APPLY FOR CODES")
-				.setDescription(
-					"- Grab some codes to share with your fans! Make them hooray!\n- The amount of codes you can get depends on your Benefit Level\n- Codes will be delivered within 48 hours, via EVO Bot DM."
-				)
-				.setColor(`C04946`);
-
-			let afcButton = new ButtonBuilder()
-				.setCustomId("afcButton")
-				.setLabel("APPLY")
-				.setStyle(ButtonStyle.Success)
-				.setEmoji("🗝️");
-
-			const row = new ActionRowBuilder().addComponents([afcButton]);
-
-			client.channels
-				.fetch(channel.id)
-				.then((channel) =>
-					channel.send({ embeds: [afcEmbed], components: [row] })
 				);
 		} else if (subCommand === "unlock-lfg") {
 			let lfgEmbed = new EmbedBuilder()
@@ -497,59 +377,6 @@ module.exports = {
 			client.channels
 				.fetch(channel.id)
 				.then((channel) => channel.send({ components: [clubRow] }));
-		} else if (subCommand === "claim-link") {
-			const linkButton = new ButtonBuilder()
-				.setCustomId("linkButton")
-				.setLabel("Claim")
-				.setStyle(ButtonStyle.Success)
-				.setEmoji("📎");
-
-			const linkEmbed = new EmbedBuilder()
-				.setTitle(`CLAIM YOUR LINK`)
-				.setDescription(
-					`Many audiences will be asking for ways to sign-up-for-beta, to download the game.\nThat's why we need you to attach the website link in the video description.\n\nEveryone will have an unique link but all links will direct users to official website.\nIt is used to track data. Please only use your link and do not copy others!`
-				)
-				.setColor(`C04946`);
-
-			const linkRow = new ActionRowBuilder().addComponents([linkButton]);
-
-			client.channels
-				.fetch(channel.id)
-				.then((channel) =>
-					channel.send({ embeds: [linkEmbed], components: [linkRow] })
-				);
-		} else if (subCommand === "ecc-application") {
-			const eccEmbed = new EmbedBuilder()
-				.setTitle("EVO Creator Competition Starts Now!")
-				.setDescription(
-					`:loudspeaker: Attention, all EVO creators (and players who want to be creators)! :video_game:\nAre you ready to showcase your skills and become an outstanding EVO content creator? The EVO Creator Competition is your chance to shine, with a $2000 prize pool up for grabs!\n\n**WHO CAN PARTICIPATE?** :man_tone1:\nEveryone from any region and language is welcome to join!\n\n**WHEN TO START AND END?** :alarm_clock:\nThe competition starts \`from 28 Feb to 8 Mar\`.\nThe Result will be announced on \`10 Mar\`\n\n**HOW TO PARTICIPATE?** :yum:\n1. Click **Join Now** below -> 2. Choose from 3 content directions -> 3. make Youtube videos about the direction you choose -> 4. submit content via <#${process.env.SUBMIT_CONTENT_CHANNEL}> and choose the relevant direction (a MUST step).\n\n<:red1:1019550510476431420> Gameplay Guides (including Building, Crafting, Collecting, Raiding, Beginner Tutorial)\n<:red2:1019550532450394164> Storytelling (Movie)\n<:red3:1019550563924463626> Entertaining Montages (Funny & highlight moments)\n\n**RULES :question:**\n<:red1:1019550510476431420> The video must be posted on YouTube and includes the *#projectevo* hashtag.\n<:red2:1019550532450394164> The video must be at least 5 minutes long and contain 50% EVO gameplay (which must be your original work)\n<:red3:1019550563924463626> The video must be made and published after 27 Feb.\n\n**WHAT ARE THE REWARDS? $2000 Gift Card Pool!** :gift:\nThe top 3 creators in each content direction will win:\n\n<:red1:1019550510476431420> 1st Place -** $300 + 100 beta codes**\n<:red2:1019550532450394164> 2nd Place - **$200 + 50 beta codes**\n<:red3:1019550563924463626> 3rd Place - **$100 + 25 beta codes**\n\nAs an added bonus, all winners will receive the opportunity to become Sponsored Channel and to have their content promoted by the official EVO channels!:trophy:\n\n**HOW ARE THE WINNERS CHOSEN?**\nThe top 3 scores in each direction will win.\nFinal Score = 30% x video views + 40% x 1000 x official judge's score(out of 10) + 30% x 1000 x player's judge score(out of 10)\n\nLearn more about how judges evaluate the videos <#1078619571075952670> \nAnd more details will be shared on the Next Tuesday.\n\n**:smiley_cat:NEED SOME GUIDANCE?**\nNot sure how to create  high-quality content?  Don't worry, we've got you covered! For this event, we will be creating two exclusive channels on Discord:\n<#${process.env.VIDEO_GUIDE_CHANNEL}> : learn important video-making skills to help better create!\n<#${process.env.ECC_CHANNEL}>: Players at the event can ask the dev team any questions and receive personalized guidance.\n\n**:smile:JOIN THE PLAYER JUDGING PANEL:**\nWe need 20 players to join the player judging panel! Click the **Apply for Players Judge** button to apply!`
-				)
-				.setColor(`C04946`)
-				.setImage("https://i.ibb.co/McwqP7g/20230228-185013.jpg");
-
-			const eccJoinButton = new ButtonBuilder()
-				.setCustomId("eccJoin")
-				.setLabel("Join Now")
-				.setStyle(ButtonStyle.Success)
-				.setEmoji("📃");
-
-			const eccApplyButton = new ButtonBuilder()
-				.setCustomId("eccApply")
-				.setLabel("Apply for Players Judge")
-				.setStyle(ButtonStyle.Success)
-				.setEmoji("🧑🏻‍⚖️");
-
-			const row = new ActionRowBuilder().addComponents([
-				eccJoinButton,
-				eccApplyButton,
-			]);
-
-			client.channels.fetch(channel.id).then((channel) =>
-				channel.send({
-					embeds: [eccEmbed],
-					components: [row],
-				})
-			);
 		} else if (subCommand === "bug-report") {
 			const bugEmbed = new EmbedBuilder()
 				.setTitle("YOU REPORT IT AND WE FIX IT")
@@ -564,103 +391,20 @@ module.exports = {
 				.setStyle(ButtonStyle.Success)
 				.setEmoji("🐛");
 
-			const row = new ActionRowBuilder().addComponents([bugButton]);
+			const cheaterButton = new ButtonBuilder()
+				.setCustomId("cheaterButton")
+				.setLabel("Report a Cheater")
+				.setStyle(ButtonStyle.Danger)
+				.setEmoji("🥷🏻");
+
+			const row = new ActionRowBuilder().addComponents([
+				bugButton,
+				cheaterButton,
+			]);
 
 			client.channels.fetch(channel.id).then((channel) =>
 				channel.send({
 					embeds: [bugEmbed],
-					components: [row],
-				})
-			);
-		} else if (subCommand === "tiktok-event") {
-			const tiktokEmbed = new EmbedBuilder()
-				.setTitle("TikTok Creator Event")
-				.setDescription(
-					`Hi, <@&${process.env.TTC_ROLE}>! Are you going to join the **TikTok Creator Event**?\nWe prepared codes for participants to help them try the game and create better EVO content.\n\nClick **Apply** to apply for a beta code.\n\nIf you don't know what the event is about, learn more about the details [here](https://api.tiktokv.com/game_center/pop/deeplink?target=home-pop)\nYou can also join the event by checking the announcement [here](https://ptb.discord.com/channels/951777532003381278/1018235728515321996/1083714282702766090)`
-				)
-				.setImage(
-					"https://i.ibb.co/mRy5jhL/img-v2-03850b6f-8237-4c92-b71c-cd6e6652395g.jpg"
-				)
-				.setColor(`C04946`);
-
-			const tiktokButton = new ButtonBuilder()
-				.setCustomId("tiktokButton")
-				.setLabel("Apply")
-				.setStyle(ButtonStyle.Success)
-				.setEmoji("🎱");
-
-			const row = new ActionRowBuilder().addComponents([tiktokButton]);
-
-			client.channels.fetch(channel.id).then((channel) =>
-				channel.send({
-					content: `<@&${process.env.TTC_ROLE}>`,
-					embeds: [tiktokEmbed],
-					components: [row],
-				})
-			);
-		} else if (subCommand === "tiktok-announcement") {
-			const message = `<@&1074185209643278448>\n**Join TikTok Short Video Creator Event and Win up to 1500$**\n\nHi Survivors, We held a short video creator event on TikTok. Up to 1500$ are waiting for you who love Project EVO and has the ability of video creativity.\n\nDon't hesitate to click the link below and earn your rewards!\n\n**Event Link** https://api.tiktokv.com/game_center/pop/deeplink?target=home-pop\n\n*Players from the Philippines and Brazil can participate in this event. We will hold short video events for players in more regions in the future, If you are interested, you can follow our TikTok official account below:*\n**TikTok** https://www.tiktok.com/@projectevo_official`;
-
-			const tiktokButton = new ButtonBuilder()
-				.setCustomId("ttcButton")
-				.setLabel("Join Now")
-				.setStyle(ButtonStyle.Success)
-				.setEmoji("☑️");
-
-			const row = new ActionRowBuilder().addComponents([tiktokButton]);
-
-			client.channels.fetch(channel.id).then((channel) =>
-				channel.send({
-					content: message,
-					components: [row],
-				})
-			);
-		} else if (subCommand === "shorts-announcement") {
-			const shortsEmbed = new EmbedBuilder()
-				.setTitle(`Make-EVO-Shorts Event is Coming! 🎬`)
-				.setDescription(
-					`Take a look at our **Make-EVO-Shorts Event**! If you're good at capturing viewers' attention in a short video, come and prove yourself with your work and win gift cards!\n\n**WHO CAN PARTICIPATE?**\nEveryone\n\n**WHEN TO START AND END?**\nThe event starts \`from 13 Mar to 26 Mar\`\nThe Result will be announced on \`28 Mar\`\n\n**HOW TO PARTICIPATE?**\n1. Click **Join Now** below\n2. Create short videos to post on **Youtube Shorts** or **Tiktok**\n3. Submit content via #submit-content (a MUST step)\n\n**WHAT CAN YOU GET?**\n\n🎁 **Newbie Award:**(giftcards as rewards)\n- Get 2k+ total views to earn **Beta Lottery Tickets\*20! (Lucky draw for Gun Skins)**\n- Get 5k+ total views to earn **$10**\n- Get 20k+ total views to earn **$25**\n- Get 50k+ total views to earn **$50**\n\n🎊 **Pro Award:**(giftcards as rewards)\n- Rank in top 1-10% of total views to earn **$100**\n- Rank in top 10-20% of total views to earn **$75**\n- Rrank in top 20-30% of total views to earn **$50**\n\nNote: You can upload as many videos as you want. But you cannot receive both the Newbie Award and the Pro Award at the same time.\n\n**GUIDANCE:**\nThere is no limit to the themes/topics you choose to create. Come and pick your preferred direction: Funny moments, Highlight Montage, Gameplay Guide, Game Introduction, Movie, etc.\n\nIf you still don't know how to start, JUST go to our limited time event channel for guidance:\n<#1084823394631024761>: we will send out regular short video creation tips and some creation topics in this channel\n\n	Here are the detailed rules of video submission <#1084793563885346836>`
-				)
-				.setImage(
-					`https://i.ibb.co/PttNB85/img-v2-7cc1b2f8-f2c4-4c35-90d3-418e4334026g.jpg`
-				)
-				.setColor(`C04946`);
-
-			const shortsButton = new ButtonBuilder()
-				.setCustomId("shortsButton")
-				.setLabel("Join Now")
-				.setStyle(ButtonStyle.Success)
-				.setEmoji("☑️");
-
-			const row = new ActionRowBuilder().addComponents([shortsButton]);
-
-			client.channels.fetch(channel.id).then((channel) =>
-				channel.send({
-					content: "<@&1074185209643278448>",
-					embeds: [shortsEmbed],
-					components: [row],
-				})
-			);
-		} else if (subCommand === "100k-announcement") {
-			const quizEmbed = new EmbedBuilder()
-				.setTitle(`100K`)
-				.setDescription(
-					`Cheers to 100k! We are so excited to see the community, as well as the support for the Project, continue to grow. We are still working hard on delivering the best Survival Mobile game we can, and have prepared some trivia to test how much people have picked up about EVO. Complete the quiz successfully, and you can show off your knowledge with the **LIMITED EDITION** 100k Celebration Badge. You can only earn this badge in the next week, so get it quick!\n\nTo play, click the button below. You will have 3 questions given to you. Get them all correct, and you win!\n\nWinners will receive the <@&1085629746186031225> role/badge and be entered into a Discord Nitro giveaway. We will select __20 winners__ to receive **1 Month of Nitro** at random, and will announce the winners on 3/25.\n\nThanks for being such a dedicated community, we are glad to have you!`
-				)
-				.setColor(`C04946`);
-
-			const startQuizButton = new ButtonBuilder()
-				.setCustomId("startQuiz")
-				.setLabel("Start Quiz")
-				.setStyle(ButtonStyle.Success)
-				.setEmoji("❓");
-
-			const row = new ActionRowBuilder().addComponents([startQuizButton]);
-
-			client.channels.fetch(channel.id).then((channel) =>
-				channel.send({
-					content: "<@&1074185209643278448>",
-					embeds: [quizEmbed],
 					components: [row],
 				})
 			);
