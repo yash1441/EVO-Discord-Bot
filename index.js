@@ -93,7 +93,6 @@ client.on("ready", () => {
 		"0 0 */6 * * *",
 		function () {
 			logger.info(`Starting scheduled cronjob. (Every 6 hours)`);
-			//sendShortsEvent();
 			sendAmbassadorEvent();
 		},
 		{
@@ -1478,6 +1477,36 @@ client.on("interactionCreate", async (interaction) => {
 			await interaction.editReply({
 				content: `You have submitted ${videos} videos, keep up the good work! We will review your video and record the views on 17th April. You will be able to check the event result by using this button!`,
 			});
+		} else if (interaction.customId === "cheaterButton") {
+			const cheaterModal = new ModalBuilder()
+				.setCustomId("cheaterModal")
+				.setTitle("Report a Cheater");
+			const cheaterUsername = new TextInputBuilder()
+				.setCustomId("cheaterUsername")
+				.setLabel("Nickname")
+				.setPlaceholder("Please enter your in-game nickname here.")
+				.setStyle(TextInputStyle.Short)
+				.setRequired(true);
+			const cheaterSession = new TextInputBuilder()
+				.setCustomId("cheaterSession")
+				.setLabel("Session ID")
+				.setPlaceholder("In which session did you encounter the cheater?")
+				.setStyle(TextInputStyle.Short)
+				.setRequired(true);
+			const cheaterDetails = new TextInputBuilder()
+				.setCustomId("cheaterDetails")
+				.setLabel("Reasoning")
+				.setPlaceholder("Give a detailed explanation of the cheating.")
+				.setStyle(TextInputStyle.Paragraph)
+				.setRequired(true);
+
+			let r1 = new ActionRowBuilder().addComponents(cheaterUsername);
+			let r2 = new ActionRowBuilder().addComponents(cheaterSession);
+			let r3 = new ActionRowBuilder().addComponents(cheaterDetails);
+
+			cheaterModal.addComponents(r1, r2, r3);
+
+			await interaction.showModal(cheaterModal);
 		}
 	} else if (interaction.isModalSubmit()) {
 		if (interaction.customId === "betaAccess") {
@@ -1725,7 +1754,43 @@ client.on("interactionCreate", async (interaction) => {
 							content:
 								"Image uploaded. Please wait while we try to submit your application...",
 						});
-						sendResponseToFeishu(interaction);
+						sendBugResponseToFeishu(interaction);
+					}
+					collected.first().delete();
+				})
+				.catch((collected) => {
+					interaction.editReply({
+						content:
+							"You weren't able to upload a screenshot in time. Please try again.",
+					});
+				});
+		} else if (interaction.customId.startsWith("cheaterModal")) {
+			await interaction.reply({
+				content: "Please upload a screenshot. Only jpg and png are accepted.",
+				ephemeral: true,
+			});
+
+			const filter = (m) =>
+				m.author.id === interaction.user.id && m.attachments.size > 0;
+			interaction.channel
+				.awaitMessages({ filter, max: 1, time: 60000, errors: ["time"] })
+				.then((collected) => {
+					const attachment = collected.first().attachments.first();
+					if (
+						!attachment.url.endsWith("jpg") &&
+						!attachment.url.endsWith("png")
+					) {
+						return interaction.editReply({
+							content:
+								"You can only submit images in this. To submit a video, upload it to a public site (Youtube, Google Drive, Dropbox, etc.) and send link in the Reasoning section of the form. Please try again.",
+						});
+					} else {
+						download(attachment.url, `${interaction.user.id}-cheater.jpg`);
+						interaction.editReply({
+							content:
+								"Image uploaded. Please wait while we try to submit your application...",
+						});
+						sendCheaterResponseToFeishu(interaction);
 					}
 					collected.first().delete();
 				})
@@ -3417,7 +3482,7 @@ async function download(url, name) {
 	});
 }
 
-async function sendResponseToFeishu(interaction) {
+async function sendBugResponseToFeishu(interaction) {
 	const file = `${interaction.user.id}-bug.jpg`;
 	const tenantToken = await feishu.authorize(
 		process.env.FEISHU_ID,
@@ -3573,6 +3638,148 @@ async function sendResponseToFeishu(interaction) {
 	});
 }
 
+async function sendCheaterResponseToFeishu(interaction) {
+	const file = `${interaction.user.id}-cheater.jpg`;
+	const tenantToken = await feishu.authorize(
+		process.env.FEISHU_ID,
+		process.env.FEISHU_SECRET
+	);
+	let response = await feishu.uploadToDrive(
+		tenantToken,
+		"bascnZdSuzx6L7uAxP9sNJcY0vY",
+		file,
+		"bitable_image"
+	);
+	const file_token = JSON.parse(response).data.file_token;
+
+	const substring = interaction.customId.substring(4);
+	const bOptions = substring.split("_");
+
+	const cheaterUsername =
+		interaction.fields.getTextInputValue("cheaterUsername");
+	const cheaterDetails = interaction.fields.getTextInputValue("cheaterDetails");
+	const discordId = interaction.user.id;
+	const cheaterSession = interaction.fields.getTextInputValue("cheaterSession");
+
+	const bugs = {
+		fields: {
+			"Discord ID": discordId,
+			Nickname: cheaterUsername,
+			"Session ID": cheaterSession,
+			Reason: cheaterDetails,
+			Screenshot: [{ file_token: file_token }],
+		},
+	};
+
+	await feishu.createRecord(
+		tenantToken,
+		"bascnZdSuzx6L7uAxP9sNJcY0vY",
+		"tblmLa8SlkiASY0R",
+		bugs
+	);
+	response = await feishu.getFileToken(tenantToken, file);
+	const image_key = JSON.parse(response).data.image_key;
+	fs.unlinkSync(file);
+
+	let body = {
+		msg_type: "interactive",
+		card: {
+			config: {
+				wide_screen_mode: true,
+			},
+			elements: [
+				{
+					fields: [
+						{
+							is_short: true,
+							text: {
+								content: `**Discord ID**\n${bugs.fields["Discord ID"]}`,
+								tag: "lark_md",
+							},
+						},
+						{
+							is_short: true,
+							text: {
+								content: `**Discord Name**\n${interaction.user.tag}`,
+								tag: "lark_md",
+							},
+						},
+						// {
+						//     is_short: true,
+						//     text: {
+						//         content: `**Region**\n${bugs.fields["Region"]}`,
+						//         tag: "lark_md",
+						//     },
+						// },
+						{
+							is_short: false,
+							text: {
+								content: ``,
+								tag: "lark_md",
+							},
+						},
+						{
+							is_short: true,
+							text: {
+								content: `**Nickname**\n${bugs.fields.Nickname}`,
+								tag: "lark_md",
+							},
+						},
+						{
+							is_short: true,
+							text: {
+								content: `**Session ID**\n${bugs.fields["Session ID"]}`,
+								tag: "lark_md",
+							},
+						},
+						{
+							is_short: false,
+							text: {
+								content: ``,
+								tag: "lark_md",
+							},
+						},
+						{
+							is_short: true,
+							text: {
+								content: `**Reason**\n${bugs.fields.Reason}`,
+								tag: "lark_md",
+							},
+						},
+					],
+					tag: "div",
+				},
+				{
+					tag: "hr",
+				},
+				{
+					alt: {
+						content: "",
+						tag: "plaint_text",
+					},
+					img_key: image_key,
+					tag: "img",
+				},
+			],
+			header: {
+				template: "red",
+				title: {
+					content: `Cheater Report`,
+					tag: "plain_text",
+				},
+			},
+		},
+	};
+
+	await feishu.sendGroupMessage(
+		"https://open.larksuite.com/open-apis/bot/v2/hook/5f8d3d8d-3df8-4198-900e-0676ed7bf6bc",
+		body
+	);
+	await interaction.editReply({
+		content: "Your submission was received successfully!",
+	});
+}
+
 async function loadBetaTesterCodes() {
 	const tablesToCheck = [
 		process.env.BETA_TESTER_ONE,
@@ -3674,58 +3881,6 @@ async function shuffleArray(array) {
 		[array[i], array[j]] = [array[j], array[i]];
 	}
 	return array;
-}
-
-async function sendShortsEvent() {
-	const enChannel = "951852948038746172";
-	const ruChannel = "973279421723209738";
-	const ptChannel = "971615587186929685";
-	const esChannel = "971614668764377118";
-
-	const enMessage = `**Make-EVO-Shorts Event is Coming! :clapper:**\n\nTake a look at our **Make-EVO-Shorts Event**! If you're good at capturing viewers' attention in a short video, come and prove yourself with your work and win gift cards! @Content Creator @Event News \n\n**WHO CAN PARTICIPATE? **\nEveryone \n\n**WHEN TO START AND END? **\nThe event starts \`from 13 Mar to 26 Ma\`r\nThe Result will be announced on \`28 Mar\`\n\n**HOW TO PARTICIPATE? **\n1. Enter the link, and click the Join Now button below\nhttps://discord.com/channels/951777532003381278/1018235728515321996/1084827706480410624 \n2. Create short videos to post on **Youtube Shorts** or **Tiktok**\n3. Submit content via #submit-content  (a MUST step)\n\n**WHAT CAN YOU GET? **\n\n:gift: **Newbie Award:**(giftcards as rewards)\n- Get 2k+ total views to earn **Beta Lottery Tickets*20! (Lucky draw for Gun Skins)**\n- Get 5k+ total views to earn **$10**\n- Get 20k+ total views to earn **$25**\n- Get 50k+ total views to earn **$50**\n\n:confetti_ball: **Pro Award:**(giftcards as rewards)\n- Rank in top 1-10% of total views to earn **$100**\n- Rank in top 10-20% of total views to earn **$75**\n- Rrank in top 20-30% of total views to earn **$50**\n\nNote: You can upload as many videos as you want. But you cannot receive both the Newbie Award and the Pro Award at the same time. \n\n**GUIDANCE:**\nThere is no limit to the themes/topics you choose to create. Come and pick your preferred direction: Funny moments, Highlight Montage, Gameplay Guide, Game Introduction, Movie, etc. \n\nIf you still don't know how to start, JUST go to our limited time event channel for guidance: \n<#1084823394631024761>: we will send out regular short video creation tips and some creation topics in this channel\n\nHere are the detailed rules of video submission <#1084793563885346836> \n\n<#1086206242642477066>\n<#1086296278582964297> \n<#1086294066599297055>\n\nhttps://i.ibb.co/PttNB85/img-v2-7cc1b2f8-f2c4-4c35-90d3-418e4334026g.jpg`;
-
-	const ruMessage = `**Событие Make-EVO-Shorts приближается! **\n\nЕсли вы можете завоевать внимание зрителей коротким видео, это событие для вас! Покажите себя со своей работой и выиграйте подарочные карты!\n\n**КТО МОЖЕТ ПРИНЯТЬ УЧАСТИЕ?\nВсе\n\n**ВРЕМЯ ПРОВЕДЕНИЯ СОБЫТИЯ**
-	Событие пройдет с \`13 по 26 марта\`\nРезультаты будут объявлены \`28 марта\`\n\n**КАК ПРИНЯТЬ УЧАСТИЕ?**\n1. Перейдите по ссылке и нажмите кнопку  "Join Now" ниже\nhttps://discord.com/channels/951777532003381278/1018235728515321996/1084827706480410624\n2. Создайте короткое видео и разместите его на Youtube Shorts или Tiktok.\n3. Отправьте контент через submit-content (обязательное условие).\n\n**ЧТО ВЫ МОЖЕТЕ ПОЛУЧИТЬ?**\n\n:gift: ** Награда для новичков**:\n- Наберите 2к+ просмотров, чтобы **получить лотерейные билеты *20**!\n- Наберите 5k+ просмотров, чтобы **заработать 10$**\n- Наберите 20k+ просмотров, чтобы **заработать 25$**\n- Наберите 50k+ просмотров, чтобы **заработать 50$**\n\n:ember: ** Награда для профессионалов**:\n- Войдите в топ 1-10% от общего числа просмотров, чтобы **заработать 100$**\n- Войти в топ 10-20% от общего числа просмотров, чтобы** заработать 75$**\n- Заняв место в топ-20-30% от общего числа просмотров, вы **заработаете 50$**\n\nПримечание: Вы можете загружать столько видео, сколько хотите. Но вы не сможете одновременно получить награду для новичков и награду для профессионалов.\n\n**РЕКОМЕНДАЦИИ:**\nНет никаких ограничений на темы. Выбирайте направление по своему вкусу: смешные моменты, хайлайты , гайды по игре, введение в игру, фильм и т.д.\n\nЕсли вы все еще не знаете, как начать, просто зайдите на канал <#1084823394631024761>. Там мы будем регулярно выкладывать советы по созданию коротких видео и некоторые возможные темы для создания.\n\nПодробные правила подачи видео <#1086951261988991048>\n\nhttps://i.ibb.co/PttNB85/img-v2-7cc1b2f8-f2c4-4c35-90d3-418e4334026g.jpg`;
-
-	const ptMessage = `**O evento Make-EVO-Shorts está chegando!** :clapper:\n\nDê uma olhada no nosso **Evento Make-EVO-Shorts**!  Se você é bom em capturar a atenção dos espectadores em um vídeo curto, venha provar seu trabalho e ganhe Giftcard!\n\n**QUEM PODE PARTICIPAR?**\nTodos\n\n**QUANDO COMEÇAR E FIM?**\nO evento começa \`de 13 de março a 26 de março\`\nO resultado será divulgado em \`28 de março\`\n\n**COMO PARTICIPAR?**\n1. Entre no link e clique no botão "Join Now" abaixo\nhttps://discord.com/channels/951777532003381278/1018235728515321996/1084827706480410624\n2. Crie vídeos curtos para postar no **Youtube Shorts** ou **Tiktok**\n3. Envie o conteúdo via #submit-content (uma etapa OBRIGATÓRIA)\n\n**O QUE VOCÊ PODE OBTER?**\n\n:gift: **Prêmio Novato**:(giftcard como recompensa)\n- Obtenha mais de 2.000 visualizações no total para ganhar **Bilhetes de Loteria Beta*20! (Sorteio da Sorte para Gun Skins)**\n- Obtenha mais de 5.000 visualizações totais para ganhar **$10**\n- Obtenha mais de 20.000 visualizações totais para ganhar **$25**\n- Obtenha mais de 50.000 visualizações totais para ganhar** $50**\n\n:confetti_ball: **Prêmio Pro**:(giftcard como recompensa)\n- Classifique entre 1-10% do total de visualizações para ganhar **$100**\n- Classifique-se entre os 10-20% melhores do total de visualizações para ganhar **$75**\n- Classifique entre os 20-30% melhores do total de visualizações para ganhar **$50**\n\nObservação: você pode enviar quantos vídeos quiser.  Mas você não pode receber o Prêmio Novato e o Prêmio Pro ao mesmo tempo.\n\n**ORIENTAÇÃO:**\nNão há limite para os temas/tópicos que você escolhe criar.  Venha e escolha sua direção preferida: Momentos engraçados, Montagem de destaques, Guia de jogabilidade, Introdução ao jogo, Filme, etc.\n\nSe você ainda não sabe como começar, APENAS acesse nosso canal de eventos por tempo limitado para obter orientação:\n<#1084823394631024761>: enviaremos dicas regulares de criação de vídeos curtos e alguns tópicos de criação neste canal\n\nAqui estão as regras detalhadas de envio de vídeo <#1086936327800508456>\n\nhttps://i.ibb.co/PttNB85/img-v2-7cc1b2f8-f2c4-4c35-90d3-418e4334026g.jpg`;
-
-	const esMessage = `**Se acerca el evento Make-EVO-Shorts!** :clapper:\n\n¡Echa un vistazo a nuestro Evento Make-EVO-Shorts! Si se te da bien captar la atención de los espectadores en un vídeo corto, ¡ven a demostrarlo con tu trabajo y gana tarjetas regalo!\n\n**¿QUIÉN PUEDE PARTICIPAR? **\nTodo el mundo\n\n**¿CUÁNDO EMPEZAR Y TERMINAR? **\nEl evento comienza del \`13 Mar al 26 Mar\`\nEl resultado se anunciará el \`28 de marzo\`.\n\n**¿CÓMO PARTICIPAR? **\n1.  Introduzca el enlace y luego haga clic en el botón "Join Now" a continuación\nhttps://discord.com/channels/951777532003381278/1018235728515321996/1084827706480410624\n2. Crea vídeos cortos para publicar en **Youtube Shorts **o **Tiktok**\n3. Envía el contenido a través de submit-content (paso IMPRESCINDIBLE)\n\n**¿QUÉ PUEDES CONSEGUIR? **\n\n:gift: **Premio para novatos**:(tarjetas regalo como recompensa).\n- ¡Consigue más de 2k visualizaciones totales para ganar **Billetes de lotería beta*20! **(Sorteo de diseños de armas).\n- Si consigues más de 5k visitas, ganarás **10$**.\n- Si consigues más de 20.000 visitas, ganarás** 25$**.\n- Consigue 50k+ visitas totales para ganar **50$**.\n\n:ember: **Premio profesional:**(tarjetas regalo como recompensa)\n- Clasifícate entre el 1% y el 10% de las visitas totales para ganar** 100$**.\n- Clasifícate entre el 10% y el 20% de las visitas totales para ganar** 75 $**.\n- Clasifícate entre el 20% y el 30% de las visitas totales para ganar **50$**.\n\nNota: Puedes subir tantos vídeos como quieras. Pero no puedes recibir el Premio Novato y el Premio Pro al mismo tiempo.\n\n**GUIDANZA:**\nNo hay límite para los temas que elijas crear. Ven y elige la dirección que prefieras: Momentos divertidos, Montaje de momentos destacados, Guía de juego, Introducción al juego, Película, etc.\n\nSi todavía no sabes cómo empezar, SÓLO tienes que ir a nuestro canal de eventos de tiempo limitado para obtener orientación:\n<#1084823394631024761>: enviaremos regularmente breves consejos para la creación de vídeos y algunos temas de creación en este canal.\n\nEstas son las normas detalladas de presentación de vídeos <#1087018501027405945>\n\nhttps://i.ibb.co/PttNB85/img-v2-7cc1b2f8-f2c4-4c35-90d3-418e4334026g.jpg`;
-
-	const shortsButton = new ButtonBuilder()
-		.setCustomId("shortsButton")
-		.setLabel("Join Now")
-		.setStyle(ButtonStyle.Success)
-		.setEmoji("☑️");
-
-	const row = new ActionRowBuilder().addComponents([shortsButton]);
-
-	client.channels.fetch(enChannel).then((channel) =>
-		channel.send({
-			content: enMessage,
-			components: [row],
-		})
-	);
-
-	client.channels.fetch(ruChannel).then((channel) =>
-		channel.send({
-			content: ruMessage,
-			components: [row],
-		})
-	);
-
-	client.channels.fetch(ptChannel).then((channel) =>
-		channel.send({
-			content: ptMessage,
-			components: [row],
-		})
-	);
-
-	client.channels.fetch(esChannel).then((channel) =>
-		channel.send({
-			content: esMessage,
-			components: [row],
-		})
-	);
 }
 
 async function sendAmbassadorEvent() {
