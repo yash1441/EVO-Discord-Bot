@@ -143,6 +143,17 @@ module.exports = {
 						.setDescription("Input the channel.")
 						.setRequired(true)
 				)
+		)
+		.addSubcommand((subcommand) =>
+			subcommand
+				.setName("tiktok-button")
+				.setDescription("Setup TikTok Button.")
+				.addChannelOption((option) =>
+					option
+						.setName("channel")
+						.setDescription("Input the channel.")
+						.setRequired(true)
+				)
 		),
 	async execute(interaction, client) {
 		await interaction.deferReply();
@@ -489,6 +500,18 @@ module.exports = {
 					components: [row],
 				})
 			);
+		} else if (subCommand === "tiktok-button") {
+			const tiktokButton = new ButtonBuilder()
+				.setCustomId("tiktokButton")
+				.setLabel("TikTok")
+				.setStyle(ButtonStyle.Success)
+				.setEmoji("✅");
+
+			const tiktokRow = new ActionRowBuilder().addComponents([tiktokButton]);
+
+			client.channels
+				.fetch(channel.id)
+				.then((channel) => channel.send({ components: [tiktokRow] }));
 		}
 		await interaction.deleteReply();
 	},
