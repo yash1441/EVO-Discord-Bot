@@ -811,17 +811,10 @@ async function privateChannel(discordId, client, message, button) {
 
 	await thread.members.add(user.id);
 
-	if (attachment.length > 1)
-		await thread.send({
-			content: `${user}\n\n${message}`,
-			files: [attachment],
-			components: [button],
-		});
-	else
-		await thread.send({
-			content: `${user}\n\n${message}`,
-			components: [button],
-		});
+	await thread.send({
+		content: `${user}\n\n${message}`,
+		components: [button],
+	});
 
 	await thread.send({
 		content:
