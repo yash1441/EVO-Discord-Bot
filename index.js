@@ -1538,6 +1538,15 @@ client.on("interactionCreate", async (interaction) => {
 						);
 					});
 			}
+
+			await interaction.editReply({
+				content: "Your reward has been marked as **Claimed**.",
+			});
+
+			await interaction.message.edit({
+				content: interaction.message.content,
+				components: [],
+			});
 		}
 	} else if (interaction.isModalSubmit()) {
 		if (interaction.customId === "betaAccess") {
