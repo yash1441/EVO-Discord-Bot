@@ -27,6 +27,11 @@ module.exports = {
 		)
 		.addSubcommand((subcommand) =>
 			subcommand
+				.setName("rewards-new")
+				.setDescription("Deliver rewards to the accepted users. (New)")
+		)
+		.addSubcommand((subcommand) =>
+			subcommand
 				.setName("creators-list")
 				.setDescription("Add all Content Creators to the list.")
 		)
