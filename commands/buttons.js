@@ -511,7 +511,13 @@ module.exports = {
 
 			client.channels
 				.fetch(channel.id)
-				.then((channel) => channel.send({ components: [tiktokRow] }));
+				.then((channel) =>
+					channel.send({
+						content:
+							"Click the button to receive a unique code. You can only claim 1 code",
+						components: [tiktokRow],
+					})
+				);
 		}
 		await interaction.deleteReply();
 	},
