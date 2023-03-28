@@ -967,19 +967,6 @@ client.on("interactionCreate", async (interaction) => {
 		} else if (interaction.customId === "tiktokButton") {
 			await interaction.deferReply({ ephemeral: true });
 
-			const checkTCCRole = await checkMemberRole(
-				client,
-				process.env.EVO_SERVER,
-				interaction.user.id,
-				process.env.TTC_ROLE
-			);
-
-			if (!checkTCCRole) {
-				return await interaction.editReply({
-					content: `You cannot get the beta code, possibly because you didn't choose **YES** in the question **Are you participants of TikTok Creator Event** or didn't click **Join Now** under the announcement of [TikTok Creator Event](https://ptb.discord.com/channels/951777532003381278/1018235728515321996/1083714282702766090)`,
-				});
-			}
-
 			const tenantToken = await feishu.authorize(
 				process.env.FEISHU_ID,
 				process.env.FEISHU_SECRET
