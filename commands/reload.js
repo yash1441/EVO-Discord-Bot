@@ -422,7 +422,13 @@ module.exports = {
 								logger.error(
 									`${creator.discord_id} - Reward sending failed. Private DM. Creating a private channel.`
 								);
-								privateChannel(creator, client, message, attachment, claimRow);
+								privateChannel(
+									creator.discord_id,
+									client,
+									message,
+									attachment,
+									claimRow
+								);
 							});
 					} else {
 						member
@@ -450,7 +456,13 @@ module.exports = {
 								logger.error(
 									`${creator.discord_id} - Reward sending failed. Private DM. Creating a private channel.`
 								);
-								privateChannel(creator, client, message, attachment, claimRow);
+								privateChannel(
+									creator.discord_id,
+									client,
+									message,
+									attachment,
+									claimRow
+								);
 							});
 					}
 				}
@@ -899,15 +911,228 @@ module.exports = {
 				content: "Updated the list of Players Judge!",
 				ephemeral: true,
 			});
+		} else if (subCommand === "rewards-new") {
+			// Defers the reply to the interaction
+			await interaction
+				.reply({
+					content: "Updating the list of rewards...",
+					ephemeral: true,
+				})
+				.then(() => {
+					logger.info(`Updating the list of rewards.`);
+				});
+
+			// Declare constants - tenantToken, claimButton, claimRow
+			const tenantToken = await feishu.authorize(
+				process.env.FEISHU_ID,
+				process.env.FEISHU_SECRET
+			);
+
+			// Get records that are Ready from the Reward Delivery table
+
+			const rewardData = JSON.parse(
+				await feishu.getRecords(
+					tenantToken,
+					process.env.REWARD_BASE,
+					process.env.DELIVERY,
+					`AND(CurrentValue.[Status] = "Ready")`
+				)
+			);
+
+			logger.info(`Rewards Found: ${rewardData.data.total}`);
+
+			// If no records are found, return
+
+			if (!rewardData.data.total) {
+				logger.info(`No rewards found.`);
+				return await interaction.editReply({
+					content: "No rewards found.",
+					ephemeral: true,
+				});
+			}
+
+			const failed = [];
+
+			// For each record
+
+			for (const record of rewardData.data.items) {
+				let shouldContinue = false,
+					message;
+				const discordId = record.fields["Discord ID"];
+				const winnerType = record.fields["Winner Type"];
+				const rewardType = record.fields["Reward Type"];
+				const rewardCodeAmount = record.fields["Number of Codes"];
+				const rewardCurrency = record.fields["Currency"];
+				const rewardValue = record.fields["Value"];
+				let rewardCode = record.fields["Card Code"];
+				const event = record.fields["Event"];
+				const recordId = record.record_id;
+
+				// If the member is not found, return
+
+				const member = await interaction.guild.members
+					.fetch(discordId)
+					.catch((error) => {
+						logger.error(discordId + " - " + error);
+						failed.push({ record_id: recordId, reason: "Member Not Found" });
+						shouldContinue = true;
+					});
+
+				if (shouldContinue) continue;
+
+				// If the reward type is not defined, return
+
+				if (rewardType == undefined) {
+					failed.push({
+						record_id: recordId,
+						reason: "Reward Type Not Defined",
+					});
+					continue;
+				}
+
+				// If the winner type is not defined, return
+
+				if (winnerType == undefined) {
+					failed.push({
+						record_id: recordId,
+						reason: "Winner Type Not Defined",
+					});
+					continue;
+				}
+
+				// Check reward type, generate codes if necessary, and assign the message
+
+				if (rewardType == "Beta Codes") {
+					if (rewardCodeAmount == undefined) {
+						failed.push({
+							record_id: recordId,
+							reason: "Number of Codes Not Defined",
+						});
+						continue;
+					}
+
+					if (rewardCode == undefined) {
+						const quantity = parseInt(rewardCodeAmount);
+						const generatedCodes = await generateCodes(quantity, discordId);
+
+						if (generatedCodes.length == 0) {
+							failed.push({
+								record_id: recordId,
+								reason: "Failed to Generate Codes",
+							});
+							shouldContinue = true;
+						}
+
+						if (shouldContinue) continue;
+
+						rewardCode = generatedCodes.join("\n");
+
+						logger.info(`${rewardCode}`);
+					} else rewardCode = rewardCode.replace(/ /g, "\n");
+
+					switch (winnerType) {
+						case "Player":
+							message = `**BETA CODES ARE HERE!**\nHey! Dear players!\nYou have earned ${rewardCodeAmount} code(s) from Discord events. Thanks for your partcipation! The codes are below:\n\n\`${rewardCode}\`\n\nThe beta will open on 1 Dec 2022. Please stay tuned to the official announcement on Discord and download the game in advance. This is the download link: http://bit.ly/3ESJHhS\n\nIf you encounter problems when downloading the game, please reach out to our staff on #support channel in our official Discord: https://discord.gg/projectevogame`;
+							break;
+						case "CEP Members":
+							message = `**BETA CODES ARE HERE!**\nHey! Dear EVO Content Creator!\nYou have earned ${rewardCodeAmount} code(s) from Creator Evolution Project. Thanks for your dedication! The codes are below:\n\n\`${rewardCode}\`\n\nThe beta will open on 1 Dec 2022. Please stay tuned to the official announcement on Discord and download the game in advance. This is the download link: http://bit.ly/3ESJHhS\n\nIf you encounter problems when downloading the game, please reach out to our staff on #support channel in our official Discord: https://discord.gg/projectevogame\nGood Luck. Have Fun!`;
+							break;
+						case "L10N HERO":
+							message = `**BETA CODES ARE HERE!**\nHey! Dear players!\nYou have earned ${rewardCodeAmount} code(s) because of the dedication and contribution you have made for Project EVO. Thanks for your effort! The codes are below:\n\n\`${rewardCode}\`\n\nThe beta will open on 1 Dec 2022. Please stay tuned to the official announcement on Discord and download the game in advance. This is the download link: http://bit.ly/3ESJHhS\n\nIf you encounter problems when downloading the game, please reach out to our staff on #support channel in our official Discord: https://discord.gg/projectevogame\n\nProject EVO Team`;
+							break;
+						case "Invited Creators":
+							message = `**PROJECT EVO - BETA INVITATION**\nDear <@${discordId}>\nThis is the Project EVO dev team - we are writing this message to offer our most sincere thanks, as we noticed that you have been following our game closely, and you have created very awesome content for our game! (beta code and download link at the bottom)\n\nThe beta opens on __1 Dec 2022__. We sincerely invite you to join our beta so that you can experience the latest developed in-game content and give us your feedback. We hope that you will continue to create more high-quality video content for our game during the beta!\n\nMeanwhile, we very much look forward to further collaborating with you when the new version of the Creator Evolution Project is launched on 1 Dec. Check details here in __#cep-update__ channel\n<https://discord.com/channels/951777532003381278/1047446400566312990>\n\nCreator Evolution Club is also found to provide the best support to help you grow as an outstanding EVO content creator. **It creates an aspirational influencer community for EVO creators who have great potential and passion. Apply now in the __#club-application__ channel\n<https://discord.com/channels/951777532003381278/1042753136701476884>**\n\n__This is the code to get access to the beta and activate the game:__\n\`${rewardCode}\`\nThe beta will open on __1 Dec 2022__. Please stay tuned to the official announcement on Discord and download the game in advance. This is the download link: http://bit.ly/3ESJHhS\n\nIf you encounter problems when downloading the game, please reach out to our staff on # support channel in our official Discord: https://discord.gg/projectevogame\n\nIn the end. Good Luck. Have Fun!\nBest Regards\nProject EVO Team\n\nhttps://i.ibb.co/9gBLc4v/20221201-122549.jpg`;
+							break;
+						default:
+							message = `Congrats! You have been rewarded ${rewardType}.\n\nCode:\n\`${rewardCode}\` \n\nPlease tap **Claim** below to confirm.`;
+							break;
+					}
+				} else {
+					if (rewardCurrency == undefined) {
+						failed.push({
+							record_id: recordId,
+							reason: "Currency Not Defined",
+						});
+						continue;
+					}
+
+					if (rewardValue == undefined) {
+						failed.push({
+							record_id: recordId,
+							reason: "Value Not Defined",
+						});
+						continue;
+					}
+
+					message = `Congrats! You have been rewarded a ${rewardType} worth ${rewardValue} ${rewardCurrency}.\n\nPlease tap **Claim** below to confirm.`;
+				}
+
+				// Send the message to the member
+
+				const claimButton = new ButtonBuilder()
+					.setCustomId("claim" + recordId)
+					.setLabel("Claim")
+					.setStyle(ButtonStyle.Success)
+					.setEmoji("✅");
+
+				const claimRow = new ActionRowBuilder().addComponents(claimButton);
+
+				let success = true;
+
+				await member
+					.send({
+						content: message,
+						components: [claimRow],
+					})
+					.catch((error) => {
+						logger.error(
+							`Failed to send message to ${discordId} for record ${recordId}.`
+						);
+						success = false;
+					});
+
+				if (success) {
+					logger.info(`Sent message to ${discordId} for record ${recordId}.`);
+					await feishu.updateRecord(
+						tenantToken,
+						process.env.REWARD_BASE,
+						process.env.DELIVERY,
+						creator.record_id,
+						{ fields: { "Card Code": rewardCode, Status: "Sent" } }
+					);
+				} else {
+					logger.info(
+						`Sending message to ${discordId} failed. Creating private channel.`
+					);
+					await privateChannel(discordId, client, message, claimRow);
+				}
+			}
+
+			if (failed.length > 0) {
+				for (const record of failed) {
+					await feishu.updateRecord(
+						tenantToken,
+						process.env.REWARD_BASE,
+						process.env.DELIVERY,
+						record.record_id,
+						{ fields: { Status: "Failed", NOTE2: record.reason } }
+					);
+				}
+			}
+
+			await interaction.editReply({ content: "Done!", components: [] });
+			logger.info(
+				`Reward sending finished. ${rewardData.data.total} rewards sent. ${failed.length} failed.`
+			);
 		}
 	},
 };
 
-async function privateChannel(creator, client, message, attachment, button) {
+async function privateChannel(discordId, client, message, attachment, button) {
 	const channel = await client.channels.cache.get(
 		process.env.COLLECT_REWARDS_CHANNEL
 	);
-	const user = await client.users.cache.get(creator.discord_id);
+	const user = await client.users.cache.get(discordId);
 
 	await channel.permissionOverwrites.create(user, {
 		ViewChannel: true,
@@ -939,4 +1164,50 @@ async function privateChannel(creator, client, message, attachment, button) {
 	});
 }
 
-async function generateCodes() {}
+async function generateCodes(quantity, discordId) {
+	const codes = [];
+
+	const tenantToken = await feishu.authorize(
+		process.env.FEISHU_ID,
+		process.env.FEISHU_SECRET
+	);
+
+	const codeData = JSON.parse(
+		await feishu.getRecords(
+			tenantToken,
+			process.env.CODE_BASE,
+			process.env.CODE_DATABASE,
+			`NOT(CurrentValue.[Status] = "Used")`
+		)
+	);
+
+	logger.info(
+		`Codes available: ${codeData.data.total}.\nCodes needed: ${quantity}\nUser: ${discordId}.`
+	);
+
+	if (codeData.data.total < quantity) {
+		return codes;
+	}
+
+	const selectedCodes = await codeData.data.items.slice(0, quantity);
+
+	for (const code of selectedCodes) {
+		await feishu.updateRecord(
+			tenantToken,
+			process.env.CODE_BASE,
+			process.env.CODE_DATABASE,
+			code.record_id,
+			{
+				fields: {
+					"Discord ID": discordId,
+					Status: "Used",
+				},
+			}
+		);
+		codes.push(code.fields["Beta Codes"]);
+	}
+
+	logger.info(`Codes generated for ${discordId}: ${codes.length}.`);
+
+	return codes;
+}
