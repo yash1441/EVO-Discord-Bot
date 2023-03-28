@@ -729,7 +729,7 @@ module.exports = {
 						continue;
 					}
 
-					message = `Congrats! You have been rewarded a ${rewardType} worth ${rewardValue} ${rewardCurrency}.\n\nPlease tap **Claim** below to confirm.`;
+					message = `Congrats! You have been rewarded a ${rewardType} worth ${rewardValue} ${rewardCurrency}.\n\n${rewardCode}\n\nPlease tap **Claim** below to confirm.`;
 				}
 
 				// Send the message to the member
