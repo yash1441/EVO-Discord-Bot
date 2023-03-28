@@ -793,7 +793,7 @@ module.exports = {
 	},
 };
 
-async function privateChannel(discordId, client, message, attachment, button) {
+async function privateChannel(discordId, client, message, button) {
 	const channel = await client.channels.cache.get(
 		process.env.COLLECT_REWARDS_CHANNEL
 	);
