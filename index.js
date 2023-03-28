@@ -210,63 +210,6 @@ client.on("interactionCreate", async (interaction) => {
 			await interaction.showModal(betaModal).catch((error) => {
 				console.error("Unknown Interaction: " + interaction.customId);
 			});
-		} else if (interaction.customId === "claimButton") {
-			await interaction.deferReply();
-			let dm;
-			if (interaction.channel.type === ChannelType.DM) {
-				dm = true;
-			} else {
-				dm = false;
-			}
-			let tenantToken = await feishu.authorize(
-				process.env.FEISHU_ID,
-				process.env.FEISHU_SECRET
-			);
-			let records = await feishu.getRecords(
-				tenantToken,
-				process.env.REWARD_BASE,
-				process.env.DELIVERY,
-				`AND(CurrentValue.[Discord ID] = "${interaction.user.id}",(CurrentValue.[Status] = "Sent"))`
-			);
-			if (!parseInt(JSON.parse(records).data.total)) {
-				return await interaction.message.edit({
-					content: interaction.message.content,
-					components: [],
-				});
-			}
-			let record_id = JSON.parse(records).data.items[0].record_id;
-			await feishu.updateRecord(
-				tenantToken,
-				process.env.REWARD_BASE,
-				process.env.DELIVERY,
-				record_id,
-				{ fields: { Status: "Claimed" } }
-			);
-
-			await interaction.editReply({
-				content: "Your reward has been marked as **Claimed**.",
-			});
-
-			await interaction.message.edit({
-				content: interaction.message.content,
-				components: [],
-			});
-
-			if (!dm) {
-				const thread = interaction.channel;
-				await thread.members.remove(interaction.user.id);
-				await thread.setArchived(true);
-				await client.channels
-					.fetch(process.env.COLLECT_REWARDS_CHANNEL)
-					.then((channel) => {
-						channel.permissionOverwrites.delete(
-							interaction.user,
-							"Claimed Reward"
-						);
-					});
-			}
-
-			return;
 		} else if (interaction.customId === "bpButton") {
 			await interaction.deferReply({ ephemeral: true });
 			let tenantToken = await feishu.authorize(
