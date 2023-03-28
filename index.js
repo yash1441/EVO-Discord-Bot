@@ -1507,6 +1507,37 @@ client.on("interactionCreate", async (interaction) => {
 			cheaterModal.addComponents(r1, r2, r3);
 
 			await interaction.showModal(cheaterModal);
+		} else if (interaction.customId.startsWith("claim")) {
+			await interaction.deferReply();
+
+			const recordId = interaction.customId.substring(5);
+
+			const tenantToken = await feishu.authorize(
+				process.env.FEISHU_ID,
+				process.env.FEISHU_SECRET
+			);
+
+			await feishu.updateRecord(
+				tenantToken,
+				process.env.REWARD_BASE,
+				process.env.DELIVERY,
+				recordId,
+				{ fields: { Status: "Claimed" } }
+			);
+
+			if (interaction.channel.type != ChannelType.DM) {
+				const thread = interaction.channel;
+				await thread.members.remove(interaction.user.id);
+				await thread.setArchived(true);
+				await client.channels
+					.fetch(process.env.COLLECT_REWARDS_CHANNEL)
+					.then((channel) => {
+						channel.permissionOverwrites.delete(
+							interaction.user,
+							"Claimed Reward"
+						);
+					});
+			}
 		}
 	} else if (interaction.isModalSubmit()) {
 		if (interaction.customId === "betaAccess") {
