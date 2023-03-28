@@ -1102,7 +1102,7 @@ module.exports = {
 						tenantToken,
 						process.env.REWARD_BASE,
 						process.env.DELIVERY,
-						creator.record_id,
+						recordId,
 						{ fields: { "Card Code": rewardCode, Status: "Sent" } }
 					);
 				} else {
