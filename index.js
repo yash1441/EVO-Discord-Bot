@@ -1405,6 +1405,29 @@ client.on("interactionCreate", async (interaction) => {
 				content: interaction.message.content,
 				components: [],
 			});
+		} else if (interaction.customId === "appealButton") {
+			const appealModal = new ModalBuilder()
+				.setCustomId("appealModal")
+				.setTitle("Appeal Ban");
+			const appealUsername = new TextInputBuilder()
+				.setCustomId("appealUsername")
+				.setLabel("Nickname")
+				.setPlaceholder("Please enter your in-game nickname here.")
+				.setStyle(TextInputStyle.Short)
+				.setRequired(true);
+			const appealDetails = new TextInputBuilder()
+				.setCustomId("appealDetails")
+				.setLabel("Reasoning for Appeal")
+				.setPlaceholder("Give a detailed reason for appeal.")
+				.setStyle(TextInputStyle.Paragraph)
+				.setRequired(true);
+
+			const r1 = new ActionRowBuilder().addComponents(appealUsername);
+			const r2 = new ActionRowBuilder().addComponents(appealDetails);
+
+			appealModal.addComponents(r1, r2);
+
+			await interaction.showModal(appealModal);
 		}
 	} else if (interaction.isModalSubmit()) {
 		if (interaction.customId === "betaAccess") {
@@ -1958,6 +1981,42 @@ client.on("interactionCreate", async (interaction) => {
 			await interaction.editReply({
 				content: "You have successfully submitted your information.",
 			});
+		} else if (interaction.customId === "appealModal") {
+			await interaction.reply({
+				content: "Please upload a screenshot. Only jpg and png are accepted.",
+				ephemeral: true,
+			});
+
+			const filter = (m) =>
+				m.author.id === interaction.user.id && m.attachments.size > 0;
+			interaction.channel
+				.awaitMessages({ filter, max: 1, time: 60000, errors: ["time"] })
+				.then((collected) => {
+					const attachment = collected.first().attachments.first();
+					if (
+						!attachment.url.endsWith("jpg") &&
+						!attachment.url.endsWith("png")
+					) {
+						return interaction.editReply({
+							content:
+								"You can only submit images in this. To submit a video, upload it to a public site (Youtube, Google Drive, Dropbox, etc.) and send link in the Reasoning section of the form. Please try again.",
+						});
+					} else {
+						download(attachment.url, `${interaction.user.id}-appeal.jpg`);
+						interaction.editReply({
+							content:
+								"Image uploaded. Please wait while we try to submit your application...",
+						});
+						sendAppealResponseToFeishu(interaction);
+					}
+					collected.first().delete();
+				})
+				.catch((collected) => {
+					interaction.editReply({
+						content:
+							"You weren't able to upload a screenshot in time. Please try again.",
+					});
+				});
 		}
 	} else if (interaction.isStringSelectMenu()) {
 		if (interaction.customId.startsWith("suggestionSelectMenu")) {
@@ -3917,4 +3976,45 @@ async function sendAmbassadorEvent() {
 			components: [thRow],
 		})
 	);
+}
+
+async function sendAppealResponseToFeishu(interaction) {
+	const file = `${interaction.user.id}-appeal.jpg`;
+	const tenantToken = await feishu.authorize(
+		process.env.FEISHU_ID,
+		process.env.FEISHU_SECRET
+	);
+	let response = await feishu.uploadToDrive(
+		tenantToken,
+		"bascnZdSuzx6L7uAxP9sNJcY0vY",
+		file,
+		"bitable_image"
+	);
+	const file_token = JSON.parse(response).data.file_token;
+
+	const appealUsername = interaction.fields.getTextInputValue("appealUsername");
+	const appealDetails = interaction.fields.getTextInputValue("appealDetails");
+	const discordId = interaction.user.id;
+
+	const bugs = {
+		fields: {
+			"Discord ID": discordId,
+			Nickname: appealUsername,
+			Reason: appealDetails,
+			Screenshot: [{ file_token: file_token }],
+		},
+	};
+
+	await feishu.createRecord(
+		tenantToken,
+		"bascnZdSuzx6L7uAxP9sNJcY0vY",
+		"tblybKlZE3yCZk72",
+		bugs
+	);
+	response = await feishu.getFileToken(tenantToken, file);
+	const image_key = JSON.parse(response).data.image_key;
+	fs.unlinkSync(file);
+	await interaction.editReply({
+		content: "Your submission was received successfully!",
+	});
 }

@@ -516,7 +516,16 @@ module.exports = {
 				.setStyle(ButtonStyle.Danger)
 				.setEmoji("🥷🏻");
 
-			const row = new ActionRowBuilder().addComponents([cheaterButton]);
+			const appealButton = new ButtonBuilder()
+				.setCustomId("appealButton")
+				.setLabel("Appeal Ban")
+				.setStyle(ButtonStyle.Primary)
+				.setEmoji("📃");
+
+			const row = new ActionRowBuilder().addComponents([
+				cheaterButton,
+				appealButton,
+			]);
 
 			client.channels.fetch(channel.id).then((channel) =>
 				channel.send({
