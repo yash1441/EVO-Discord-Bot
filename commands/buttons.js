@@ -154,6 +154,17 @@ module.exports = {
 						.setDescription("Input the channel.")
 						.setRequired(true)
 				)
+		)
+		.addSubcommand((subcommand) =>
+			subcommand
+				.setName("cheater-report")
+				.setDescription("Setup Cheater Report.")
+				.addChannelOption((option) =>
+					option
+						.setName("channel")
+						.setDescription("Input the channel.")
+						.setRequired(true)
+				)
 		),
 	async execute(interaction, client) {
 		await interaction.deferReply();
@@ -402,16 +413,7 @@ module.exports = {
 				.setStyle(ButtonStyle.Success)
 				.setEmoji("🐛");
 
-			const cheaterButton = new ButtonBuilder()
-				.setCustomId("cheaterButton")
-				.setLabel("Report a Cheater")
-				.setStyle(ButtonStyle.Danger)
-				.setEmoji("🥷🏻");
-
-			const row = new ActionRowBuilder().addComponents([
-				bugButton,
-				cheaterButton,
-			]);
+			const row = new ActionRowBuilder().addComponents([bugButton]);
 
 			client.channels.fetch(channel.id).then((channel) =>
 				channel.send({
@@ -500,24 +502,28 @@ module.exports = {
 					components: [row],
 				})
 			);
-		} else if (subCommand === "tiktok-button") {
-			const tiktokButton = new ButtonBuilder()
-				.setCustomId("tiktokButton")
-				.setLabel("TikTok")
-				.setStyle(ButtonStyle.Success)
-				.setEmoji("✅");
+		} else if (subCommand === "cheater-report") {
+			const cheaterEmbed = new EmbedBuilder()
+				.setTitle("Report Violation")
+				.setDescription(
+					`**Click the button below** to start the report procedure, which takes you __less than 2 minutes__.\n\n**Please follow the bot instruction and submit the required info:**\n1. Select a violation category.\n2. Fill the form.\n 4. Upload a screenshot that shows the violation (has to be done within 60 seconds)\n\n*In the end, thanks for helping us improve the game. Your effort really matters!*`
+				)
+				.setColor(`C04946`);
 
-			const tiktokRow = new ActionRowBuilder().addComponents([tiktokButton]);
+			const cheaterButton = new ButtonBuilder()
+				.setCustomId("cheaterButton")
+				.setLabel("Report Violation")
+				.setStyle(ButtonStyle.Danger)
+				.setEmoji("🥷🏻");
 
-			client.channels
-				.fetch(channel.id)
-				.then((channel) =>
-					channel.send({
-						content:
-							"Click the button to receive a unique code. You can only claim 1 code",
-						components: [tiktokRow],
-					})
-				);
+			const row = new ActionRowBuilder().addComponents([cheaterButton]);
+
+			client.channels.fetch(channel.id).then((channel) =>
+				channel.send({
+					embeds: [cheaterEmbed],
+					components: [row],
+				})
+			);
 		}
 		await interaction.deleteReply();
 	},
