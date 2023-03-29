@@ -964,64 +964,6 @@ client.on("interactionCreate", async (interaction) => {
 			const row = new ActionRowBuilder().addComponents(bugCategories);
 
 			await interaction.editReply({ components: [row] });
-		} else if (interaction.customId === "tiktokButton") {
-			await interaction.deferReply({ ephemeral: true });
-
-			const tenantToken = await feishu.authorize(
-				process.env.FEISHU_ID,
-				process.env.FEISHU_SECRET
-			);
-			let response = JSON.parse(
-				await feishu.getRecords(
-					tenantToken,
-					process.env.CODE_BASE,
-					process.env.TIKTOK_CODES,
-					`CurrentValue.[Discord ID] = "${interaction.user.id}"`
-				)
-			);
-
-			if (response.data.total) {
-				return await interaction.editReply({
-					content: "You have already redeemed a TikTok Creator Event code.",
-				});
-			}
-
-			response = JSON.parse(
-				await feishu.getRecords(
-					tenantToken,
-					process.env.CODE_BASE,
-					process.env.TIKTOK_CODES,
-					`CurrentValue.[Discord ID] = ""`
-				)
-			);
-
-			if (!response.data.total) {
-				return await interaction.editReply({
-					content: "There are no TikTok Creator Event codes left.",
-				});
-			}
-
-			const recordId = response.data.items[0].record_id;
-			const code = response.data.items[0].fields["Codes"];
-
-			await feishu.updateRecord(
-				tenantToken,
-				process.env.CODE_BASE,
-				process.env.TIKTOK_CODES,
-				recordId,
-				{ fields: { "Discord ID": interaction.user.id } }
-			);
-
-			await interaction.editReply({
-				content: `Code claimed successfully! Here is your code:\n\`${code}\`\n\n[**Download EVO**](http://bit.ly/3JRQNXM)\n\nThere are also other Content Creation events, learn more about details via <#${process.env.EVENT_NEWS_CHANNEL}>.\n\nWe are looking for potential EVO creators. Exclusive benefits are provided, learn more about details via <#${process.env.CC_CHANNEL}>.\n\n*Please note that we have the right to ban your code if we find fraudulent behaviors or code trading.*`,
-			});
-		} else if (interaction.customId === "ttcButton") {
-			await interaction.deferReply({ ephemeral: true });
-			await interaction.member.roles.add(process.env.TTC_ROLE).then(() => {
-				interaction.editReply({
-					content: `**TikTok Creator Event**\n\nJoined Successfully!\nLearn more about the event details [here](https://api.tiktokv.com/game_center/pop/deeplink?target=home-pop)\n\nIf you haven't got a code to get into the game and record the gameplay, please check the message in <#${process.env.ROLES_CHANNEL}>`,
-				});
-			});
 		} else if (interaction.customId === "shortsButton") {
 			await interaction.deferReply({ ephemeral: true });
 
@@ -1408,35 +1350,21 @@ client.on("interactionCreate", async (interaction) => {
 				content: `You have submitted ${videos} videos, keep up the good work! We will review your video and record the views on 17th April. You will be able to check the event result by using this button!`,
 			});
 		} else if (interaction.customId === "cheaterButton") {
-			const cheaterModal = new ModalBuilder()
-				.setCustomId("cheaterModal")
-				.setTitle("Report a Cheater");
-			const cheaterUsername = new TextInputBuilder()
-				.setCustomId("cheaterUsername")
-				.setLabel("Nickname")
-				.setPlaceholder("Please enter your in-game nickname here.")
-				.setStyle(TextInputStyle.Short)
-				.setRequired(true);
-			const cheaterSession = new TextInputBuilder()
-				.setCustomId("cheaterSession")
-				.setLabel("Session ID")
-				.setPlaceholder("In which session did you encounter the cheater?")
-				.setStyle(TextInputStyle.Short)
-				.setRequired(true);
-			const cheaterDetails = new TextInputBuilder()
-				.setCustomId("cheaterDetails")
-				.setLabel("Reasoning")
-				.setPlaceholder("Give a detailed explanation of the cheating.")
-				.setStyle(TextInputStyle.Paragraph)
-				.setRequired(true);
+			await interaction.deferReply({ ephemeral: true });
+			const cheaterCategories = new StringSelectMenuBuilder()
+				.setCustomId("cheaterCategories")
+				.setPlaceholder("Select a category")
+				.addOptions(
+					{ label: "Cheating", value: "Cheating" },
+					{ label: "Bug Abuse", value: "Bug Abuse" },
+					{ label: "Login", value: "Login" },
+					{ label: "Toxic Chat", value: "Toxic Chat" },
+					{ label: "Other", value: "Other" }
+				);
 
-			let r1 = new ActionRowBuilder().addComponents(cheaterUsername);
-			let r2 = new ActionRowBuilder().addComponents(cheaterSession);
-			let r3 = new ActionRowBuilder().addComponents(cheaterDetails);
+			const row = new ActionRowBuilder().addComponents(cheaterCategories);
 
-			cheaterModal.addComponents(r1, r2, r3);
-
-			await interaction.showModal(cheaterModal);
+			await interaction.editReply({ components: [row] });
 		} else if (interaction.customId.startsWith("claim")) {
 			await interaction.deferReply();
 
@@ -1734,7 +1662,7 @@ client.on("interactionCreate", async (interaction) => {
 							"You weren't able to upload a screenshot in time. Please try again.",
 					});
 				});
-		} else if (interaction.customId.startsWith("cheaterModal")) {
+		} else if (interaction.customId.startsWith("che_")) {
 			await interaction.reply({
 				content: "Please upload a screenshot. Only jpg and png are accepted.",
 				ephemeral: true,
@@ -2385,6 +2313,38 @@ client.on("interactionCreate", async (interaction) => {
 			bugreportModal.addComponents(r1, r2, r3, r4);
 
 			await interaction.showModal(bugreportModal);
+		} else if (interaction.customId === "cheaterCategories") {
+			const category = interaction.values[0];
+
+			const cheaterModal = new ModalBuilder()
+				.setCustomId("che_" + category)
+				.setTitle("Report a Cheater");
+			const cheaterUsername = new TextInputBuilder()
+				.setCustomId("cheaterUsername")
+				.setLabel("Nickname")
+				.setPlaceholder("Please enter your in-game nickname here.")
+				.setStyle(TextInputStyle.Short)
+				.setRequired(true);
+			const cheaterSession = new TextInputBuilder()
+				.setCustomId("cheaterSession")
+				.setLabel("Session ID")
+				.setPlaceholder("In which session did you encounter the cheater?")
+				.setStyle(TextInputStyle.Short)
+				.setRequired(true);
+			const cheaterDetails = new TextInputBuilder()
+				.setCustomId("cheaterDetails")
+				.setLabel("Reasoning")
+				.setPlaceholder("Give a detailed explanation of the cheating.")
+				.setStyle(TextInputStyle.Paragraph)
+				.setRequired(true);
+
+			let r1 = new ActionRowBuilder().addComponents(cheaterUsername);
+			let r2 = new ActionRowBuilder().addComponents(cheaterSession);
+			let r3 = new ActionRowBuilder().addComponents(cheaterDetails);
+
+			cheaterModal.addComponents(r1, r2, r3);
+
+			await interaction.showModal(cheaterModal);
 		}
 	}
 });
@@ -3622,9 +3582,7 @@ async function sendCheaterResponseToFeishu(interaction) {
 	);
 	const file_token = JSON.parse(response).data.file_token;
 
-	const substring = interaction.customId.substring(4);
-	const bOptions = substring.split("_");
-
+	const cheaterCategory = interaction.customId.substring(4);
 	const cheaterUsername =
 		interaction.fields.getTextInputValue("cheaterUsername");
 	const cheaterDetails = interaction.fields.getTextInputValue("cheaterDetails");
@@ -3635,6 +3593,7 @@ async function sendCheaterResponseToFeishu(interaction) {
 		fields: {
 			"Discord ID": discordId,
 			Nickname: cheaterUsername,
+			Category: cheaterCategory,
 			"Session ID": cheaterSession,
 			Reason: cheaterDetails,
 			Screenshot: [{ file_token: file_token }],
@@ -3734,7 +3693,7 @@ async function sendCheaterResponseToFeishu(interaction) {
 			header: {
 				template: "red",
 				title: {
-					content: `Cheater Report`,
+					content: `Cheater Report - ${bugs.fields.Category}`,
 					tag: "plain_text",
 				},
 			},
