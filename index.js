@@ -100,6 +100,17 @@ client.on("ready", () => {
 		}
 	);
 
+	cron.schedule(
+		"0 0 0 * * *",
+		function () {
+			logger.info(`Starting scheduled cronjob. (Every Midnight)`);
+			checkViolationStatus();
+		},
+		{
+			timezone: "Asia/Singapore",
+		}
+	);
+
 	loadBetaTesterCodes();
 
 	logger.info(`Deleting old bug reports.`);
@@ -4017,4 +4028,93 @@ async function sendAppealResponseToFeishu(interaction) {
 	await interaction.editReply({
 		content: "Your submission was received successfully!",
 	});
+}
+
+async function checkViolationStatus() {
+	const tenantToken = await feishu.authorize(
+		process.env.FEISHU_ID,
+		process.env.FEISHU_SECRET
+	);
+
+	const response = JSON.parse(
+		await feishu.getRecords(
+			tenantToken,
+			"bascnZdSuzx6L7uAxP9sNJcY0vY",
+			"tblybKlZE3yCZk72",
+			`NOT(CurrentValue.Status = "Resolved")`
+		)
+	);
+
+	if (!response.data.total) {
+		logger.info("No violations found");
+		return;
+	}
+
+	const failed = [];
+
+	for (const record of response.data.items) {
+		const discordId = record.fields["Discord ID"];
+		const status = record.fields["Status"];
+		const recordId = record.record_id;
+
+		let shouldContinue = false;
+
+		if (status == "Approve") {
+			const embed = new MessageEmbed()
+				.setColor("#00FF00")
+				.setTitle("Your appeal has been approved!");
+
+			const guild = client.guilds.cache.get(process.env.EVO_SERVER);
+			const member = await guild.members.fetch(discordId).catch((error) => {
+				logger.error(error);
+				failed.push({ record_id: recordId, reason: "Member not found" });
+				shouldContinue = truue;
+			});
+
+			if (shouldContinue) continue;
+
+			await member.send({ embeds: [embed] }).catch((error) => {
+				logger.error(error);
+				failed.push({ record_id: recordId, reason: "DM failed" });
+			});
+		} else if (status == "Deny") {
+			const embed = new MessageEmbed()
+				.setColor("#FF0000")
+				.setTitle("Your appeal has been denied!");
+
+			const guild = client.guilds.cache.get(process.env.EVO_SERVER);
+			const member = await guild.members.fetch(discordId).catch((error) => {
+				logger.error(error);
+				failed.push({ record_id: recordId, reason: "Member not found" });
+				shouldContinue = truue;
+			});
+
+			if (shouldContinue) continue;
+
+			await member.send({ embeds: [embed] }).catch((error) => {
+				logger.error(error);
+				failed.push({ record_id: recordId, reason: "DM failed" });
+			});
+		}
+
+		await feishu.updateRecord(
+			tenantToken,
+			"bascnZdSuzx6L7uAxP9sNJcY0vY",
+			"tblybKlZE3yCZk72",
+			recordId,
+			{ fields: { Status: "Resolved" } }
+		);
+	}
+
+	if (failed.length == 0) return;
+
+	for (const record of failed) {
+		await feishu.updateRecord(
+			tenantToken,
+			"bascnZdSuzx6L7uAxP9sNJcY0vY",
+			"tblybKlZE3yCZk72",
+			record.record_id,
+			{ fields: { Status: "Resolved", NOTE: record.reason } }
+		);
+	}
 }
