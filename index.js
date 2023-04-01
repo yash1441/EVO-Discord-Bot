@@ -3194,6 +3194,10 @@ async function showSubmitModal(interaction) {
 		.setPlaceholder("Select a topic")
 		.addOptions(
 			{
+				label: "EVO Guide Creation Event",
+				value: formatSelection + "EVO Guide Creation Event",
+			},
+			{
 				label: "EVO Ambassador Event",
 				value: formatSelection + "EVO Ambassador Event",
 			},
