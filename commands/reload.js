@@ -5,6 +5,7 @@ const {
 	ButtonStyle,
 	ChannelType,
 	StringSelectMenuBuilder,
+	EmbedBuilder,
 } = require("discord.js");
 const feishu = require("../feishu.js");
 const logger = require("../logging/logger.js");
