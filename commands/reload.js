@@ -824,7 +824,7 @@ module.exports = {
 				let shouldContinue = false;
 
 				if (status == "Approve") {
-					const embed = new MessageEmbed()
+					const embed = new EmbedBuilder()
 						.setColor("#00FF00")
 						.setTitle("Your appeal has been approved!");
 
@@ -842,7 +842,7 @@ module.exports = {
 						failed.push({ record_id: recordId, reason: "DM failed" });
 					});
 				} else if (status == "Deny") {
-					const embed = new MessageEmbed()
+					const embed = new EmbedBuilder()
 						.setColor("#FF0000")
 						.setTitle("Your appeal has been denied!");
 

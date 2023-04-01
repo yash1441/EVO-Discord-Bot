@@ -4036,7 +4036,7 @@ async function checkViolationStatus() {
 			tenantToken,
 			"bascnZdSuzx6L7uAxP9sNJcY0vY",
 			"tblybKlZE3yCZk72",
-			`NOT(CurrentValue.Status = "Resolved")`
+			`OR(CurrentValue.[Status] = "Approve", CurrentValue.[Status] = "Deny")`
 		)
 	);
 
@@ -4055,7 +4055,7 @@ async function checkViolationStatus() {
 		let shouldContinue = false;
 
 		if (status == "Approve") {
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor("#00FF00")
 				.setTitle("Your appeal has been approved!");
 
@@ -4073,7 +4073,7 @@ async function checkViolationStatus() {
 				failed.push({ record_id: recordId, reason: "DM failed" });
 			});
 		} else if (status == "Deny") {
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor("#FF0000")
 				.setTitle("Your appeal has been denied!");
 
