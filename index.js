@@ -2567,7 +2567,7 @@ client.on("messageCreate", async (message) => {
 			prompt: finalPrompt,
 			temperature: 0.9,
 			max_tokens: 100,
-			stop: [" AI:"],
+			stop: ["\nAI:"],
 		});
 
 		console.log(gptResponse.data.choices);
