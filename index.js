@@ -2533,28 +2533,32 @@ client.on("messageCreate", async (message) => {
 		message.mentions.has(client.user)
 	) {
 		let extraPrompt = "";
+		const messageContent = message.content.replace(
+			new RegExp(`^<@!?${client.user.id}> ?`),
+			""
+		);
 		const reference = message.reference;
 
 		if (reference) {
 			const botMessage = await message.channel.messages.fetch(
 				reference.messageID
 			);
-			extraPrompt = `${botMessage.content}\n${message.author.username}: ${message.content}`;
+			extraPrompt = `${botMessage.content}\n${message.author.username}: ${messageContent}`;
 		}
 
-		let prompt = `The following is a conversation with an AI assistant. The assistant is helpful, creative, clever, and very friendly.\n\n${message.author.username}: Hello, who are you?\nAI: I am an AI created by OpenAI. How can I help you today?\n${message.author.username}: ${message.content}\nAI: `;
+		let finalPrompt = `The following is a conversation with an AI assistant. The assistant is helpful, creative, clever, and very friendly.\n\n${message.author.username}: Hello, who are you?\nAI: I am an AI created by OpenAI. How can I help you today?\n${message.author.username}: ${messageContent}\nAI: `;
 
-		if (extraPrompt.length > 0) {
-			prompt =
+		if (extraPrompt) {
+			finalPrompt =
 				`The following is a conversation with an AI assistant. The assistant is helpful, creative, clever, and very friendly.\n\n${message.author.username}: Hello, who are you?\nAI: I am an AI created by OpenAI. How can I help you today?\n` +
 				extraPrompt;
 		}
 
-		logger.debug(prompt);
+		logger.debug(finalPrompt);
 
 		const gptResponse = await openai.createCompletion({
 			model: "davinci",
-			prompt: prompt,
+			prompt: finalPrompt,
 			temperature: 0.9,
 			max_tokens: 100,
 			stop: ["\n", `${message.author.username}:`, "AI:"],
