@@ -2558,7 +2558,7 @@ client.on("messageCreate", async (message) => {
 
 		if (extraPrompt) {
 			finalPrompt =
-				`The following is a conversation with an AI assistant. The assistant is helpful, creative, clever, and very friendly.\n\n${message.author.username}: Hello, who are you?\nAI: I am an AI created by OpenAI. \n` +
+				`The following is a conversation with an AI assistant. The assistant is helpful, creative, clever, and very friendly.\n\n${message.author.username}: Hello, who are you?\nAI: I am an AI created by OpenAI. ` +
 				extraPrompt;
 		}
 
@@ -2567,7 +2567,7 @@ client.on("messageCreate", async (message) => {
 			prompt: finalPrompt,
 			temperature: 0.9,
 			max_tokens: 100,
-			stop: ["\n", `${message.author.username}:`, "AI:"],
+			stop: [`${message.author.username}:`, "AI:"],
 		});
 
 		console.log(gptResponse.data.choices);
