@@ -2562,8 +2562,6 @@ client.on("messageCreate", async (message) => {
 				extraPrompt;
 		}
 
-		logger.debug(finalPrompt);
-
 		const gptResponse = await openai.createCompletion({
 			model: "davinci",
 			prompt: finalPrompt,
@@ -2571,6 +2569,8 @@ client.on("messageCreate", async (message) => {
 			max_tokens: 100,
 			stop: ["\n", `${message.author.username}:`, "AI:"],
 		});
+
+		console.log({gptResponse.data.choices});
 
 		await message.reply(gptResponse.data.choices[0].text);
 	}
