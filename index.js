@@ -2532,6 +2532,7 @@ client.on("messageCreate", async (message) => {
 		message.channel.type != ChannelType.DM &&
 		message.mentions.has(client.user)
 	) {
+		logger.debug("Mention");
 		let extraPrompt = "";
 
 		const filter = (response) => {
@@ -2545,17 +2546,33 @@ client.on("messageCreate", async (message) => {
 		const userReply = await message.channel
 			.awaitMessages(filter, { max: 1, time: 60000, errors: ["time"] })
 			.then((collected) => collected.first())
-			.catch(() => {
-				message.channel.send("Sorry, time is up!");
-			});
+			.catch(() => {});
 
-		logger.debug(extraPrompt);
+		if (userReply) {
+			const botMessage = await message.channel.messages.fetch(
+				userReply.reference.messageID
+			);
+			const repliedToMessage = await message.channel.messages.fetch(
+				botMessage.reference.messageID
+			);
+			const botMessageContent = botMessage.content;
+			const repliedToMessageContent = repliedToMessage.content;
+			extraPrompt = `${message.author.username}: ${repliedToMessageContent}\nAI: ${botMessageContent}\n${message.author.username}: ${userReply.content}\nAI: `;
+		}
+
+		let prompt = `The following is a conversation with an AI assistant. The assistant is helpful, creative, clever, and very friendly.\n\n${message.author.username}: Hello, who are you?\nAI: I am an AI created by OpenAI. How can I help you today?\n${message.author.username}: ${message.content}\nAI: `;
+
+		if ((extraPrompt, length > 0)) {
+			prompt =
+				`The following is a conversation with an AI assistant. The assistant is helpful, creative, clever, and very friendly.\n\n${message.author.username}: Hello, who are you?\nAI: I am an AI created by OpenAI. How can I help you today?\n` +
+				extraPrompt;
+		}
+
+		logger.debug(prompt);
 
 		const gptResponse = await openai.createCompletion({
 			model: "davinci",
-			prompt:
-				`The following is a conversation with an AI assistant. The assistant is helpful, creative, clever, and very friendly.\n\n${message.author.username}: Hello, who are you?\nAI: I am an AI created by OpenAI. How can I help you today?\n${message.author.username}: ${message.content}\nAI: ` +
-				extraPrompt,
+			prompt: prompt,
 			temperature: 0.9,
 			max_tokens: 100,
 			stop: ["\n", `${message.author.username}:`, "AI:"],
