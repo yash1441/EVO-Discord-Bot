@@ -2570,7 +2570,7 @@ client.on("messageCreate", async (message) => {
 		const gptResponse = await openai.createCompletion({
 			model: "davinci",
 			prompt: finalPrompt,
-			temperature: 0.9,
+			temperature: 0.2,
 			max_tokens: 100,
 			stop: ["AI:", `${message.author.username}`],
 		});
