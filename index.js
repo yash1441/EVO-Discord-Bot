@@ -1359,7 +1359,6 @@ client.on("interactionCreate", async (interaction) => {
 				.addOptions(
 					{ label: "Cheating", value: "Cheating" },
 					{ label: "Bug Abuse", value: "Bug Abuse" },
-					{ label: "Login", value: "Login" },
 					{ label: "Toxic Chat", value: "Toxic Chat" },
 					{ label: "Other", value: "Other" }
 				);
@@ -1689,7 +1688,8 @@ client.on("interactionCreate", async (interaction) => {
 				});
 		} else if (interaction.customId.startsWith("che_")) {
 			await interaction.reply({
-				content: "Please upload a screenshot. Only jpg and png are accepted.",
+				content:
+					"Upload a screenshot that shows the violation. Make sure it contains the USER ID of the person you are reporting. (this step has to be done in 60 seconds). Only jpg and png are accepted.",
 				ephemeral: true,
 			});
 
@@ -2382,8 +2382,8 @@ client.on("interactionCreate", async (interaction) => {
 				.setTitle("Report a Cheater");
 			const cheaterUsername = new TextInputBuilder()
 				.setCustomId("cheaterUsername")
-				.setLabel("Nickname")
-				.setPlaceholder("Please enter your in-game nickname here.")
+				.setLabel("In-Game Name")
+				.setPlaceholder("Nickname (or ID) of the player you want to report")
 				.setStyle(TextInputStyle.Short)
 				.setRequired(true);
 			const cheaterSession = new TextInputBuilder()
@@ -4057,7 +4057,7 @@ async function checkViolationStatus() {
 		if (status == "Approve") {
 			const embed = new EmbedBuilder()
 				.setColor("#00FF00")
-				.setTitle("Your appeal has been approved!");
+				.setTitle("You ban appeal has been approved. You have been unbanned.");
 
 			const guild = client.guilds.cache.get(process.env.EVO_SERVER);
 			const member = await guild.members.fetch(discordId).catch((error) => {
@@ -4075,7 +4075,7 @@ async function checkViolationStatus() {
 		} else if (status == "Deny") {
 			const embed = new EmbedBuilder()
 				.setColor("#FF0000")
-				.setTitle("Your appeal has been denied!");
+				.setTitle("Your ban appeal has been denied!");
 
 			const guild = client.guilds.cache.get(process.env.EVO_SERVER);
 			const member = await guild.members.fetch(discordId).catch((error) => {
