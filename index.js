@@ -2528,30 +2528,26 @@ client.on("messageCreate", async (message) => {
 			"https://open.larksuite.com/open-apis/bot/v2/hook/f710206e-f9e1-4c7f-9e47-d2c3c6dbd21a",
 			body
 		);
-	} else if (message.channel.type != ChannelType.DM) {
-		const reference = message.reference;
+	} else if (
+		message.channel.type != ChannelType.DM &&
+		message.mentions.has(client.user)
+	) {
 		let extraPrompt = "";
-		if (reference && reference.messageID) {
-			const lastMessage = await message.channel.messages.fetch(
-				reference.messageID
+
+		const filter = (response) => {
+			if (!response.reference) return false;
+			return (
+				response.reference.messageID === message.id &&
+				response.author.id === message.author.id
 			);
-			logger.debug(lastMessage);
-			if (
-				lastMessage.author.id != client.user.id &&
-				!lastMessage.reference &&
-				lastMessage.reference.messageID != message.id
-			) {
-				return;
-			}
-			const lastReference = lastMessage.reference;
-			const lastLastMessage = await message.channel.messages.fetch(
-				lastReference.messageID
-			);
-			logger.debug(lastLastMessage);
-			extraPrompt = `${lastMessage.content}\n${lastLastMessage.author.username}: ${lastLastMessage.content}\nAI: `;
-		} else if (!message.content.includes(client.user.id)) {
-			return;
-		}
+		};
+
+		const userReply = await message.channel
+			.awaitMessages(filter, { max: 1, time: 60000, errors: ["time"] })
+			.then((collected) => collected.first())
+			.catch(() => {
+				message.channel.send("Sorry, time is up!");
+			});
 
 		logger.debug(extraPrompt);
 
