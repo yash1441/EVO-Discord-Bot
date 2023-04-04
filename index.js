@@ -2528,16 +2528,14 @@ client.on("messageCreate", async (message) => {
 			"https://open.larksuite.com/open-apis/bot/v2/hook/f710206e-f9e1-4c7f-9e47-d2c3c6dbd21a",
 			body
 		);
-	} else if (
-		message.channel.type != ChannelType.DM &&
-		message.content.includes(client.user.id)
-	) {
+	} else if (message.channel.type != ChannelType.DM) {
 		const reference = message.reference;
 		let extraPrompt = "";
 		if (reference && reference.messageID) {
 			const lastMessage = await message.channel.messages.fetch(
 				reference.messageID
 			);
+			logger.debug(lastMessage);
 			if (
 				lastMessage.author.id != client.user.id &&
 				!lastMessage.reference &&
@@ -2549,8 +2547,14 @@ client.on("messageCreate", async (message) => {
 			const lastLastMessage = await message.channel.messages.fetch(
 				lastReference.messageID
 			);
+			logger.debug(lastLastMessage);
 			extraPrompt = `${lastMessage.content}\n${lastLastMessage.author.username}: ${lastLastMessage.content}\nAI: `;
+		} else if (!message.content.includes(client.user.id)) {
+			return;
 		}
+
+		logger.debug(extraPrompt);
+
 		const gptResponse = await openai.createCompletion({
 			model: "davinci",
 			prompt:
