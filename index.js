@@ -2570,7 +2570,7 @@ client.on("messageCreate", async (message) => {
 			stop: ["AI:", `${message.author.username}`],
 		});
 
-		console.log(gptResponse.data.choices);
+		// console.log(gptResponse.data.choices);
 
 		await message.reply(gptResponse.data.choices[0].text);
 	}
