@@ -2532,9 +2532,30 @@ client.on("messageCreate", async (message) => {
 		message.channel.type != ChannelType.DM &&
 		message.content.includes(client.user.id)
 	) {
+		const reference = message.reference;
+		let extraPrompt = "";
+		if (reference && reference.messageID) {
+			const lastMessage = await message.channel.messages.fetch(
+				reference.messageID
+			);
+			if (
+				lastMessage.author.id != client.user.id &&
+				!lastMessage.reference &&
+				lastMessage.reference.messageID != message.id
+			) {
+				return;
+			}
+			const lastReference = lastMessage.reference;
+			const lastLastMessage = await message.channel.messages.fetch(
+				lastReference.messageID
+			);
+			extraPrompt = `${lastMessage.content}\n${lastLastMessage.author.username}: ${lastLastMessage.content}\nAI: `;
+		}
 		const gptResponse = await openai.createCompletion({
 			model: "davinci",
-			prompt: `The following is a conversation with an AI assistant. The assistant is helpful, creative, clever, and very friendly.\n\n${message.author.username}: Hello, who are you?\nAI: I am an AI created by OpenAI. How can I help you today?\n${message.author.username}: ${message.content}\nAI:`,
+			prompt:
+				`The following is a conversation with an AI assistant. The assistant is helpful, creative, clever, and very friendly.\n\n${message.author.username}: Hello, who are you?\nAI: I am an AI created by OpenAI. How can I help you today?\n${message.author.username}: ${message.content}\nAI: ` +
+				extraPrompt,
 			temperature: 0.9,
 			max_tokens: 100,
 			stop: ["\n", `${message.author.username}:`, "AI:"],
