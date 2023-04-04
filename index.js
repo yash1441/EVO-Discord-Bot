@@ -22,7 +22,7 @@ const request = require("request-promise");
 const cron = require("node-cron");
 const feishu = require("./feishu.js");
 const logger = require("./logging/logger.js");
-const { Configuration, OpenAIapi } = require("openai");
+const { Configuration, OpenAIApi } = require("openai");
 require("dotenv").config();
 
 const client = new Client({
@@ -42,7 +42,7 @@ const configuration = new Configuration({
 	organization: process.env.OPENAI_ORG,
 	apiKey: process.env.OPENAI_KEY,
 });
-const openai = new OpenAIapi(configuration);
+const openai = new OpenAIApi(configuration);
 
 let files = fs.readdirSync("./"),
 	file;
