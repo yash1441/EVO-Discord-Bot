@@ -2539,6 +2539,10 @@ client.on("messageCreate", async (message) => {
 			""
 		);
 
+		if (/[^a-zA-Z0-9~`!@#$%^&*()-_=+[\]{}\\|;:'",.<>/?]/.test(messageContent)) {
+			return;
+		}
+
 		const reference = message.reference;
 
 		if (reference) {
