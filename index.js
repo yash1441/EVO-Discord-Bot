@@ -22,6 +22,7 @@ const request = require("request-promise");
 const cron = require("node-cron");
 const feishu = require("./feishu.js");
 const logger = require("./logging/logger.js");
+const { Configuration, OpenAIapi } = require("openai");
 require("dotenv").config();
 
 const client = new Client({
@@ -36,6 +37,12 @@ const client = new Client({
 	],
 	partials: [Partials.Message, Partials.Channel, Partials.Reaction],
 });
+
+const configuration = new Configuration({
+	organization: process.env.OPENAI_ORG,
+	apiKey: process.env.OPENAI_KEY,
+});
+const openai = new OpenAIapi(configuration);
 
 let files = fs.readdirSync("./"),
 	file;
@@ -2411,7 +2418,8 @@ client.on("interactionCreate", async (interaction) => {
 });
 
 client.on("messageCreate", async (message) => {
-	if (message.channel.type === ChannelType.DM && message.author.bot === false) {
+	if (message.author.bot) return;
+	if (message.channel.type === ChannelType.DM) {
 		let msg = message.content;
 		let msgAuthor = message.author.username;
 
@@ -2520,6 +2528,19 @@ client.on("messageCreate", async (message) => {
 			"https://open.larksuite.com/open-apis/bot/v2/hook/f710206e-f9e1-4c7f-9e47-d2c3c6dbd21a",
 			body
 		);
+	} else if (
+		message.channel.type != ChannelType.DM &&
+		message.content.includes(client.user.id)
+	) {
+		const gptResponse = await openai.createCompletion({
+			model: "davinci",
+			prompt: `The following is a conversation with an AI assistant. The assistant is helpful, creative, clever, and very friendly.\n\n${message.author.username}: Hello, who are you?\nAI: I am an AI created by OpenAI. How can I help you today?\n${message.author.username}: ${message.content}\nAI:`,
+			temperature: 0.9,
+			max_tokens: 100,
+			stop: ["\n", `${message.author.username}:`, "AI:"],
+		});
+
+		await message.reply(gptResponse.data.choices[0].text);
 	}
 });
 
