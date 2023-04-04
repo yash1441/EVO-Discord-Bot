@@ -2544,40 +2544,43 @@ client.on("messageCreate", async (message) => {
 		) {
 			return;
 		}
+		try {
+			const reference = message.reference;
 
-		const reference = message.reference;
+			if (reference) {
+				const botMessage = await message.channel.messages.fetch(
+					reference.messageId
+				);
+				const oldReference = botMessage.reference;
+				const oldMessage = await message.channel.messages.fetch(
+					oldReference.messageId
+				);
 
-		if (reference) {
-			const botMessage = await message.channel.messages.fetch(
-				reference.messageId
-			);
-			const oldReference = botMessage.reference;
-			const oldMessage = await message.channel.messages.fetch(
-				oldReference.messageId
-			);
+				extraPrompt = `${message.author.username}: ${oldMessage.content}\nAI: ${botMessage.content}\n${message.author.username}: ${messageContent}\nAI: `;
+			}
 
-			extraPrompt = `${message.author.username}: ${oldMessage.content}\nAI: ${botMessage.content}\n${message.author.username}: ${messageContent}\nAI: `;
+			let finalPrompt = `The following is a conversation with an AI assistant. The assistant is helpful, creative, clever, and very friendly.\n\n${message.author.username}: Hello, who are you?\nAI: I am an AI created by OpenAI. How can I help you today?\n${message.author.username}: ${messageContent}\nAI: `;
+
+			if (extraPrompt) {
+				finalPrompt =
+					`The following is a conversation with an AI assistant. The assistant is helpful, creative, clever, and very friendly.\n\n${message.author.username}: Hello, who are you?\nAI: I am an AI created by OpenAI. ` +
+					extraPrompt;
+			}
+
+			const gptResponse = await openai.createCompletion({
+				model: "davinci",
+				prompt: finalPrompt,
+				temperature: 0.2,
+				max_tokens: 100,
+				stop: ["AI:", `${message.author.username}`],
+			});
+
+			// console.log(gptResponse.data.choices);
+
+			await message.reply(gptResponse.data.choices[0].text);
+		} catch {
+			return;
 		}
-
-		let finalPrompt = `The following is a conversation with an AI assistant. The assistant is helpful, creative, clever, and very friendly.\n\n${message.author.username}: Hello, who are you?\nAI: I am an AI created by OpenAI. How can I help you today?\n${message.author.username}: ${messageContent}\nAI: `;
-
-		if (extraPrompt) {
-			finalPrompt =
-				`The following is a conversation with an AI assistant. The assistant is helpful, creative, clever, and very friendly.\n\n${message.author.username}: Hello, who are you?\nAI: I am an AI created by OpenAI. ` +
-				extraPrompt;
-		}
-
-		const gptResponse = await openai.createCompletion({
-			model: "davinci",
-			prompt: finalPrompt,
-			temperature: 0.2,
-			max_tokens: 100,
-			stop: ["AI:", `${message.author.username}`],
-		});
-
-		// console.log(gptResponse.data.choices);
-
-		await message.reply(gptResponse.data.choices[0].text);
 	}
 });
 
