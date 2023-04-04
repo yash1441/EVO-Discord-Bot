@@ -2551,7 +2551,7 @@ client.on("messageCreate", async (message) => {
 			const botMessage = await message.channel.messages.fetch(
 				reference.messageId
 			);
-			extraPrompt = `${botMessage.content}\n${message.author.username}: ${messageContent}`;
+			extraPrompt = `${botMessage.content}\n${message.author.username}: ${messageContent}\nAI: `;
 		}
 
 		let finalPrompt = `The following is a conversation with an AI assistant. The assistant is helpful, creative, clever, and very friendly.\n\n${message.author.username}: Hello, who are you?\nAI: I am an AI created by OpenAI. How can I help you today?\n${message.author.username}: ${messageContent}\nAI: `;
@@ -2567,7 +2567,7 @@ client.on("messageCreate", async (message) => {
 			prompt: finalPrompt,
 			temperature: 0.9,
 			max_tokens: 100,
-			stop: ["\nAI:"],
+			stop: ["AI:", `${message.author.username}`],
 		});
 
 		console.log(gptResponse.data.choices);
