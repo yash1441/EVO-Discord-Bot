@@ -2551,21 +2551,20 @@ client.on("messageCreate", async (message) => {
 			const botMessage = await message.channel.messages.fetch(
 				reference.messageId
 			);
-			extraPrompt = botMessage.content;
-			// extraPrompt = `${botMessage.content}\n${message.author.username}: ${messageContent}\nAI: `;
+			const oldReference = botMessage.reference;
+			const oldMessage = await message.channel.messages.fetch(
+				oldReference.messageId
+			);
+
+			extraPrompt = `${message.author.username}: ${oldMessage.content}\nAI: ${botMessage.content}\n${message.author.username}: ${messageContent}\nAI: `;
 		}
 
-		let finalPrompt = `Answer my question in less than 500 characters.\nMy question is: ${messageContent}`;
-		// let finalPrompt = `The following is a conversation with an AI assistant. The assistant is helpful, creative, clever, and very friendly.\n\n${message.author.username}: Hello, who are you?\nAI: I am an AI created by OpenAI. How can I help you today?\n${message.author.username}: ${messageContent}\nAI: `;
+		let finalPrompt = `The following is a conversation with an AI assistant. The assistant is helpful, creative, clever, and very friendly.\n\n${message.author.username}: Hello, who are you?\nAI: I am an AI created by OpenAI. How can I help you today?\n${message.author.username}: ${messageContent}\nAI: `;
 
 		if (extraPrompt) {
 			finalPrompt =
-				`Answer my question in less than 500 characters. You said: ` +
-				extraPrompt +
-				`\nMy question is: ${messageContent}`;
-			// finalPrompt =
-			// 	`The following is a conversation with an AI assistant. The assistant is helpful, creative, clever, and very friendly.\n\n${message.author.username}: Hello, who are you?\nAI: I am an AI created by OpenAI. ` +
-			// 	extraPrompt;
+				`The following is a conversation with an AI assistant. The assistant is helpful, creative, clever, and very friendly.\n\n${message.author.username}: Hello, who are you?\nAI: I am an AI created by OpenAI. ` +
+				extraPrompt;
 		}
 
 		const gptResponse = await openai.createCompletion({
@@ -2573,7 +2572,7 @@ client.on("messageCreate", async (message) => {
 			prompt: finalPrompt,
 			temperature: 0.9,
 			max_tokens: 100,
-			//stop: ["AI:", `${message.author.username}`],
+			stop: ["AI:", `${message.author.username}`],
 		});
 
 		// console.log(gptResponse.data.choices);
