@@ -2552,7 +2552,7 @@ client.on("messageCreate", async (message) => {
 				reference.messageID
 			);
 			extraPrompt = `${botMessage.content}\n${message.author.username}: ${messageContent}`;
-			logger.debug(extraPrompt);
+			console.log(botMessage);
 		}
 
 		let finalPrompt = `The following is a conversation with an AI assistant. The assistant is helpful, creative, clever, and very friendly.\n\n${message.author.username}: Hello, who are you?\nAI: I am an AI created by OpenAI. How can I help you today?\n${message.author.username}: ${messageContent}\nAI: `;
