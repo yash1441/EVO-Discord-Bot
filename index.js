@@ -2573,6 +2573,7 @@ client.on("messageCreate", async (message) => {
 				temperature: 0.2,
 				max_tokens: 100,
 				stop: ["AI:", `${message.author.username}`],
+				user: message.author.id,
 			});
 
 			// console.log(gptResponse.data.choices);
