@@ -2567,7 +2567,6 @@ client.on("messageCreate", async (message) => {
 			prompt: finalPrompt,
 			temperature: 0.9,
 			max_tokens: 100,
-			stop: [`${message.author.username}:`, "AI:"],
 		});
 
 		console.log(gptResponse.data.choices);
