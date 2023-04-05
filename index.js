@@ -4115,6 +4115,7 @@ async function checkViolationStatus() {
 		const recordId = record.record_id;
 
 		let shouldContinue = false;
+		let note = "-";
 
 		if (status == "Approve") {
 			const embed = new EmbedBuilder()
@@ -4122,11 +4123,16 @@ async function checkViolationStatus() {
 				.setTitle("You ban appeal has been approved. You have been unbanned.");
 
 			const guild = client.guilds.cache.get(process.env.EVO_SERVER);
-			const member = await guild.members.fetch(discordId).catch((error) => {
-				logger.error(error);
-				failed.push({ record_id: recordId, reason: "Member not found" });
-				shouldContinue = truue;
-			});
+			const member = await guild.members
+				.fetch(discordId)
+				.then(() => {
+					note = "Alert Sent";
+				})
+				.catch((error) => {
+					logger.error(error);
+					failed.push({ record_id: recordId, reason: "Member not found" });
+					shouldContinue = truue;
+				});
 
 			if (shouldContinue) continue;
 
@@ -4140,11 +4146,16 @@ async function checkViolationStatus() {
 				.setTitle("Your ban appeal has been denied!");
 
 			const guild = client.guilds.cache.get(process.env.EVO_SERVER);
-			const member = await guild.members.fetch(discordId).catch((error) => {
-				logger.error(error);
-				failed.push({ record_id: recordId, reason: "Member not found" });
-				shouldContinue = truue;
-			});
+			const member = await guild.members
+				.fetch(discordId)
+				.then(() => {
+					note = "Alert Sent";
+				})
+				.catch((error) => {
+					logger.error(error);
+					failed.push({ record_id: recordId, reason: "Member not found" });
+					shouldContinue = truue;
+				});
 
 			if (shouldContinue) continue;
 
@@ -4159,7 +4170,7 @@ async function checkViolationStatus() {
 			"bascnZdSuzx6L7uAxP9sNJcY0vY",
 			"tblybKlZE3yCZk72",
 			recordId,
-			{ fields: { Status: "Resolved" } }
+			{ fields: { Status: "Resolved", NOTE: note } }
 		);
 	}
 
