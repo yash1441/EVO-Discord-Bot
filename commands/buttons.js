@@ -506,7 +506,7 @@ module.exports = {
 			const cheaterEmbed = new EmbedBuilder()
 				.setTitle("Report Violation")
 				.setDescription(
-					`**Click the button below** to start the report procedure, which takes you __less than 2 minutes__.\n\n**Please follow the bot instruction and submit the required info:**\n1. Select a violation category.\n2. Fill the form.\n3. Upload a screenshot that shows the violation (has to be done within 60 seconds)\n\n*In the end, thanks for helping us improve the game. Your effort really matters!*`
+					`**Click the button below** to start the report procedure, which takes you __less than 2 minutes__.\n\n**Please follow the bot instruction and submit the required info:**\n1. Select a violation category.\n2. Fill the form.\n3. Upload a screenshot that shows the violation. Make sure it contains the USER ID of the person you are reporting. (this step has to be done in 60 seconds)\n\n*In the end, thanks for helping us improve the game. Your effort really matters!*`
 				)
 				.setColor(`C04946`);
 
