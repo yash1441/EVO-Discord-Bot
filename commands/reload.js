@@ -897,7 +897,7 @@ module.exports = {
 				);
 			}
 		} else if (subCommand === "check-violation") {
-			await interaction.guild.members.fetch();
+			await interaction.deferReply({ ephemeral: true });
 			const tenantToken = await feishu.authorize(
 				process.env.FEISHU_ID,
 				process.env.FEISHU_SECRET
@@ -935,11 +935,9 @@ module.exports = {
 						);
 
 					const guild = client.guilds.cache.get(process.env.EVO_SERVER);
-					const member = await interaction.guild.members
-						.fetch(discordId)
-						.then(() => {
-							note = "Alert Sent";
-						});
+					const member = await guild.members.fetch(discordId).then(() => {
+						note = "Alert Sent";
+					});
 
 					if (!member) {
 						logger.warn("Member not found - " + discordId);
@@ -1000,6 +998,10 @@ module.exports = {
 				);
 			}
 		}
+
+		await interaction.editReply({
+			content: `**Total Violations Resolved** ${response.data.items.length}`,
+		});
 	},
 };
 
