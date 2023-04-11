@@ -930,7 +930,6 @@ module.exports = {
 				const reportedPlayer = record.fields["Nickname"];
 				const recordId = record.record_id;
 
-				let shouldContinue = false;
 				let note = "-";
 
 				if (status == "Valid") {
@@ -941,18 +940,14 @@ module.exports = {
 						);
 
 					const guild = client.guilds.cache.get(process.env.EVO_SERVER);
-					const member = await guild.members
-						.fetch(discordId)
-						.then(() => {
-							note = "Alert Sent";
-						})
-						.catch((error) => {
-							logger.error(error);
-							failed.push({ record_id: recordId, reason: "Member not found" });
-							shouldContinue = true;
-						});
+					const member = await guild.members.fetch(discordId).then(() => {
+						note = "Alert Sent";
+					});
 
-					if (shouldContinue) continue;
+					if (!member) {
+						failed.push({ record_id: recordId, reason: "Member not found" });
+						continue;
+					}
 
 					await member.send({ embeds: [embed] }).catch((error) => {
 						logger.error(error);
@@ -966,18 +961,14 @@ module.exports = {
 						);
 
 					const guild = client.guilds.cache.get(process.env.EVO_SERVER);
-					const member = await guild.members
-						.fetch(discordId)
-						.then(() => {
-							note = "Alert Sent";
-						})
-						.catch((error) => {
-							logger.error(error);
-							failed.push({ record_id: recordId, reason: "Member not found" });
-							shouldContinue = true;
-						});
+					const member = await guild.members.fetch(discordId).then(() => {
+						note = "Alert Sent";
+					});
 
-					if (shouldContinue) continue;
+					if (!member) {
+						failed.push({ record_id: recordId, reason: "Member not found" });
+						continue;
+					}
 
 					await member.send({ embeds: [embed] }).catch((error) => {
 						logger.error(error);
