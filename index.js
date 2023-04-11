@@ -4282,7 +4282,7 @@ async function checkViolationStatus() {
 			"bascnZdSuzx6L7uAxP9sNJcY0vY",
 			"tblmLa8SlkiASY0R",
 			recordId,
-			{ fields: { Status: "Resolved", NOTE: note } }
+			{ fields: { "Result of Report Review": "Resolved", NOTE: note } }
 		);
 	}
 
@@ -4294,7 +4294,7 @@ async function checkViolationStatus() {
 			"bascnZdSuzx6L7uAxP9sNJcY0vY",
 			"tblmLa8SlkiASY0R",
 			record.record_id,
-			{ fields: { Status: "Resolved", NOTE: record.reason } }
+			{ fields: { "Result of Report Review": "Resolved", NOTE: record.reason } }
 		);
 	}
 }

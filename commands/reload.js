@@ -986,7 +986,7 @@ module.exports = {
 					"bascnZdSuzx6L7uAxP9sNJcY0vY",
 					"tblmLa8SlkiASY0R",
 					recordId,
-					{ fields: { Status: "Resolved", NOTE: note } }
+					{ fields: { "Result of Report Review": "Resolved", NOTE: note } }
 				);
 			}
 
