@@ -4205,7 +4205,7 @@ async function checkViolationStatus() {
 			tenantToken,
 			"bascnZdSuzx6L7uAxP9sNJcY0vY",
 			"tblmLa8SlkiASY0R",
-			`OR(CurrentValue.[Result of Report Review] = "Invalid", CurrentValue.[Status] = "Valid")`
+			`OR(CurrentValue.[Result of Report Review] = "Invalid", CurrentValue.[Result of Report Review] = "Valid")`
 		)
 	);
 
@@ -4232,7 +4232,7 @@ async function checkViolationStatus() {
 					`After our review, it has been confirmed that the reported player \`${reportedPlayer}\` violates the game rules. The player has been punished for the violation. Thank you for supporting the maintenance of the game environment!`
 				);
 
-			const guild = await client.guilds.fetch(process.env.EVO_SERVER);
+			const guild = client.guilds.cache.get(process.env.EVO_SERVER);
 			const member = await guild.members
 				.fetch(discordId)
 				.then(() => {
@@ -4257,7 +4257,7 @@ async function checkViolationStatus() {
 					`After our review, it is not found that the reported player \`${reportedPlayer}\` has violated the game rules. If there is more evidence, please submit them to continue your report. Appreciation for supporting the maintenance of the game environment!`
 				);
 
-			const guild = await client.guilds.fetch(process.env.EVO_SERVER);
+			const guild = client.guilds.cache.get(process.env.EVO_SERVER);
 			const member = await guild.members
 				.fetch(discordId)
 				.then(() => {
