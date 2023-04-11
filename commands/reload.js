@@ -801,7 +801,9 @@ module.exports = {
 				`Reward sending finished. ${rewardData.data.total} rewards sent. ${failed.length} failed.`
 			);
 		} else if (subCommand === "check-appeal") {
+			await interaction.deferReply({ ephemeral: true });
 			await interaction.guild.members.fetch();
+
 			const tenantToken = await feishu.authorize(
 				process.env.FEISHU_ID,
 				process.env.FEISHU_SECRET
@@ -896,8 +898,14 @@ module.exports = {
 					{ fields: { Status: "Resolved", NOTE: record.reason } }
 				);
 			}
+
+			await interaction.editReply({
+				content: `**Total Appeals Resolved** ${response.data.items.length}`,
+			});
 		} else if (subCommand === "check-violation") {
 			await interaction.deferReply({ ephemeral: true });
+			await interaction.guild.members.fetch();
+
 			const tenantToken = await feishu.authorize(
 				process.env.FEISHU_ID,
 				process.env.FEISHU_SECRET
@@ -945,8 +953,6 @@ module.exports = {
 						continue;
 					}
 
-					logger.debug("Sending DM to " + member.user.tag);
-
 					await member.send({ embeds: [embed] }).catch((error) => {
 						logger.error(error);
 						failed.push({ record_id: recordId, reason: "DM failed" });
@@ -968,8 +974,6 @@ module.exports = {
 						failed.push({ record_id: recordId, reason: "Member not found" });
 						continue;
 					}
-
-					logger.debug("Sending DM to " + member.user.tag);
 
 					await member.send({ embeds: [embed] }).catch((error) => {
 						logger.error(error);
@@ -994,7 +998,12 @@ module.exports = {
 					"bascnZdSuzx6L7uAxP9sNJcY0vY",
 					"tblmLa8SlkiASY0R",
 					record.record_id,
-					{ fields: { Status: "Resolved", NOTE: record.reason } }
+					{
+						fields: {
+							"Result of Report Review": "Resolved",
+							NOTE: record.reason,
+						},
+					}
 				);
 			}
 
