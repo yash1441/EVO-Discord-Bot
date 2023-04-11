@@ -108,9 +108,10 @@ client.on("ready", () => {
 	);
 
 	cron.schedule(
-		"0 0 0 * * *",
+		"0 0 14,19 * * *",
 		function () {
 			logger.info(`Starting scheduled cronjob. (Every Midnight)`);
+			checkAppealStatus();
 			checkViolationStatus();
 		},
 		{
@@ -1992,7 +1993,8 @@ client.on("interactionCreate", async (interaction) => {
 			});
 		} else if (interaction.customId === "appealModal") {
 			await interaction.reply({
-				content: "Please upload a screenshot. Only jpg and png are accepted.",
+				content:
+					"Please upload a screenshot that shows you cannot login to the game. Only jpg and png are accepted.",
 				ephemeral: true,
 			});
 
@@ -2386,10 +2388,10 @@ client.on("interactionCreate", async (interaction) => {
 
 			const cheaterModal = new ModalBuilder()
 				.setCustomId("che_" + category)
-				.setTitle("Report a Cheater");
+				.setTitle("Report a Violator");
 			const cheaterUsername = new TextInputBuilder()
 				.setCustomId("cheaterUsername")
-				.setLabel("In-Game Name")
+				.setLabel("In-Game Name of Violator(s)")
 				.setPlaceholder("Nickname (or ID) of the player you want to report")
 				.setStyle(TextInputStyle.Short)
 				.setRequired(true);
@@ -4088,7 +4090,7 @@ async function sendAppealResponseToFeishu(interaction) {
 	});
 }
 
-async function checkViolationStatus() {
+async function checkAppealStatus() {
 	const tenantToken = await feishu.authorize(
 		process.env.FEISHU_ID,
 		process.env.FEISHU_SECRET
@@ -4104,7 +4106,7 @@ async function checkViolationStatus() {
 	);
 
 	if (!response.data.total) {
-		logger.info("No violations found");
+		logger.info("No appeals found.");
 		return;
 	}
 
@@ -4121,7 +4123,9 @@ async function checkViolationStatus() {
 		if (status == "Approve") {
 			const embed = new EmbedBuilder()
 				.setColor("#00FF00")
-				.setTitle("You ban appeal has been approved. You have been unbanned.");
+				.setTitle(
+					"After further review, it was confirmed that your account had been unbanned."
+				);
 
 			const guild = client.guilds.cache.get(process.env.EVO_SERVER);
 			const member = await guild.members
@@ -4144,7 +4148,9 @@ async function checkViolationStatus() {
 		} else if (status == "Deny") {
 			const embed = new EmbedBuilder()
 				.setColor("#FF0000")
-				.setTitle("Your ban appeal has been denied!");
+				.setTitle(
+					"After further review, it was confirmed that your account had violated the game rules and thus could not be unbanned."
+				);
 
 			const guild = client.guilds.cache.get(process.env.EVO_SERVER);
 			const member = await guild.members
@@ -4182,6 +4188,111 @@ async function checkViolationStatus() {
 			tenantToken,
 			"bascnZdSuzx6L7uAxP9sNJcY0vY",
 			"tblybKlZE3yCZk72",
+			record.record_id,
+			{ fields: { Status: "Resolved", NOTE: record.reason } }
+		);
+	}
+}
+
+async function checkViolationStatus() {
+	const tenantToken = await feishu.authorize(
+		process.env.FEISHU_ID,
+		process.env.FEISHU_SECRET
+	);
+
+	const response = JSON.parse(
+		await feishu.getRecords(
+			tenantToken,
+			"bascnZdSuzx6L7uAxP9sNJcY0vY",
+			"tblmLa8SlkiASY0R",
+			`OR(CurrentValue.[Result of Report Review] = "Invalid", CurrentValue.[Status] = "Valid")`
+		)
+	);
+
+	if (!response.data.total) {
+		logger.info("No violations found.");
+		return;
+	}
+
+	const failed = [];
+
+	for (const record of response.data.items) {
+		const discordId = record.fields["Discord ID"];
+		const status = record.fields["Result of Report Review"];
+		const reportedPlayer = record.fields["Nickname"];
+		const recordId = record.record_id;
+
+		let shouldContinue = false;
+		let note = "-";
+
+		if (status == "Valid") {
+			const embed = new EmbedBuilder()
+				.setColor("#00FF00")
+				.setTitle(
+					`After our review, it has been confirmed that the reported player \`${reportedPlayer}\` violates the game rules. The player has been punished for the violation. Thank you for supporting the maintenance of the game environment!`
+				);
+
+			const guild = client.guilds.cache.get(process.env.EVO_SERVER);
+			const member = await guild.members
+				.fetch(discordId)
+				.then(() => {
+					note = "Alert Sent";
+				})
+				.catch((error) => {
+					logger.error(error);
+					failed.push({ record_id: recordId, reason: "Member not found" });
+					shouldContinue = truue;
+				});
+
+			if (shouldContinue) continue;
+
+			await member.send({ embeds: [embed] }).catch((error) => {
+				logger.error(error);
+				failed.push({ record_id: recordId, reason: "DM failed" });
+			});
+		} else if (status == "Invalid") {
+			const embed = new EmbedBuilder()
+				.setColor("#FF0000")
+				.setTitle(
+					`After our review, it is not found that the reported player \`${reportedPlayer}\` has violated the game rules. If there is more evidence, please submit them to continue your report. Appreciation for supporting the maintenance of the game environment!`
+				);
+
+			const guild = client.guilds.cache.get(process.env.EVO_SERVER);
+			const member = await guild.members
+				.fetch(discordId)
+				.then(() => {
+					note = "Alert Sent";
+				})
+				.catch((error) => {
+					logger.error(error);
+					failed.push({ record_id: recordId, reason: "Member not found" });
+					shouldContinue = truue;
+				});
+
+			if (shouldContinue) continue;
+
+			await member.send({ embeds: [embed] }).catch((error) => {
+				logger.error(error);
+				failed.push({ record_id: recordId, reason: "DM failed" });
+			});
+		}
+
+		await feishu.updateRecord(
+			tenantToken,
+			"bascnZdSuzx6L7uAxP9sNJcY0vY",
+			"tblmLa8SlkiASY0R",
+			recordId,
+			{ fields: { Status: "Resolved", NOTE: note } }
+		);
+	}
+
+	if (failed.length == 0) return;
+
+	for (const record of failed) {
+		await feishu.updateRecord(
+			tenantToken,
+			"bascnZdSuzx6L7uAxP9sNJcY0vY",
+			"tblmLa8SlkiASY0R",
 			record.record_id,
 			{ fields: { Status: "Resolved", NOTE: record.reason } }
 		);
