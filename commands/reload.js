@@ -941,7 +941,7 @@ module.exports = {
 
 					if (!member) {
 						logger.warn("Member not found - " + discordId);
-						console.log({ member });
+						console.log({ guild });
 						failed.push({ record_id: recordId, reason: "Member not found" });
 						continue;
 					}
