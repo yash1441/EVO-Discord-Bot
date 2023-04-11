@@ -1082,7 +1082,7 @@ async function privateChannel(
 
 	if (message) finalMessage.content = message;
 	if (embeds) finalMessage.embeds = embeds;
-	if (button) finalMessage.components = components;
+	if (components) finalMessage.components = components;
 
 	await thread.send(finalMessage);
 
