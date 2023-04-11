@@ -801,6 +801,7 @@ module.exports = {
 				`Reward sending finished. ${rewardData.data.total} rewards sent. ${failed.length} failed.`
 			);
 		} else if (subCommand === "check-appeal") {
+			await interaction.guild.members.fetch();
 			const tenantToken = await feishu.authorize(
 				process.env.FEISHU_ID,
 				process.env.FEISHU_SECRET
@@ -859,11 +860,9 @@ module.exports = {
 						);
 
 					const guild = client.guilds.cache.get(process.env.EVO_SERVER);
-					const member = await interaction.guild.members
-						.fetch(discordId)
-						.then(() => {
-							note = "Alert Sent";
-						});
+					const member = await guild.members.fetch(discordId).then(() => {
+						note = "Alert Sent";
+					});
 
 					if (!member) {
 						logger.warn("Member not found - " + discordId);
@@ -898,6 +897,7 @@ module.exports = {
 				);
 			}
 		} else if (subCommand === "check-violation") {
+			await interaction.guild.members.fetch();
 			const tenantToken = await feishu.authorize(
 				process.env.FEISHU_ID,
 				process.env.FEISHU_SECRET
@@ -935,11 +935,9 @@ module.exports = {
 						);
 
 					const guild = client.guilds.cache.get(process.env.EVO_SERVER);
-					const member = await interaction.guild.members
-						.fetch(discordId)
-						.then(() => {
-							note = "Alert Sent";
-						});
+					const member = await guild.members.fetch(discordId).then(() => {
+						note = "Alert Sent";
+					});
 
 					if (!member) {
 						logger.warn("Member not found - " + discordId);
