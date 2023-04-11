@@ -780,7 +780,15 @@ module.exports = {
 					logger.info(
 						`Sending message to ${discordId} failed. Creating private channel.`
 					);
-					await privateChannel(discordId, client, message, claimRow);
+					await privateChannel(
+						process.env.COLLECT_REWARDS_CHANNEL,
+						discordId,
+						client,
+						message,
+						false,
+						[claimRow],
+						"**Once you click CLAIM, this thread would be DELETED.**\nPlease copy the reward/code somewhere and only then press the button."
+					);
 				}
 			}
 
@@ -951,13 +959,23 @@ module.exports = {
 
 					if (!member) {
 						logger.warn("Member not found - " + discordId);
-						failed.push({ record_id: recordId, reason: "Member not found" });
+						failed.push({
+							discord_id: discordId,
+							status: status,
+							record_id: recordId,
+							reason: "Member not found",
+						});
 						continue;
 					}
 
 					await member.send({ embeds: [embed] }).catch((error) => {
 						logger.error(error);
-						failed.push({ record_id: recordId, reason: "DM failed" });
+						failed.push({
+							discord_id: discordId,
+							status: status,
+							record_id: recordId,
+							reason: "DM failed",
+						});
 					});
 				} else if (status == "Invalid") {
 					const embed = new EmbedBuilder()
@@ -973,13 +991,23 @@ module.exports = {
 
 					if (!member) {
 						logger.warn("Member not found - " + discordId);
-						failed.push({ record_id: recordId, reason: "Member not found" });
+						failed.push({
+							discord_id: discordId,
+							status: status,
+							record_id: recordId,
+							reason: "Member not found",
+						});
 						continue;
 					}
 
 					await member.send({ embeds: [embed] }).catch((error) => {
 						logger.error(error);
-						failed.push({ record_id: recordId, reason: "DM failed" });
+						failed.push({
+							discord_id: discordId,
+							status: status,
+							record_id: recordId,
+							reason: "DM failed",
+						});
 					});
 				}
 
@@ -1007,6 +1035,32 @@ module.exports = {
 						},
 					}
 				);
+
+				let embed;
+
+				if (record.status == "Valid") {
+					embed = new EmbedBuilder()
+						.setColor("#00FF00")
+						.setTitle(
+							`After our review, it has been confirmed that the reported player \`${reportedPlayer}\` violates the game rules. The player has been punished for the violation. Thank you for supporting the maintenance of the game environment!`
+						);
+				} else {
+					embed = new EmbedBuilder()
+						.setColor("#FF0000")
+						.setTitle(
+							`After our review, it is not found that the reported player \`${reportedPlayer}\` has violated the game rules. If there is more evidence, please submit them to continue your report. Appreciation for supporting the maintenance of the game environment!`
+						);
+				}
+
+				await privateChannel(
+					"1090274679807287296",
+					record.discord_id,
+					client,
+					false,
+					[embed],
+					false,
+					"Test"
+				);
 			}
 
 			await interaction.editReply({
@@ -1016,10 +1070,16 @@ module.exports = {
 	},
 };
 
-async function privateChannel(discordId, client, message, button) {
-	const channel = await client.channels.cache.get(
-		process.env.COLLECT_REWARDS_CHANNEL
-	);
+async function privateChannel(
+	channel,
+	discordId,
+	client,
+	message,
+	embeds,
+	components,
+	closer
+) {
+	const channel = await client.channels.cache.get(channel);
 	const user = await client.users.cache.get(discordId);
 
 	await channel.permissionOverwrites.create(user, {
@@ -1034,14 +1094,16 @@ async function privateChannel(discordId, client, message, button) {
 
 	await thread.members.add(user.id);
 
-	await thread.send({
-		content: `${user}\n\n${message}`,
-		components: [button],
-	});
+	let finalMessage = {};
+
+	if (message) finalMessage.content = message;
+	if (embeds) finalMessage.embeds = embeds;
+	if (button) finalMessage.components = components;
+
+	await thread.send(finalMessage);
 
 	await thread.send({
-		content:
-			"**Once you click CLAIM, this thread would be DELETED.**\nPlease copy the reward/code somewhere and only then press the button.",
+		content: closer,
 	});
 }
 
