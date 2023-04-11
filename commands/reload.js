@@ -961,7 +961,7 @@ module.exports = {
 						logger.warn("Member not found - " + discordId);
 						failed.push({
 							discord_id: discordId,
-							status: status,
+							embed: embed,
 							record_id: recordId,
 							reason: "Member not found",
 						});
@@ -972,7 +972,7 @@ module.exports = {
 						logger.error(error);
 						failed.push({
 							discord_id: discordId,
-							status: status,
+							embed: embed,
 							record_id: recordId,
 							reason: "DM failed",
 						});
@@ -993,7 +993,7 @@ module.exports = {
 						logger.warn("Member not found - " + discordId);
 						failed.push({
 							discord_id: discordId,
-							status: status,
+							embed: embed,
 							record_id: recordId,
 							reason: "Member not found",
 						});
@@ -1004,7 +1004,7 @@ module.exports = {
 						logger.error(error);
 						failed.push({
 							discord_id: discordId,
-							status: status,
+							embed: embed,
 							record_id: recordId,
 							reason: "DM failed",
 						});
@@ -1036,28 +1036,12 @@ module.exports = {
 					}
 				);
 
-				let embed;
-
-				if (record.status == "Valid") {
-					embed = new EmbedBuilder()
-						.setColor("#00FF00")
-						.setTitle(
-							`After our review, it has been confirmed that the reported player \`${reportedPlayer}\` violates the game rules. The player has been punished for the violation. Thank you for supporting the maintenance of the game environment!`
-						);
-				} else {
-					embed = new EmbedBuilder()
-						.setColor("#FF0000")
-						.setTitle(
-							`After our review, it is not found that the reported player \`${reportedPlayer}\` has violated the game rules. If there is more evidence, please submit them to continue your report. Appreciation for supporting the maintenance of the game environment!`
-						);
-				}
-
 				await privateChannel(
 					"1090274679807287296",
 					record.discord_id,
 					client,
 					false,
-					[embed],
+					[record.embed],
 					false,
 					"Test"
 				);
