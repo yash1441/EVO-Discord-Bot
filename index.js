@@ -4098,6 +4098,9 @@ async function sendAppealResponseToFeishu(interaction) {
 }
 
 async function checkAppealStatus() {
+	const guild = client.guilds.cache.get(process.env.EVO_SERVER);
+	await guild.members.fetch();
+
 	const tenantToken = await feishu.authorize(
 		process.env.FEISHU_ID,
 		process.env.FEISHU_SECRET
@@ -4114,6 +4117,7 @@ async function checkAppealStatus() {
 
 	if (!response.data.total) {
 		logger.info("No appeals found.");
+		await interaction.editReply({ content: "No appeals found." });
 		return;
 	}
 
@@ -4124,7 +4128,6 @@ async function checkAppealStatus() {
 		const status = record.fields["Status"];
 		const recordId = record.record_id;
 
-		let shouldContinue = false;
 		let note = "-";
 
 		if (status == "Approve") {
@@ -4135,22 +4138,29 @@ async function checkAppealStatus() {
 				);
 
 			const guild = client.guilds.cache.get(process.env.EVO_SERVER);
-			const member = await guild.members
-				.fetch(discordId)
-				.then(() => {
-					note = "Alert Sent";
-				})
-				.catch((error) => {
-					logger.error(error);
-					failed.push({ record_id: recordId, reason: "Member not found" });
-					shouldContinue = true;
-				});
+			const member = await guild.members.fetch(discordId).then(() => {
+				note = "Alert Sent";
+			});
 
-			if (shouldContinue) continue;
+			if (!member) {
+				logger.warn("Member not found - " + discordId);
+				failed.push({
+					discord_id: discordId,
+					embed: embed,
+					record_id: recordId,
+					reason: "Member not found",
+				});
+				continue;
+			}
 
 			await member.send({ embeds: [embed] }).catch((error) => {
 				logger.error(error);
-				failed.push({ record_id: recordId, reason: "DM failed" });
+				failed.push({
+					discord_id: discordId,
+					embed: embed,
+					record_id: recordId,
+					reason: "DM failed",
+				});
 			});
 		} else if (status == "Deny") {
 			const embed = new EmbedBuilder()
@@ -4160,22 +4170,29 @@ async function checkAppealStatus() {
 				);
 
 			const guild = client.guilds.cache.get(process.env.EVO_SERVER);
-			const member = await guild.members
-				.fetch(discordId)
-				.then(() => {
-					note = "Alert Sent";
-				})
-				.catch((error) => {
-					logger.error(error);
-					failed.push({ record_id: recordId, reason: "Member not found" });
-					shouldContinue = true;
-				});
+			const member = await guild.members.fetch(discordId).then(() => {
+				note = "Alert Sent";
+			});
 
-			if (shouldContinue) continue;
+			if (!member) {
+				logger.warn("Member not found - " + discordId);
+				failed.push({
+					discord_id: discordId,
+					embed: embed,
+					record_id: recordId,
+					reason: "Member not found",
+				});
+				continue;
+			}
 
 			await member.send({ embeds: [embed] }).catch((error) => {
 				logger.error(error);
-				failed.push({ record_id: recordId, reason: "DM failed" });
+				failed.push({
+					discord_id: discordId,
+					embed: embed,
+					record_id: recordId,
+					reason: "DM failed",
+				});
 			});
 		}
 
@@ -4198,10 +4215,31 @@ async function checkAppealStatus() {
 			record.record_id,
 			{ fields: { Status: "Resolved", NOTE: record.reason } }
 		);
+
+		const closeButton = new ButtonBuilder()
+			.setCustomId("closeThread")
+			.setLabel("Close")
+			.setStyle(ButtonStyle.Danger)
+			.setEmoji("❌");
+
+		const row = new ActionRowBuilder().addComponents(closeButton);
+
+		await privateChannel(
+			"1090274679807287296",
+			record.discord_id,
+			client,
+			false,
+			[record.embed],
+			[row],
+			"*Press close to close this thread.*"
+		);
 	}
 }
 
 async function checkViolationStatus() {
+	const guild = client.guilds.cache.get(process.env.EVO_SERVER);
+	await guild.members.fetch();
+
 	const tenantToken = await feishu.authorize(
 		process.env.FEISHU_ID,
 		process.env.FEISHU_SECRET
@@ -4218,6 +4256,7 @@ async function checkViolationStatus() {
 
 	if (!response.data.total) {
 		logger.info("No violations found.");
+		await interaction.editReply({ content: "No violations found." });
 		return;
 	}
 
@@ -4229,7 +4268,6 @@ async function checkViolationStatus() {
 		const reportedPlayer = record.fields["Nickname"];
 		const recordId = record.record_id;
 
-		let shouldContinue = false;
 		let note = "-";
 
 		if (status == "Valid") {
@@ -4239,23 +4277,29 @@ async function checkViolationStatus() {
 					`After our review, it has been confirmed that the reported player \`${reportedPlayer}\` violates the game rules. The player has been punished for the violation. Thank you for supporting the maintenance of the game environment!`
 				);
 
-			const guild = client.guilds.cache.get(process.env.EVO_SERVER);
-			const member = await guild.members
-				.fetch(discordId)
-				.then(() => {
-					note = "Alert Sent";
-				})
-				.catch((error) => {
-					logger.error(error);
-					failed.push({ record_id: recordId, reason: "Member not found" });
-					shouldContinue = true;
-				});
+			const member = await guild.members.fetch(discordId).then(() => {
+				note = "Alert Sent";
+			});
 
-			if (shouldContinue) continue;
+			if (!member) {
+				logger.warn("Member not found - " + discordId);
+				failed.push({
+					discord_id: discordId,
+					embed: embed,
+					record_id: recordId,
+					reason: "Member not found",
+				});
+				continue;
+			}
 
 			await member.send({ embeds: [embed] }).catch((error) => {
 				logger.error(error);
-				failed.push({ record_id: recordId, reason: "DM failed" });
+				failed.push({
+					discord_id: discordId,
+					embed: embed,
+					record_id: recordId,
+					reason: "DM failed",
+				});
 			});
 		} else if (status == "Invalid") {
 			const embed = new EmbedBuilder()
@@ -4265,22 +4309,29 @@ async function checkViolationStatus() {
 				);
 
 			const guild = client.guilds.cache.get(process.env.EVO_SERVER);
-			const member = await guild.members
-				.fetch(discordId)
-				.then(() => {
-					note = "Alert Sent";
-				})
-				.catch((error) => {
-					logger.error(error);
-					failed.push({ record_id: recordId, reason: "Member not found" });
-					shouldContinue = true;
-				});
+			const member = await guild.members.fetch(discordId).then(() => {
+				note = "Alert Sent";
+			});
 
-			if (shouldContinue) continue;
+			if (!member) {
+				logger.warn("Member not found - " + discordId);
+				failed.push({
+					discord_id: discordId,
+					embed: embed,
+					record_id: recordId,
+					reason: "Member not found",
+				});
+				continue;
+			}
 
 			await member.send({ embeds: [embed] }).catch((error) => {
 				logger.error(error);
-				failed.push({ record_id: recordId, reason: "DM failed" });
+				failed.push({
+					discord_id: discordId,
+					embed: embed,
+					record_id: recordId,
+					reason: "DM failed",
+				});
 			});
 		}
 
@@ -4301,7 +4352,30 @@ async function checkViolationStatus() {
 			"bascnZdSuzx6L7uAxP9sNJcY0vY",
 			"tblmLa8SlkiASY0R",
 			record.record_id,
-			{ fields: { "Result of Report Review": "Resolved", NOTE: record.reason } }
+			{
+				fields: {
+					"Result of Report Review": "Resolved",
+					NOTE: record.reason,
+				},
+			}
+		);
+
+		const closeButton = new ButtonBuilder()
+			.setCustomId("closeThread")
+			.setLabel("Close")
+			.setStyle(ButtonStyle.Danger)
+			.setEmoji("❌");
+
+		const row = new ActionRowBuilder().addComponents(closeButton);
+
+		await privateChannel(
+			"1090274679807287296",
+			record.discord_id,
+			client,
+			false,
+			[record.embed],
+			[row],
+			"*Press close to close this thread.*"
 		);
 	}
 }
