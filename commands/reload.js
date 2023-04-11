@@ -928,6 +928,7 @@ module.exports = {
 				let note = "-";
 
 				if (status == "Valid") {
+					logger.debug("Valid violation found - " + discordId);
 					const embed = new EmbedBuilder()
 						.setColor("#00FF00")
 						.setTitle(
@@ -945,11 +946,14 @@ module.exports = {
 						continue;
 					}
 
+					logger.debug("Sending DM to " + member.user.tag);
+
 					await member.send({ embeds: [embed] }).catch((error) => {
 						logger.error(error);
 						failed.push({ record_id: recordId, reason: "DM failed" });
 					});
 				} else if (status == "Invalid") {
+					logger.debug("Invalid violation found - " + discordId);
 					const embed = new EmbedBuilder()
 						.setColor("#FF0000")
 						.setTitle(
@@ -966,6 +970,8 @@ module.exports = {
 						failed.push({ record_id: recordId, reason: "Member not found" });
 						continue;
 					}
+
+					logger.debug("Sending DM to " + member.user.tag);
 
 					await member.send({ embeds: [embed] }).catch((error) => {
 						logger.error(error);
