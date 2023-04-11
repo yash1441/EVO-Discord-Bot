@@ -3830,7 +3830,7 @@ async function sendCheaterResponseToFeishu(interaction) {
 			header: {
 				template: "red",
 				title: {
-					content: `Cheater Report - ${bugs.fields.Category}`,
+					content: `Violation - ${bugs.fields.Category}`,
 					tag: "plain_text",
 				},
 			},
