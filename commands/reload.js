@@ -1071,7 +1071,7 @@ module.exports = {
 };
 
 async function privateChannel(
-	channel,
+	channelId,
 	discordId,
 	client,
 	message,
@@ -1079,7 +1079,7 @@ async function privateChannel(
 	components,
 	closer
 ) {
-	const channel = await client.channels.cache.get(channel);
+	const channel = await client.channels.cache.get(channelId);
 	const user = await client.users.cache.get(discordId);
 
 	await channel.permissionOverwrites.create(user, {
