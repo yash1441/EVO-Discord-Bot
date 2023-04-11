@@ -908,7 +908,7 @@ module.exports = {
 					tenantToken,
 					"bascnZdSuzx6L7uAxP9sNJcY0vY",
 					"tblmLa8SlkiASY0R",
-					`OR(CurrentValue.[Result of Report Review] = "Invalid", CurrentValue.[Status] = "Valid")`
+					`OR(CurrentValue.[Result of Report Review] = "Invalid", CurrentValue.[Result of Report Review] = "Valid")`
 				)
 			);
 
