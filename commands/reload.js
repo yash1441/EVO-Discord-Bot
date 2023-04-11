@@ -917,6 +917,8 @@ module.exports = {
 				return;
 			}
 
+			console.log(response.data);
+
 			const failed = [];
 
 			for (const record of response.data.items) {
@@ -934,7 +936,7 @@ module.exports = {
 							`After our review, it has been confirmed that the reported player \`${reportedPlayer}\` violates the game rules. The player has been punished for the violation. Thank you for supporting the maintenance of the game environment!`
 						);
 
-					const guild = client.guilds.cache.get(process.env.EVO_SERVER);
+					const guild = await client.guilds.fetch(process.env.EVO_SERVER);
 					const member = await guild.members.fetch(discordId).then(() => {
 						note = "Alert Sent";
 					});
@@ -958,7 +960,7 @@ module.exports = {
 							`After our review, it is not found that the reported player \`${reportedPlayer}\` has violated the game rules. If there is more evidence, please submit them to continue your report. Appreciation for supporting the maintenance of the game environment!`
 						);
 
-					const guild = client.guilds.cache.get(process.env.EVO_SERVER);
+					const guild = await client.guilds.fetch(process.env.EVO_SERVER);
 					const member = await guild.members.fetch(discordId).then(() => {
 						note = "Alert Sent";
 					});
