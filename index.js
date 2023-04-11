@@ -4092,6 +4092,95 @@ async function sendAppealResponseToFeishu(interaction) {
 	response = await feishu.getFileToken(tenantToken, file);
 	const image_key = JSON.parse(response).data.image_key;
 	fs.unlinkSync(file);
+
+	let body = {
+		msg_type: "interactive",
+		card: {
+			config: {
+				wide_screen_mode: true,
+			},
+			elements: [
+				{
+					fields: [
+						{
+							is_short: true,
+							text: {
+								content: `**Discord ID**\n${bugs.fields["Discord ID"]}`,
+								tag: "lark_md",
+							},
+						},
+						{
+							is_short: true,
+							text: {
+								content: `**Discord Name**\n${interaction.user.tag}`,
+								tag: "lark_md",
+							},
+						},
+						// {
+						//     is_short: true,
+						//     text: {
+						//         content: `**Region**\n${bugs.fields["Region"]}`,
+						//         tag: "lark_md",
+						//     },
+						// },
+						{
+							is_short: false,
+							text: {
+								content: ``,
+								tag: "lark_md",
+							},
+						},
+						{
+							is_short: true,
+							text: {
+								content: `**Nickname**\n${bugs.fields.Nickname}`,
+								tag: "lark_md",
+							},
+						},
+						{
+							is_short: false,
+							text: {
+								content: ``,
+								tag: "lark_md",
+							},
+						},
+						{
+							is_short: true,
+							text: {
+								content: `**Reason**\n${bugs.fields.Reason}`,
+								tag: "lark_md",
+							},
+						},
+					],
+					tag: "div",
+				},
+				{
+					tag: "hr",
+				},
+				{
+					alt: {
+						content: "",
+						tag: "plaint_text",
+					},
+					img_key: image_key,
+					tag: "img",
+				},
+			],
+			header: {
+				template: "red",
+				title: {
+					content: `Appeal`,
+					tag: "plain_text",
+				},
+			},
+		},
+	};
+
+	await feishu.sendGroupMessage(
+		"https://open.larksuite.com/open-apis/bot/v2/hook/5f8d3d8d-3df8-4198-900e-0676ed7bf6bc",
+		body
+	);
+
 	await interaction.editReply({
 		content: "Your submission was received successfully!",
 	});
