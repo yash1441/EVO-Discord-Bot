@@ -855,13 +855,23 @@ module.exports = {
 
 					if (!member) {
 						logger.warn("Member not found - " + discordId);
-						failed.push({ record_id: recordId, reason: "Member not found" });
+						failed.push({
+							discord_id: discordId,
+							embed: embed,
+							record_id: recordId,
+							reason: "Member not found",
+						});
 						continue;
 					}
 
 					await member.send({ embeds: [embed] }).catch((error) => {
 						logger.error(error);
-						failed.push({ record_id: recordId, reason: "DM failed" });
+						failed.push({
+							discord_id: discordId,
+							embed: embed,
+							record_id: recordId,
+							reason: "DM failed",
+						});
 					});
 				} else if (status == "Deny") {
 					const embed = new EmbedBuilder()
@@ -877,13 +887,23 @@ module.exports = {
 
 					if (!member) {
 						logger.warn("Member not found - " + discordId);
-						failed.push({ record_id: recordId, reason: "Member not found" });
+						failed.push({
+							discord_id: discordId,
+							embed: embed,
+							record_id: recordId,
+							reason: "Member not found",
+						});
 						continue;
 					}
 
 					await member.send({ embeds: [embed] }).catch((error) => {
 						logger.error(error);
-						failed.push({ record_id: recordId, reason: "DM failed" });
+						failed.push({
+							discord_id: discordId,
+							embed: embed,
+							record_id: recordId,
+							reason: "DM failed",
+						});
 					});
 				}
 
@@ -905,6 +925,24 @@ module.exports = {
 					"tblybKlZE3yCZk72",
 					record.record_id,
 					{ fields: { Status: "Resolved", NOTE: record.reason } }
+				);
+
+				const closeButton = new ButtonBuilder()
+					.setCustomId("closeThread")
+					.setLabel("Close")
+					.setStyle(ButtonStyle.Danger)
+					.setEmoji("❌");
+
+				const row = new ActionRowBuilder().addComponents(closeButton);
+
+				await privateChannel(
+					"1090274679807287296",
+					record.discord_id,
+					client,
+					false,
+					[record.embed],
+					[row],
+					"*Press close to close this thread.*"
 				);
 			}
 
@@ -1036,14 +1074,22 @@ module.exports = {
 					}
 				);
 
+				const closeButton = new ButtonBuilder()
+					.setCustomId("closeThread")
+					.setLabel("Close")
+					.setStyle(ButtonStyle.Danger)
+					.setEmoji("❌");
+
+				const row = new ActionRowBuilder().addComponents(closeButton);
+
 				await privateChannel(
 					"1090274679807287296",
 					record.discord_id,
 					client,
 					false,
 					[record.embed],
-					false,
-					"Test"
+					[row],
+					"*Press close to close this thread.*"
 				);
 			}
 
