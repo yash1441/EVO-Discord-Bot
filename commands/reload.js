@@ -917,8 +917,6 @@ module.exports = {
 				return;
 			}
 
-			console.log(response.data);
-
 			const failed = [];
 
 			for (const record of response.data.items) {
@@ -926,6 +924,8 @@ module.exports = {
 				const status = record.fields["Result of Report Review"];
 				const reportedPlayer = record.fields["Nickname"];
 				const recordId = record.record_id;
+
+				console.log({ discordId, status, reportedPlayer, recordId });
 
 				let note = "-";
 
