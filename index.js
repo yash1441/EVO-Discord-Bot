@@ -1437,6 +1437,13 @@ client.on("interactionCreate", async (interaction) => {
 			appealModal.addComponents(r1, r2);
 
 			await interaction.showModal(appealModal);
+		} else if (interaction.customId === "closeThread") {
+			const thread = interaction.channel;
+			await thread.members.remove(interaction.user.id);
+			await thread.setArchived(true);
+			await client.channels.fetch("1090274679807287296").then((channel) => {
+				channel.permissionOverwrites.delete(interaction.user, "Closed Thread");
+			});
 		}
 	} else if (interaction.isModalSubmit()) {
 		if (interaction.customId === "betaAccess") {
