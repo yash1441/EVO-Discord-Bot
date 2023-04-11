@@ -4136,7 +4136,7 @@ async function checkAppealStatus() {
 				.catch((error) => {
 					logger.error(error);
 					failed.push({ record_id: recordId, reason: "Member not found" });
-					shouldContinue = truue;
+					shouldContinue = true;
 				});
 
 			if (shouldContinue) continue;
@@ -4161,7 +4161,7 @@ async function checkAppealStatus() {
 				.catch((error) => {
 					logger.error(error);
 					failed.push({ record_id: recordId, reason: "Member not found" });
-					shouldContinue = truue;
+					shouldContinue = true;
 				});
 
 			if (shouldContinue) continue;
@@ -4241,7 +4241,7 @@ async function checkViolationStatus() {
 				.catch((error) => {
 					logger.error(error);
 					failed.push({ record_id: recordId, reason: "Member not found" });
-					shouldContinue = truue;
+					shouldContinue = true;
 				});
 
 			if (shouldContinue) continue;
@@ -4266,7 +4266,7 @@ async function checkViolationStatus() {
 				.catch((error) => {
 					logger.error(error);
 					failed.push({ record_id: recordId, reason: "Member not found" });
-					shouldContinue = truue;
+					shouldContinue = true;
 				});
 
 			if (shouldContinue) continue;

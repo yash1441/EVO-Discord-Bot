@@ -846,7 +846,7 @@ module.exports = {
 						.catch((error) => {
 							logger.error(error);
 							failed.push({ record_id: recordId, reason: "Member not found" });
-							shouldContinue = truue;
+							shouldContinue = true;
 						});
 
 					if (shouldContinue) continue;
@@ -871,7 +871,7 @@ module.exports = {
 						.catch((error) => {
 							logger.error(error);
 							failed.push({ record_id: recordId, reason: "Member not found" });
-							shouldContinue = truue;
+							shouldContinue = true;
 						});
 
 					if (shouldContinue) continue;
@@ -949,7 +949,7 @@ module.exports = {
 						.catch((error) => {
 							logger.error(error);
 							failed.push({ record_id: recordId, reason: "Member not found" });
-							shouldContinue = truue;
+							shouldContinue = true;
 						});
 
 					if (shouldContinue) continue;
@@ -974,7 +974,7 @@ module.exports = {
 						.catch((error) => {
 							logger.error(error);
 							failed.push({ record_id: recordId, reason: "Member not found" });
-							shouldContinue = truue;
+							shouldContinue = true;
 						});
 
 					if (shouldContinue) continue;
