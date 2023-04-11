@@ -925,8 +925,6 @@ module.exports = {
 				const reportedPlayer = record.fields["Nickname"];
 				const recordId = record.record_id;
 
-				console.log({ discordId, status, reportedPlayer, recordId });
-
 				let note = "-";
 
 				if (status == "Valid") {
@@ -943,6 +941,7 @@ module.exports = {
 
 					if (!member) {
 						logger.warn("Member not found - " + discordId);
+						console.log({ member });
 						failed.push({ record_id: recordId, reason: "Member not found" });
 						continue;
 					}
