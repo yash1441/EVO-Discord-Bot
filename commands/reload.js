@@ -935,9 +935,11 @@ module.exports = {
 						);
 
 					const guild = await client.guilds.fetch(process.env.EVO_SERVER);
-					const member = await guild.members.fetch(discordId).then(() => {
-						note = "Alert Sent";
-					});
+					const member = await guild.members
+						.fetch({ user: [`${discordId}`], force: true })
+						.then(() => {
+							note = "Alert Sent";
+						});
 
 					if (!member) {
 						logger.warn("Member not found - " + discordId);
