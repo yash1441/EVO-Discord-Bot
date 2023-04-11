@@ -820,6 +820,7 @@ module.exports = {
 
 			if (!response.data.total) {
 				logger.info("No appeals found.");
+				await interaction.editReply({ content: "No appeals found." });
 				return;
 			}
 
@@ -922,6 +923,7 @@ module.exports = {
 
 			if (!response.data.total) {
 				logger.info("No violations found.");
+				await interaction.editReply({ content: "No violations found." });
 				return;
 			}
 
