@@ -928,7 +928,6 @@ module.exports = {
 				let note = "-";
 
 				if (status == "Valid") {
-					logger.debug("Valid violation found - " + discordId);
 					const embed = new EmbedBuilder()
 						.setColor("#00FF00")
 						.setTitle(
@@ -936,9 +935,11 @@ module.exports = {
 						);
 
 					const guild = client.guilds.cache.get(process.env.EVO_SERVER);
-					const member = await guild.members.fetch(discordId).then(() => {
-						note = "Alert Sent";
-					});
+					const member = await interaction.guild.members
+						.fetch(discordId)
+						.then(() => {
+							note = "Alert Sent";
+						});
 
 					if (!member) {
 						logger.warn("Member not found - " + discordId);
@@ -953,7 +954,6 @@ module.exports = {
 						failed.push({ record_id: recordId, reason: "DM failed" });
 					});
 				} else if (status == "Invalid") {
-					logger.debug("Invalid violation found - " + discordId);
 					const embed = new EmbedBuilder()
 						.setColor("#FF0000")
 						.setTitle(
