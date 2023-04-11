@@ -997,11 +997,11 @@ module.exports = {
 					{ fields: { Status: "Resolved", NOTE: record.reason } }
 				);
 			}
-		}
 
-		await interaction.editReply({
-			content: `**Total Violations Resolved** ${response.data.items.length}`,
-		});
+			await interaction.editReply({
+				content: `**Total Violations Resolved** ${response.data.items.length}`,
+			});
+		}
 	},
 };
 
