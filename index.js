@@ -4206,7 +4206,6 @@ async function checkAppealStatus() {
 
 	if (!response.data.total) {
 		logger.info("No appeals found.");
-		await interaction.editReply({ content: "No appeals found." });
 		return;
 	}
 
@@ -4344,7 +4343,6 @@ async function checkViolationStatus() {
 
 	if (!response.data.total) {
 		logger.info("No violations found.");
-		await interaction.editReply({ content: "No violations found." });
 		return;
 	}
 
