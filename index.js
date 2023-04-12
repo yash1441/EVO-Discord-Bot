@@ -4316,7 +4316,6 @@ async function checkAppealStatus() {
 		await privateChannel(
 			"1090274679807287296",
 			record.discord_id,
-			client,
 			false,
 			[record.embed],
 			[row],
@@ -4460,11 +4459,46 @@ async function checkViolationStatus() {
 		await privateChannel(
 			"1090274679807287296",
 			record.discord_id,
-			client,
 			false,
 			[record.embed],
 			[row],
 			"*Press close to close this thread.*"
 		);
 	}
+}
+
+async function privateChannel(
+	channelId,
+	discordId,
+	message,
+	embeds,
+	components,
+	closer
+) {
+	const channel = await client.channels.cache.get(channelId);
+	const user = await client.users.cache.get(discordId);
+
+	await channel.permissionOverwrites.create(user, {
+		ViewChannel: true,
+	});
+
+	const thread = await channel.threads.create({
+		name: user.id,
+		reason: `${user.username} has private DMs`,
+		type: ChannelType.PrivateThread,
+	});
+
+	await thread.members.add(user.id);
+
+	let finalMessage = {};
+
+	if (message) finalMessage.content = message;
+	if (embeds) finalMessage.embeds = embeds;
+	if (components) finalMessage.components = components;
+
+	await thread.send(finalMessage);
+
+	await thread.send({
+		content: closer,
+	});
 }
