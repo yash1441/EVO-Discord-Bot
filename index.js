@@ -4312,8 +4312,11 @@ async function checkAppealStatus() {
 
 		const row = new ActionRowBuilder().addComponents(closeButton);
 
+		const user = await client.users.fetch(record.discord_id).catch(() => null);
+
 		await privateChannel(
 			"1090274679807287296",
+			user.username,
 			record.discord_id,
 			false,
 			[record.embed],
@@ -4454,8 +4457,11 @@ async function checkViolationStatus() {
 
 		const row = new ActionRowBuilder().addComponents(closeButton);
 
+		const user = await client.users.fetch(record.discord_id).catch(() => null);
+
 		await privateChannel(
 			"1090274679807287296",
+			user.username,
 			record.discord_id,
 			false,
 			[record.embed],
@@ -4467,6 +4473,7 @@ async function checkViolationStatus() {
 
 async function privateChannel(
 	channelId,
+	channelName,
 	discordId,
 	message,
 	embeds,
@@ -4481,7 +4488,7 @@ async function privateChannel(
 	});
 
 	const thread = await channel.threads.create({
-		name: user.id,
+		name: channelName,
 		reason: `${user.username} has private DMs`,
 		type: ChannelType.PrivateThread,
 	});
