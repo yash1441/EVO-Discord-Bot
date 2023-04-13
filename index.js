@@ -4194,7 +4194,7 @@ async function sendAppealResponseToFeishu(interaction) {
 
 async function checkAppealStatus() {
 	const guild = client.guilds.cache.get(process.env.EVO_SERVER);
-	await guild.members.fetch();
+	//await guild.members.fetch();
 
 	const tenantToken = await feishu.authorize(
 		process.env.FEISHU_ID,
@@ -4231,10 +4231,14 @@ async function checkAppealStatus() {
 					"After further review, it was confirmed that your account had been unbanned."
 				);
 
-			const guild = client.guilds.cache.get(process.env.EVO_SERVER);
-			const member = await guild.members.fetch(discordId).then(() => {
-				note = "Alert Sent";
-			});
+			const member = await guild.members
+				.fetch(discordId)
+				.then(() => {
+					note = "Alert Sent";
+				})
+				.catch(() => {
+					logger.debug("Member not found - " + discordId);
+				});
 
 			if (!member) {
 				logger.warn("Member not found - " + discordId);
@@ -4263,7 +4267,6 @@ async function checkAppealStatus() {
 					"After further review, it was confirmed that your account had violated the game rules and thus could not be unbanned."
 				);
 
-			const guild = client.guilds.cache.get(process.env.EVO_SERVER);
 			const member = await guild.members.fetch(discordId).then(() => {
 				note = "Alert Sent";
 			});

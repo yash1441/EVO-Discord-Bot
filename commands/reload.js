@@ -810,7 +810,8 @@ module.exports = {
 			);
 		} else if (subCommand === "check-appeal") {
 			await interaction.deferReply({ ephemeral: true });
-			await interaction.guild.members.fetch();
+			const guild = client.guilds.cache.get(process.env.EVO_SERVER);
+			//await guild.members.fetch();
 
 			const tenantToken = await feishu.authorize(
 				process.env.FEISHU_ID,
@@ -828,8 +829,7 @@ module.exports = {
 
 			if (!response.data.total) {
 				logger.info("No appeals found.");
-				await interaction.editReply({ content: "No appeals found." });
-				return;
+				return await interaction.editReply({ content: "No appeals found." });
 			}
 
 			const failed = [];
@@ -848,10 +848,14 @@ module.exports = {
 							"After further review, it was confirmed that your account had been unbanned."
 						);
 
-					const guild = client.guilds.cache.get(process.env.EVO_SERVER);
-					const member = await guild.members.fetch(discordId).then(() => {
-						note = "Alert Sent";
-					});
+					const member = await guild.members
+						.fetch(discordId)
+						.then(() => {
+							note = "Alert Sent";
+						})
+						.catch(() => {
+							logger.debug("Member not found - " + discordId);
+						});
 
 					if (!member) {
 						logger.warn("Member not found - " + discordId);
@@ -880,7 +884,6 @@ module.exports = {
 							"After further review, it was confirmed that your account had violated the game rules and thus could not be unbanned."
 						);
 
-					const guild = client.guilds.cache.get(process.env.EVO_SERVER);
 					const member = await guild.members.fetch(discordId).then(() => {
 						note = "Alert Sent";
 					});
@@ -916,7 +919,11 @@ module.exports = {
 				);
 			}
 
-			if (failed.length == 0) return;
+			if (failed.length == 0) {
+				return await interaction.editReply({
+					content: `**Total Appeals Resolved** ${response.data.items.length}`,
+				});
+			}
 
 			for (const record of failed) {
 				await feishu.updateRecord(
@@ -935,10 +942,14 @@ module.exports = {
 
 				const row = new ActionRowBuilder().addComponents(closeButton);
 
+				const user = await client.users
+					.fetch(record.discord_id)
+					.catch(() => null);
+
 				await privateChannel(
 					"1090274679807287296",
+					user.username,
 					record.discord_id,
-					client,
 					false,
 					[record.embed],
 					[row],
