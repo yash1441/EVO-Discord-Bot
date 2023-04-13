@@ -848,7 +848,7 @@ module.exports = {
 							"After further review, it was confirmed that your account had been unbanned."
 						);
 
-					const member = await guild.members
+					const member = await interaction.guild.members
 						.fetch(discordId)
 						.then(() => {
 							note = "Alert Sent";
