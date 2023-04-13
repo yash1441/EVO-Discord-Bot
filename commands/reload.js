@@ -1120,8 +1120,8 @@ async function privateChannel(
 	components,
 	closer
 ) {
-	const channel = await client.channels.cache.get(channelId);
-	const user = await client.users.cache.get(discordId);
+	const channel = await client.channels.fetch(channelId);
+	const user = await client.users.fetch(discordId);
 
 	await channel.permissionOverwrites.create(user, {
 		ViewChannel: true,
