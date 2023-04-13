@@ -947,6 +947,9 @@ module.exports = {
 					.fetch(record.discord_id)
 					.catch(() => null);
 
+				const channel = await client.channels.cache.get("1090274679807287296");
+				console.log(channel);
+
 				await privateChannel(
 					"1090274679807287296",
 					"Appeal - " + user.username,
