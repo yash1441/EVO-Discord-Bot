@@ -1438,6 +1438,7 @@ client.on("interactionCreate", async (interaction) => {
 
 			await interaction.showModal(appealModal);
 		} else if (interaction.customId === "closeThread") {
+			await interaction.deferUpdate();
 			const thread = interaction.channel;
 			await thread.members.remove(interaction.user.id);
 			await thread.setArchived(true);
