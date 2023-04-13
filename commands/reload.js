@@ -810,7 +810,7 @@ module.exports = {
 			);
 		} else if (subCommand === "check-appeal") {
 			await interaction.deferReply({ ephemeral: true });
-			const guild = client.guilds.cache.get(process.env.EVO_SERVER);
+			const guild = await client.guilds.fetch(process.env.EVO_SERVER);
 			//await guild.members.fetch();
 
 			const tenantToken = await feishu.authorize(
@@ -848,7 +848,7 @@ module.exports = {
 							"After further review, it was confirmed that your account had been unbanned."
 						);
 
-					const member = await interaction.guild.members
+					const member = await guild.members
 						.fetch(discordId)
 						.then(() => {
 							note = "Alert Sent";
