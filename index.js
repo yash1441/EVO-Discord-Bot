@@ -3882,7 +3882,7 @@ async function loadBetaTesterCodes() {
 	];
 
 	for (const table of tablesToCheck) {
-		const tenantToken = await feishu.authorize(
+		let tenantToken = await feishu.authorize(
 			process.env.FEISHU_ID,
 			process.env.FEISHU_SECRET
 		);
@@ -3925,6 +3925,11 @@ async function loadBetaTesterCodes() {
 			// logger.debug(
 			// 	`Loading Beta Tester Codes: ${Object.keys(betaTesterCodes).length}`
 			// );
+
+			tenantToken = await feishu.authorize(
+				process.env.FEISHU_ID,
+				process.env.FEISHU_SECRET
+			);
 
 			response = JSON.parse(
 				await feishu.getRecords(
