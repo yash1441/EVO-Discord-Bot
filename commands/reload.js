@@ -12,7 +12,18 @@ const feishu = require("../feishu.js");
 const logger = require("../logging/logger.js");
 require("dotenv").config();
 
-const client = new Client();
+const client = new Client({
+	intents: [
+		GatewayIntentBits.Guilds,
+		GatewayIntentBits.GuildMessages,
+		GatewayIntentBits.GuildMessageReactions,
+		GatewayIntentBits.GuildMembers,
+		GatewayIntentBits.GuildPresences,
+		GatewayIntentBits.DirectMessages,
+		GatewayIntentBits.MessageContent,
+	],
+	partials: [Partials.Message, Partials.Channel, Partials.Reaction],
+});
 
 module.exports = {
 	data: new SlashCommandBuilder()
