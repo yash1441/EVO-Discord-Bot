@@ -19,7 +19,8 @@ module.exports = {
 					{ name: "CEC Check Qualify", value: "CECQUALIFY" },
 					{ name: "CCES Weekly Data Calculation", value: "CCESWEEKLYDATA" },
 					{ name: "CCES Weekly Reward Calculation", value: "CCESWEEKLYREWARD" },
-					{ name: "Test", value: "TEST" }
+					{ name: "Test", value: "TEST" },
+					{ name: "Member", value: "MEMBER" }
 				)
 		)
 		.addStringOption((option) =>
@@ -32,6 +33,12 @@ module.exports = {
 			option
 				.setName("date-end")
 				.setDescription("The date for the function to end.")
+				.setRequired(false)
+		)
+		.addStringOption((option) =>
+			option
+				.setName("discord-id")
+				.setDescription("The discord id of the user.")
 				.setRequired(false)
 		),
 
@@ -550,6 +557,17 @@ module.exports = {
 					content: "Hi",
 				})
 			);
+		} else if (option === "MEMBER") {
+			const discordId = interaction.options.getString("discord-id");
+			const guild = client.guilds.cache.get(process.env.EVO_SERVER);
+			const member = await guild.members
+				.fetch(discordId)
+				.then(() => {
+					logger.debug("Member found.");
+				})
+				.catch(() => {
+					logger.debug("Member not found.");
+				});
 		}
 
 		await interaction.editReply({ content: "Testing complete." });
