@@ -1,5 +1,7 @@
 const {
 	Client,
+	GatewayIntentBits,
+	Partials,
 	SlashCommandBuilder,
 	ActionRowBuilder,
 	ButtonBuilder,
