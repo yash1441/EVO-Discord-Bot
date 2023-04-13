@@ -782,6 +782,7 @@ module.exports = {
 					);
 					await privateChannel(
 						process.env.COLLECT_REWARDS_CHANNEL,
+						"Reward - " + member.user.username,
 						discordId,
 						client,
 						message,
@@ -948,7 +949,7 @@ module.exports = {
 
 				await privateChannel(
 					"1090274679807287296",
-					user.username,
+					"Appeal - " + user.username,
 					record.discord_id,
 					false,
 					[record.embed],
@@ -1093,8 +1094,13 @@ module.exports = {
 
 				const row = new ActionRowBuilder().addComponents(closeButton);
 
+				const user = await client.users
+					.fetch(record.discord_id)
+					.catch(() => null);
+
 				await privateChannel(
 					"1090274679807287296",
+					"Violation - " + user.username,
 					record.discord_id,
 					client,
 					false,
@@ -1113,6 +1119,7 @@ module.exports = {
 
 async function privateChannel(
 	channelId,
+	channelName,
 	discordId,
 	client,
 	message,
@@ -1128,7 +1135,7 @@ async function privateChannel(
 	});
 
 	const thread = await channel.threads.create({
-		name: user.id,
+		name: channelName,
 		reason: `${user.username} has private DMs`,
 		type: ChannelType.PrivateThread,
 	});
