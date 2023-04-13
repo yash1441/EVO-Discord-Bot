@@ -4325,7 +4325,7 @@ async function checkAppealStatus() {
 
 		await privateChannel(
 			"1090274679807287296",
-			user.username,
+			"Appeal - " + user.username,
 			record.discord_id,
 			false,
 			[record.embed],
@@ -4470,7 +4470,7 @@ async function checkViolationStatus() {
 
 		await privateChannel(
 			"1090274679807287296",
-			user.username,
+			"Violation - " + user.username,
 			record.discord_id,
 			false,
 			[record.embed],
