@@ -780,8 +780,12 @@ module.exports = {
 					logger.info(
 						`Sending message to ${discordId} failed. Creating private channel.`
 					);
+
+					const channel = await client.channels.cache.get(
+						process.env.COLLECT_REWARDS_CHANNEL
+					);
 					await privateChannel(
-						process.env.COLLECT_REWARDS_CHANNEL,
+						channel,
 						"Reward - " + member.user.username,
 						discordId,
 						client,
@@ -948,10 +952,9 @@ module.exports = {
 					.catch(() => null);
 
 				const channel = await client.channels.cache.get("1090274679807287296");
-				console.log(channel);
 
 				await privateChannel(
-					"1090274679807287296",
+					channel,
 					"Appeal - " + user.username,
 					record.discord_id,
 					false,
@@ -1101,8 +1104,10 @@ module.exports = {
 					.fetch(record.discord_id)
 					.catch(() => null);
 
+				const channel = await client.channels.cache.get("1090274679807287296");
+
 				await privateChannel(
-					"1090274679807287296",
+					channel,
 					"Violation - " + user.username,
 					record.discord_id,
 					client,
@@ -1121,7 +1126,7 @@ module.exports = {
 };
 
 async function privateChannel(
-	channelId,
+	channel,
 	channelName,
 	discordId,
 	client,
@@ -1130,7 +1135,6 @@ async function privateChannel(
 	components,
 	closer
 ) {
-	const channel = await client.channels.cache.get(channelId);
 	const user = await client.users.cache.get(discordId);
 
 	await channel.permissionOverwrites.create(user, {
