@@ -11,6 +11,8 @@ const feishu = require("../feishu.js");
 const logger = require("../logging/logger.js");
 require("dotenv").config();
 
+const client = new Discord.Client();
+
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName("reload")
@@ -60,7 +62,7 @@ module.exports = {
 				.setDescription("Check if violation report is pending.")
 		),
 
-	async execute(interaction, client) {
+	async execute(interaction) {
 		if (
 			interaction.user.id != process.env.MY_ID &&
 			interaction.user.id != process.env.VOID_ID &&
@@ -1120,8 +1122,8 @@ async function privateChannel(
 	components,
 	closer
 ) {
-	const channel = await client.channels.fetch(channelId);
-	const user = await client.users.fetch(discordId);
+	const channel = await client.channels.cache.get(channelId);
+	const user = await client.users.cache.get(discordId);
 
 	await channel.permissionOverwrites.create(user, {
 		ViewChannel: true,
