@@ -1,4 +1,5 @@
 const {
+	Client,
 	SlashCommandBuilder,
 	ActionRowBuilder,
 	ButtonBuilder,
@@ -11,7 +12,7 @@ const feishu = require("../feishu.js");
 const logger = require("../logging/logger.js");
 require("dotenv").config();
 
-const client = new Discord.Client();
+const client = new Client();
 
 module.exports = {
 	data: new SlashCommandBuilder()
