@@ -1,7 +1,4 @@
 const {
-	Client,
-	GatewayIntentBits,
-	Partials,
 	SlashCommandBuilder,
 	ActionRowBuilder,
 	ButtonBuilder,
@@ -13,19 +10,6 @@ const {
 const feishu = require("../feishu.js");
 const logger = require("../logging/logger.js");
 require("dotenv").config();
-
-const client = new Client({
-	intents: [
-		GatewayIntentBits.Guilds,
-		GatewayIntentBits.GuildMessages,
-		GatewayIntentBits.GuildMessageReactions,
-		GatewayIntentBits.GuildMembers,
-		GatewayIntentBits.GuildPresences,
-		GatewayIntentBits.DirectMessages,
-		GatewayIntentBits.MessageContent,
-	],
-	partials: [Partials.Message, Partials.Channel, Partials.Reaction],
-});
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -76,7 +60,7 @@ module.exports = {
 				.setDescription("Check if violation report is pending.")
 		),
 
-	async execute(interaction) {
+	async execute(interaction, client) {
 		if (
 			interaction.user.id != process.env.MY_ID &&
 			interaction.user.id != process.env.VOID_ID &&
