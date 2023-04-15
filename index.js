@@ -864,14 +864,6 @@ client.on("interactionCreate", async (interaction) => {
 			const row = new ActionRowBuilder().addComponents(bugCategories);
 
 			await interaction.editReply({ components: [row] });
-		} else if (interaction.customId === "shortsButton") {
-			await interaction.deferReply({ ephemeral: true });
-
-			await interaction.member.roles.add("1084823300137558086").then(() => {
-				interaction.editReply({
-					content: `You have successfully entered the Make-EVO-Shorts Event! You have access to the <#1084823394631024761> channel now.`,
-				});
-			});
 		} else if (interaction.customId === "startQuiz") {
 			await interaction.deferReply({ ephemeral: true });
 
