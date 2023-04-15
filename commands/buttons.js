@@ -175,88 +175,7 @@ module.exports = {
 		const subCommand = interaction.options.getSubcommand();
 		const channel = interaction.options.getChannel("channel");
 
-		if (subCommand === "cec-application") {
-			let cecPoster = new EmbedBuilder()
-				.setImage("https://i.ibb.co/mJsVYpy/20221201-112525.jpg")
-				.setColor(`C04946`);
-			let cecEmbed = new EmbedBuilder()
-				.setTitle("**CREATOR EVOLUTION CLUB IS LAUNCHED!**")
-				.setDescription(
-					"**APPLY FOR CLUB MEMBERSHIP NOW!**\n\n**Creator Evolution Club creates an aspirational influencer community for EVO creators who have great potential and passion.**\n\nThe club is found to provide the best support to help you grow as an outstanding EVO content creator.\n\nIt is also the best place for social networking. Meet creators that are just as outstanding as you! Meet new friends who would love to support each other!"
-				)
-				.addFields(
-					{
-						name: "\u200B",
-						value:
-							"Now you might wonder what we have prepared for you guys. Well, audience growth for sure, and **benefits include but are not limited to**:\n<:diamond:993888292498055208> Apply up to __**200 codes**__ for your fans\n<:diamond:993888292498055208> Get access to creator foundation, which provides the opportunity to win __**$800 prize phones**__, to share a __**$2000 budget**__ to boost videos and more.\n<:diamond:993888292498055208> Ask for official support, including Youtube channel overall review & suggestion, content instruction, etc.\nGet prioritized access to EVO Creator Partnership *(coming soon)*\n<:diamond:993888292498055208> Apply for content materials (custom media kit)",
-						inline: false,
-					},
-					{
-						name: "\u200B",
-						value:
-							"**HOW TO APPLY:**\n**Basic Requirement**\n<:ember:993888291218784286> __Minimum 1000 subscribers__ on Youtube or TapTap.\n<:ember:993888291218784286> __At least 3 Project EVO videos__ submitted via <#1020247219028361256>\n<:ember:993888291218784286> __At least 10,000 total views__ for Project EVO videos in history\n<:ember:993888291218784286> Very few exceptions can be made to potential EVO creators beginners",
-						inline: false,
-					},
-					{
-						name: "Important: The qualification is not guaranteed to every applicant!",
-						value:
-							"We will review the overall situation of your Youtube channel, including the channel positioning, activity, content quality (especially for Project EVO videos), video reactions, etc.\n\nIf you have more questions, please check <#1047744860037324851>",
-					}
-				)
-				.setColor(`C04946`)
-				.setImage("https://i.ibb.co/ysgy4G3/20221201-112516.jpg");
-
-			let cecButton = new ButtonBuilder()
-				.setCustomId("cecButton")
-				.setLabel("APPLY")
-				.setStyle(ButtonStyle.Success)
-				.setEmoji("🗝️");
-
-			const row = new ActionRowBuilder().addComponents([cecButton]);
-
-			client.channels
-				.fetch(channel.id)
-				.then((channel) =>
-					channel.send({ embeds: [cecPoster, cecEmbed], components: [row] })
-				);
-		} else if (subCommand === "unlock-lfg") {
-			let lfgEmbed = new EmbedBuilder()
-				.setTitle("Unlock LFG")
-				.setDescription(
-					"Choose the region you are in and unlock Looking For Group(LFG) channel accordingly."
-				)
-				.setColor(`C04946`);
-
-			let lfgNAButton = new ButtonBuilder()
-				.setCustomId("lfgNAButton")
-				.setLabel("NA/SA")
-				.setStyle(ButtonStyle.Success)
-				.setEmoji("🌎");
-
-			let lfgSEAButton = new ButtonBuilder()
-				.setCustomId("lfgSEAButton")
-				.setLabel("SEA")
-				.setStyle(ButtonStyle.Success)
-				.setEmoji("🌏");
-
-			let lfgEUButton = new ButtonBuilder()
-				.setCustomId("lfgEUButton")
-				.setLabel("EU")
-				.setStyle(ButtonStyle.Success)
-				.setEmoji("🌍");
-
-			const row = new ActionRowBuilder().addComponents([
-				lfgNAButton,
-				lfgSEAButton,
-				lfgEUButton,
-			]);
-
-			client.channels
-				.fetch(channel.id)
-				.then((channel) =>
-					channel.send({ embeds: [lfgEmbed], components: [row] })
-				);
-		} else if (subCommand === "creator-application") {
+		if (subCommand === "creator-application") {
 			const creatorPoster = new EmbedBuilder()
 				.setImage("https://i.ibb.co/sJfH3Qj/20221201-114500-1.png")
 				.setColor(`C04946`);
@@ -530,6 +449,29 @@ module.exports = {
 			client.channels.fetch(channel.id).then((channel) =>
 				channel.send({
 					embeds: [cheaterEmbed],
+					components: [row],
+				})
+			);
+		} else if (subCommand === "pop-info") {
+			const popEmbed = new EmbedBuilder()
+				.setTitle("Report Violation")
+				.setDescription(
+					`**Join Plan of Publisher and Win Really Cash! <:tiktok:1072002336836292708>**\nIntroducing the Plan of Publisher for TikTok! Everyone can join and win up to **$1500 REAL CASH** 🪙, just by publishing short videos to recommend PROJECT EVO. Join now! <@&1074185209643278448> <@&${process.env.CC_ROLE}>\n\n**How to Participate?**\nClick the button below - Find the campaign of PROJECT EVO - Read the Introduction - Post your video and get rewards!\n\n**How to Make Your Video Go Viral?**\nWe have prepared the [short-video guide](https://docs.google.com/document/d/1Hkr6qe43FBDL35JaPk_30rUs-oVFp3NUIfCfkFYCTdk/edit?usp=sharing) and [media kit](https://drive.google.com/drive/folders/1PrxNCAuDAVuMlAHwegaLDKc24rRAjc3v?usp=share_link) for you, check it out!`
+				)
+				.setColor(`C04946`);
+
+			const joinButton = new ButtonBuilder()
+				.setLabel("Join Now")
+				.setStyle(ButtonStyle.Link)
+				.setURL(
+					"https://api.tiktokv.com/game_center/pop/deeplink?target=home-pop"
+				);
+
+			const row = new ActionRowBuilder().addComponents([joinButton]);
+
+			client.channels.fetch(channel.id).then((channel) =>
+				channel.send({
+					embeds: [popEmbed],
 					components: [row],
 				})
 			);
