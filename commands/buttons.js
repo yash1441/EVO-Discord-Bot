@@ -14,28 +14,6 @@ module.exports = {
 		.setDescription("Sets up embed and buttons for respective actions.")
 		.addSubcommand((subcommand) =>
 			subcommand
-				.setName("cec-application")
-				.setDescription("Setup CEC Application.")
-				.addChannelOption((option) =>
-					option
-						.setName("channel")
-						.setDescription("Input the channel.")
-						.setRequired(true)
-				)
-		)
-		.addSubcommand((subcommand) =>
-			subcommand
-				.setName("unlock-lfg")
-				.setDescription("Setup Unlock LFG application.")
-				.addChannelOption((option) =>
-					option
-						.setName("channel")
-						.setDescription("Input the channel.")
-						.setRequired(true)
-				)
-		)
-		.addSubcommand((subcommand) =>
-			subcommand
 				.setName("creator-application")
 				.setDescription("Setup Creator Application.")
 				.addChannelOption((option) =>
@@ -165,7 +143,19 @@ module.exports = {
 						.setDescription("Input the channel.")
 						.setRequired(true)
 				)
+		)
+		.addSubcommand((subcommand) =>
+			subcommand
+				.setName("pop-info")
+				.setDescription("Setup Plan of Publisher Info.")
+				.addChannelOption((option) =>
+					option
+						.setName("channel")
+						.setDescription("Input the channel.")
+						.setRequired(true)
+				)
 		),
+
 	async execute(interaction, client) {
 		await interaction.deferReply();
 		if (interaction.user.id != process.env.MY_ID) {
