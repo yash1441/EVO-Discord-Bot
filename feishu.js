@@ -91,7 +91,9 @@ async function getRecords(token, app, table, filter, page_token) {
 	}
 
 	// Make the API call and wait for the response.
-	let response = await request(options).catch((error) => console.error(error));
+	let response = await request(options).catch((error) =>
+		console.error(error.code)
+	);
 
 	if (response === undefined) {
 		// If the response is undefined, recursively call the function again.
