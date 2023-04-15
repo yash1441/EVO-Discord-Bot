@@ -444,9 +444,11 @@ module.exports = {
 			);
 		} else if (subCommand === "pop-info") {
 			const popEmbed = new EmbedBuilder()
-				.setTitle("Report Violation")
+				.setTitle(
+					"Join Plan of Publisher and Win Really Cash! <:tiktok:1072002336836292708>"
+				)
 				.setDescription(
-					`**Join Plan of Publisher and Win Really Cash! <:tiktok:1072002336836292708>**\nIntroducing the Plan of Publisher for TikTok! Everyone can join and win up to **$1500 REAL CASH** 🪙, just by publishing short videos to recommend PROJECT EVO. Join now! <@&1074185209643278448> <@&${process.env.CC_ROLE}>\n\n**How to Participate?**\nClick the button below - Find the campaign of PROJECT EVO - Read the Introduction - Post your video and get rewards!\n\n**How to Make Your Video Go Viral?**\nWe have prepared the [short-video guide](https://docs.google.com/document/d/1Hkr6qe43FBDL35JaPk_30rUs-oVFp3NUIfCfkFYCTdk/edit?usp=sharing) and [media kit](https://drive.google.com/drive/folders/1PrxNCAuDAVuMlAHwegaLDKc24rRAjc3v?usp=share_link) for you, check it out!`
+					`Introducing the Plan of Publisher for TikTok! Everyone can join and win up to **$1500 REAL CASH** 🪙, just by publishing short videos to recommend PROJECT EVO. Join now! <@&1074185209643278448> <@&${process.env.CC_ROLE}>\n\n**How to Participate?**\nClick the button below - Find the campaign of PROJECT EVO - Read the Introduction - Post your video and get rewards!\n\n**How to Make Your Video Go Viral?**\nWe have prepared the [short-video guide](https://docs.google.com/document/d/1Hkr6qe43FBDL35JaPk_30rUs-oVFp3NUIfCfkFYCTdk/edit?usp=sharing) and [media kit](https://drive.google.com/drive/folders/1PrxNCAuDAVuMlAHwegaLDKc24rRAjc3v?usp=share_link) for you, check it out!`
 				)
 				.setColor(`C04946`);
 
