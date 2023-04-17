@@ -347,8 +347,10 @@ module.exports = {
 				if (
 					member == undefined ||
 					!member.roles.cache.has(process.env.VERIFIED_ROLE)
-				)
+				) {
+					logger.debug("-1");
 					continue;
+				}
 
 				if (
 					(record.fields["Platform"] === "YouTube Shorts" ||
