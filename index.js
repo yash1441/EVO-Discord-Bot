@@ -88,7 +88,6 @@ client.on("ready", () => {
 		function () {
 			logger.info(`Starting scheduled cronjob. (Every Monday 11:59 AM)`);
 			checkOldFiles();
-			calculateBP();
 		},
 		{
 			timezone: "Asia/Singapore",
@@ -1952,19 +1951,6 @@ async function checkMemberRole(client, guildId, userId, roleId) {
 	}
 }
 
-async function checkRoles(interaction, userId, rolesToCheck) {
-	const member = await interaction.guild.members.fetch(userId);
-	let roles = [];
-
-	for (const role of rolesToCheck) {
-		if (member.roles.cache.has(role)) {
-			roles.push(role);
-		}
-	}
-
-	return roles;
-}
-
 function checkURL(text, log) {
 	if (text.includes("www.")) {
 		text = text.replace("www.", "");
@@ -2345,116 +2331,6 @@ async function showRegionMenu(customId) {
 
 	const row = new ActionRowBuilder().addComponents(regionSelectMenu);
 	return row;
-}
-
-async function calculateBP() {
-	logger.info("Calculating CLUB Data...");
-
-	const tenantToken = await feishu.authorize(
-		process.env.FEISHU_ID,
-		process.env.FEISHU_SECRET
-	);
-
-	let response = JSON.parse(
-		await feishu.getRecords(
-			tenantToken,
-			process.env.CEP_BASE,
-			process.env.CEP_SUBMISSION,
-			`AND(CurrentValue.[Validity] = "VALID", CurrentValue.[Views] > 999, CurrentValue.[Submission Date] >= DATE(2022,12,1))`
-		)
-	);
-
-	let records = [];
-
-	for (const record of response.data.items) {
-		let shouldContinue = false;
-		if (!record.fields["Discord ID"]) continue;
-		const guild = client.guilds.cache.get(process.env.EVO_CEC_SERVER);
-		const member = await guild.members
-			.fetch(record.fields["Discord ID"])
-			.catch((error) => {
-				logger.error(
-					`Error fetching member ${record.fields["Discord ID"]}. ${error}`
-				);
-				shouldContinue = true;
-			});
-
-		if (shouldContinue) continue;
-
-		if (member == undefined) continue;
-
-		if (!member.roles.cache.has(process.env.VERIFIED_ROLE)) continue;
-
-		if (
-			(record.fields["Platform"] == "TikTok" ||
-				record.fields["Platform"] == "YouTube Shorts") &&
-			record.fields["Views"] < 5000
-		)
-			continue;
-
-		let tempRecord = {};
-		if (
-			record.fields["Platform"] == "TikTok" ||
-			record.fields["Platform"] == "YouTube Shorts"
-		) {
-			tempRecord = {
-				"Discord ID": record.fields["Discord ID"],
-				"Discord Name": record.fields["Discord Name"],
-				"Short Views": parseInt(record.fields["Views"]),
-				Views: 0,
-				Videos: 1,
-			};
-		} else {
-			tempRecord = {
-				"Discord ID": record.fields["Discord ID"],
-				"Discord Name": record.fields["Discord Name"],
-				"Short Views": 0,
-				Views: parseInt(record.fields["Views"]),
-				Videos: 1,
-			};
-		}
-
-		let existingData = records.find(
-			(r) => r["Discord ID"] === tempRecord["Discord ID"]
-		);
-
-		if (existingData) {
-			existingData["Short Views"] += tempRecord["Short Views"];
-			existingData["Views"] += tempRecord["Views"];
-			existingData["Videos"] += tempRecord["Videos"];
-		} else {
-			records.push(tempRecord);
-		}
-	}
-
-	for (const record of records) {
-		response = JSON.parse(
-			await feishu.getRecords(
-				tenantToken,
-				process.env.CEP_BASE,
-				process.env.CEC_DATA,
-				`CurrentValue.[Discord ID] = "${record["Discord ID"]}"`
-			)
-		);
-		if (response.data.total) {
-			await feishu.updateRecord(
-				tenantToken,
-				process.env.CEP_BASE,
-				process.env.CEC_DATA,
-				response.data.items[0].record_id,
-				{ fields: record }
-			);
-		} else {
-			await feishu.createRecord(
-				tenantToken,
-				process.env.CEP_BASE,
-				process.env.CEC_DATA,
-				{ fields: record }
-			);
-		}
-	}
-
-	logger.info("Calculating CLUB Data Completed.");
 }
 
 async function download(url, name) {
@@ -2858,14 +2734,6 @@ async function loadBetaTesterCodes() {
 
 	logger.info(`Beta Tester Codes: ${Object.keys(betaTesterCodes).length}`);
 	betaTesterCodesLoaded = true;
-}
-
-async function shuffleArray(array) {
-	for (let i = array.length - 1; i > 0; i--) {
-		const j = Math.floor(Math.random() * (i + 1));
-		[array[i], array[j]] = [array[j], array[i]];
-	}
-	return array;
 }
 
 async function sendAppealResponseToFeishu(interaction) {
