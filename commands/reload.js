@@ -345,7 +345,8 @@ module.exports = {
 						if (!member.roles.cache.has(process.env.VERIFIED_ROLE)) {
 							logger.debug("No verified role on " + member.user.username);
 							return (shouldContinue = true);
-						}
+						} else
+							logger.info("Verified role found on " + member.user.username);
 					})
 					.catch((error) => {
 						logger.error(
