@@ -341,7 +341,9 @@ module.exports = {
 				const guildMember = await guild.members
 					.fetch(record.fields["Discord ID"])
 					.then((member) => {
-						logger.debug(member.user.username);
+						if (member.roles.cache.has(process.env.VERIFIED_ROLE)) {
+							logger.debug("Verified role on " + member.user.username);
+						} else logger.debug("No verified role on " + member.user.username);
 					})
 					.catch((error) => {
 						logger.error(error);
