@@ -347,11 +347,13 @@ module.exports = {
 						logger.error(error + " " + record.fields["Discord ID"]);
 					});
 
-				if (
-					guildMember == undefined ||
-					!guildMember.roles.cache.has(process.env.VERIFIED_ROLE)
-				) {
-					logger.debug("-1");
+				if (guildMember == undefined) {
+					logger.debug("No member found for " + guildMember.user.username);
+					continue;
+				}
+
+				if (!guildMember.roles.cache.has(process.env.VERIFIED_ROLE)) {
+					logger.debug("No verified role on " + guildMember.user.username);
 					continue;
 				}
 
