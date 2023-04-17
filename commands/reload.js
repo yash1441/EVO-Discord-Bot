@@ -338,24 +338,25 @@ module.exports = {
 
 			for (const record of response.data.items) {
 				const guild = await client.guilds.fetch(process.env.EVO_CEC_SERVER);
-				const guildMember = await guild.members
-					.fetch(record.fields["Discord ID"])
-					.then((member) => {
-						if (member.roles.cache.has(process.env.VERIFIED_ROLE)) {
-							logger.debug("Verified role on " + member.user.username);
-						} else logger.debug("No verified role on " + member.user.username);
-					})
-					.catch((error) => {
-						logger.error(error);
-					});
+				const guildMember = await guild.members.fetch(
+					record.fields["Discord ID"]
+				);
+				// .then((member) => {
+				// 	if (member.roles.cache.has(process.env.VERIFIED_ROLE)) {
+				// 		logger.debug("Verified role on " + member.user.username);
+				// 	} else logger.debug("No verified role on " + member.user.username);
+				// })
+				// .catch((error) => {
+				// 	logger.error(error);
+				// });
 
 				if (guildMember == undefined) {
-					//logger.debug("No member found for " + record.fields["Discord ID"]);
+					logger.debug("No member found for " + record.fields["Discord ID"]);
 					continue;
 				}
 
 				if (!guildMember.roles.cache.has(process.env.VERIFIED_ROLE)) {
-					//logger.debug("No verified role on " + guildMember.user.username);
+					logger.debug("No verified role on " + guildMember.user.username);
 					continue;
 				}
 
