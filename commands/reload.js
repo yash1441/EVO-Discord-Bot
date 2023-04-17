@@ -338,15 +338,14 @@ module.exports = {
 
 			for (const record of response.data.items) {
 				let shouldContinue = false;
+
 				const guild = await client.guilds.fetch(process.env.EVO_CEC_SERVER);
 				await guild.members
 					.fetch(record.fields["Discord ID"])
 					.then((member) => {
 						if (!member.roles.cache.has(process.env.VERIFIED_ROLE)) {
-							logger.debug("No verified role on " + member.user.username);
 							return (shouldContinue = true);
-						} else
-							logger.info("Verified role found on " + member.user.username);
+						} else shouldContinue = false;
 					})
 					.catch((error) => {
 						logger.error(
@@ -363,6 +362,9 @@ module.exports = {
 					parseInt(record.fields["Views"] < 5000)
 				)
 					continue;
+
+				if (record.fields["Discord ID"] == "584322009786351637")
+					logger.debug("HAIK: " + record.fields["Views"]);
 
 				let tempData = {
 					recordId: record.record_id,
