@@ -338,16 +338,16 @@ module.exports = {
 
 			for (const record of response.data.items) {
 				const guild = await client.guilds.fetch(process.env.EVO_CEC_SERVER);
-				const member = await guild.members
+				const guildMember = await guild.members
 					.fetch(record.fields["Discord ID"])
-					.then(console.log)
+					.then(console.log(guildMember.user.tag))
 					.catch((error) => {
 						logger.error(error + " " + record.fields["Discord ID"]);
 					});
 
 				if (
-					member == undefined ||
-					!member.roles.cache.has(process.env.VERIFIED_ROLE)
+					guildMember == undefined ||
+					!guildMember.roles.cache.has(process.env.VERIFIED_ROLE)
 				) {
 					logger.debug("-1");
 					continue;
