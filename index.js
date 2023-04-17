@@ -68,7 +68,6 @@ for (const file of commandFiles) {
 	client.commands.set(command.data.name, command);
 }
 
-let alreadyPressed = [];
 let betaTesterCodes = {};
 let betaTesterCodesLoaded = false;
 

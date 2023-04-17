@@ -559,8 +559,7 @@ module.exports = {
 			);
 		} else if (option === "MEMBER") {
 			const discordId = interaction.options.getString("discord-id");
-			const guild = client.guilds.cache.get(process.env.EVO_SERVER);
-			const member = await guild.members
+			const member = await interaction.guild.members
 				.fetch(discordId)
 				.then(() => {
 					logger.debug("Member found.");
