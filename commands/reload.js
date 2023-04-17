@@ -337,7 +337,8 @@ module.exports = {
 			let records = [];
 
 			for (const record of response.data.items) {
-				let shouldContinue = false;
+				let shouldContinue = false,
+					tempData = {};
 
 				const guild = await client.guilds.fetch(process.env.EVO_CEC_SERVER);
 				await guild.members
@@ -360,7 +361,7 @@ module.exports = {
 				)
 					continue;
 
-				let tempData = {
+				tempData = {
 					recordId: record.record_id,
 					discordId: record.fields["Discord ID"],
 					totalViews: parseInt(record.fields["Views"]),
