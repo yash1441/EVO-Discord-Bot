@@ -348,9 +348,6 @@ module.exports = {
 						} else shouldContinue = false;
 					})
 					.catch((error) => {
-						logger.error(
-							`Error fetching member ${record.fields["Discord ID"]}. ${error}`
-						);
 						shouldContinue = true;
 					});
 
@@ -373,13 +370,19 @@ module.exports = {
 					(r) => r["Discord ID"] === tempData["Discord ID"]
 				);
 				if (existingData) {
+					logger.info(
+						record.fields["Discord ID"] +
+							": +" +
+							tempData["Views"].toString() +
+							" views"
+					);
 					existingData["Views"] += tempData["Views"];
 				} else {
+					console.log({ tempData });
 					records.push(tempData);
 				}
 			}
 
-			console.log({ records });
 			logger.debug(records.length);
 
 			for (const record of records) {
