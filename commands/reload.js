@@ -337,28 +337,24 @@ module.exports = {
 			let records = [];
 
 			for (const record of response.data.items) {
+				let shouldContinue = false;
 				const guild = await client.guilds.fetch(process.env.EVO_CEC_SERVER);
-				const guildMember = await guild.members.fetch(
-					record.fields["Discord ID"]
-				);
-				// .then((member) => {
-				// 	if (member.roles.cache.has(process.env.VERIFIED_ROLE)) {
-				// 		logger.debug("Verified role on " + member.user.username);
-				// 	} else logger.debug("No verified role on " + member.user.username);
-				// })
-				// .catch((error) => {
-				// 	logger.error(error);
-				// });
+				await guild.members
+					.fetch(record.fields["Discord ID"])
+					.then((member) => {
+						if (!member.roles.cache.has(process.env.VERIFIED_ROLE)) {
+							logger.debug("No verified role on " + member.user.username);
+							return (shouldContinue = true);
+						}
+					})
+					.catch((error) => {
+						logger.error(
+							`Error fetching member ${record.fields["Discord ID"]}. ${error}`
+						);
+						shouldContinue = true;
+					});
 
-				if (guildMember == undefined) {
-					logger.debug("No member found for " + record.fields["Discord ID"]);
-					continue;
-				}
-
-				if (!guildMember.roles.cache.has(process.env.VERIFIED_ROLE)) {
-					logger.debug("No verified role on " + guildMember.user.username);
-					continue;
-				}
+				if (shouldContinue) continue;
 
 				if (
 					(record.fields["Platform"] === "YouTube Shorts" ||
