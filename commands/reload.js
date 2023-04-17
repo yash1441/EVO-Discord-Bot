@@ -46,11 +46,6 @@ module.exports = {
 		)
 		.addSubcommand((subcommand) =>
 			subcommand
-				.setName("ecc-check")
-				.setDescription("Add Players Judge role to accepted users.")
-		)
-		.addSubcommand((subcommand) =>
-			subcommand
 				.setName("check-appeal")
 				.setDescription("Check if appeal report is pending.")
 		)
@@ -525,66 +520,6 @@ module.exports = {
 
 			await interaction.editReply({
 				content: "Records marked with **Ask** have been sent the form.",
-				ephemeral: true,
-			});
-		} else if (subCommand === "ecc-check") {
-			await interaction.reply({
-				content: "Updating the list of Players Judge...",
-				ephemeral: true,
-			});
-
-			let tenantToken = await feishu.authorize(
-				process.env.FEISHU_ID,
-				process.env.FEISHU_SECRET
-			);
-
-			let response = JSON.parse(
-				await feishu.getRecords(
-					tenantToken,
-					process.env.CEP_BASE,
-					process.env.ECC_JUDGE,
-					`CurrentValue.[Status] = "Accept"`
-				)
-			);
-
-			if (!response.data.total) {
-				return await interaction.editReply({
-					content: "No accepted records found.",
-					ephemeral: true,
-				});
-			}
-
-			for (const record of response.data.items) {
-				let shouldContinue = false;
-				const member = await interaction.guild.members
-					.fetch(record.fields["Discord ID"])
-					.catch((error) => {
-						logger.error(error);
-						shouldContinue = true;
-						interaction.editReply({ content: "Error" });
-					});
-
-				if (shouldContinue) continue;
-
-				await interaction.member.roles
-					.add(process.env.ECC_JUDGE_ROLE)
-					.then(() => {
-						interaction.editReply({
-							content: `You have successfully joined ECC Players Judge! Please head over to the <#${process.env.ECC_JUDGE_CHANNEL}> channel for further information.`,
-						});
-					});
-
-				await feishu.updateRecord(
-					tenantToken,
-					process.env.CEP_BASE,
-					process.env.ECC_JUDGE,
-					record.record_id,
-					{ fields: { Status: "Done" } }
-				);
-			}
-
-			await interaction.editReply({
-				content: "Updated the list of Players Judge!",
 				ephemeral: true,
 			});
 		} else if (subCommand === "rewards") {
