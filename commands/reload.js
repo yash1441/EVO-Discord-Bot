@@ -344,11 +344,11 @@ module.exports = {
 						logger.debug(member.user.username);
 					})
 					.catch((error) => {
-						logger.error(error + " " + record.fields["Discord ID"]);
+						logger.error(error);
 					});
 
 				if (guildMember == undefined) {
-					logger.debug("No member found for " + guildMember.user.username);
+					logger.debug("No member found for " + record.fields["Discord ID"]);
 					continue;
 				}
 
