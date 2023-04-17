@@ -91,50 +91,6 @@ module.exports = {
 		)
 		.addSubcommand((subcommand) =>
 			subcommand
-				.setName("ambassador-info")
-				.setDescription("Setup Ambassador Event Info announcement.")
-				.addChannelOption((option) =>
-					option
-						.setName("channel")
-						.setDescription("Input the channel.")
-						.setRequired(true)
-				)
-		)
-		.addSubcommand((subcommand) =>
-			subcommand
-				.setName("ambassador-signup")
-				.setDescription("Setup Ambassador Event Signup announcement.")
-				.addChannelOption((option) =>
-					option
-						.setName("channel")
-						.setDescription("Input the channel.")
-						.setRequired(true)
-				)
-		)
-		.addSubcommand((subcommand) =>
-			subcommand
-				.setName("ambassador-info-text")
-				.setDescription("Setup Ambassador Event Signup announcement in text.")
-				.addChannelOption((option) =>
-					option
-						.setName("channel")
-						.setDescription("Input the channel.")
-						.setRequired(true)
-				)
-		)
-		.addSubcommand((subcommand) =>
-			subcommand
-				.setName("tiktok-button")
-				.setDescription("Setup TikTok Button.")
-				.addChannelOption((option) =>
-					option
-						.setName("channel")
-						.setDescription("Input the channel.")
-						.setRequired(true)
-				)
-		)
-		.addSubcommand((subcommand) =>
-			subcommand
 				.setName("cheater-report")
 				.setDescription("Setup Cheater Report.")
 				.addChannelOption((option) =>
@@ -327,87 +283,6 @@ module.exports = {
 			client.channels.fetch(channel.id).then((channel) =>
 				channel.send({
 					embeds: [bugEmbed],
-					components: [row],
-				})
-			);
-		} else if (subCommand === "ambassador-info") {
-			const ambassadorEmbed = new EmbedBuilder()
-				.setTitle(`EVO Ambassador Event`)
-				.setDescription(
-					`**Recommend EVO and Share the $5000 Prize Pool** :loudspeaker:\n\nDo you like Project EVO? How about recommending the game to your fans & friends & family? To appreciate your support, we are offering a **$5000 prize pool** for players who make **game recommendation videos** for the game! Let's enlarge the community together. Join events now!\n\nMultiple videos can be submitted, each of which can be used to claim rewards:\n>= 1000 views, **30  lottery tickets** <:beta_lottery_ticket:1088358927672033360>\n>= 3000 views, **$20**\n>= 5,000 views, **$50**\n>= 10,000 views, **$150**\n\nIn addition, we have upgraded rewards for the most popular works: :tada:\nTotal views reach 300k, get an extra **$300**\nTotal views reach 200k, get an extra **$200**\nTotal views reach 100k, get an extra **$100**\n\n<#1088675985907519538>\n<#1088676463257079910>\n<#1088676929999229060>\n<#1088677798769594428>\n\nClick "**Learn More**" below to check details and sign up for the event!`
-				)
-				.setImage("https://i.ibb.co/SxKqj0g/signup-en.jpg")
-				.setColor(`C04946`);
-
-			const LearnMoreButton = new ButtonBuilder()
-				.setLabel("Learn More")
-				.setStyle(ButtonStyle.Link)
-				.setURL(
-					"https://discord.com/channels/951777532003381278/1088791299622174801"
-				);
-
-			const row = new ActionRowBuilder().addComponents([LearnMoreButton]);
-
-			client.channels.fetch(channel.id).then((channel) =>
-				channel.send({
-					embeds: [ambassadorEmbed],
-					components: [row],
-				})
-			);
-		} else if (subCommand === "ambassador-signup") {
-			const ambassadorEmbed = new EmbedBuilder()
-				.setTitle(
-					`**EVO Ambassador Event: Recommend EVO and Share the $5000 Prize Pool!** :loudspeaker:`
-				)
-				.setDescription(
-					`Do you like Project EVO? How about recommending the game to your fans & friends & family? To appreciate your support, we are offering a **$5000 gift card pool** for players who make game recommendation videos for the game! Let's enlarge the community together. Join events now!\n\n**WHO CAN PARTICIPATE?**\n**Everyone**\nWe have also prepared a beta code that can be used multiple times for event participants. Click "Sign Up" to get the code!\n\n**WHEN TO START AND END?**\n<:ember:993888291218784286> The event starts from \`26 Mar\` to \`14 Apr\`.\n<:ember:993888291218784286> The result will be announced on \`17 Apr\`.\n\n**HOW TO PARTICIPATE?**\n<:ember:993888291218784286> Click "**Sign Up**"\n<:ember:993888291218784286> Create and post your EVO videos on **YouTube (Shorts Not Included)**\n<:ember:993888291218784286> Submit your content via <#${process.env.SUBMIT_CONTENT_CHANNEL}> channel, and select the "EVO Ambassador Event" tag (a MUST step)\n\n**WHAT CAN YOU WIN?**\n**Win rewards according to the views of each video (Multiple videos can be submitted)**\n<:ember:993888291218784286> >= 1000 views, 30 lottery tickets <:beta_lottery_ticket:1088358927672033360>\n<:ember:993888291218784286> >= 3000 views, $20\n<:ember:993888291218784286> >= 5,000 views, $50\n<:ember:993888291218784286> >= 10,000 views, $150\n\n**In addition, we have upgraded rewards for the most popular works:**\n<:ember:993888291218784286> Total views reach 300k, get an extra $300\n<:ember:993888291218784286> Total views reach 200k, get an extra $200\n<:ember:993888291218784286> Total views reach 100k, get an extra $100\n\n**TOPIC REQUIREMENT:**\n<:ember:993888291218784286> The video should revolve around the following topics, such as game recommendation, introduction, walkthrough, first impression, etc.\n<:ember:993888291218784286> We have also prepared <#1076037107300184125>, in case you need some high-quality materials!\n\n**Must Read <#1088672298585817128> Before Creation❗❗❗ Your video might risk being invalid if it doesn't follow the rules**\n\n<#1088747569003384873>\n<#1088748018192371775>\n<#1088748403405627392>\n<#1088748878825783307>`
-				)
-				.setImage("https://i.ibb.co/SxKqj0g/signup-en.jpg")
-				.setColor(`C04946`);
-
-			const signUpButton = new ButtonBuilder()
-				.setCustomId("signUp")
-				.setLabel("Sign Up")
-				.setStyle(ButtonStyle.Success)
-				.setEmoji("🪧");
-
-			const checkButton = new ButtonBuilder()
-				.setCustomId("checkSubmission")
-				.setLabel("Check Submission")
-				.setStyle(ButtonStyle.Primary)
-				.setEmoji("🔍");
-
-			const row = new ActionRowBuilder().addComponents([
-				signUpButton,
-				checkButton,
-			]);
-
-			client.channels.fetch(channel.id).then((channel) =>
-				channel.send({
-					embeds: [ambassadorEmbed],
-					components: [row],
-				})
-			);
-		} else if (subCommand === "ambassador-info-text") {
-			const ambassadorMessage = `**EVO Ambassador Event**\n@everyone\n\n**Recommend EVO and Share the $5000 Prize Pool** :loudspeaker:\n\nDo you like Project EVO? How about recommending the game to your fans & friends & family? To appreciate your support, we are offering a **$5000 prize pool** for players who make **game recommendation videos** for the game! Let's enlarge the community together. Join events now!\n\nMultiple videos can be submitted, each of which can be used to claim rewards:\n<:ember:993888291218784286> >= 1000 views, **30  lottery tickets** <:beta_lottery_ticket:1088358927672033360>\n<:ember:993888291218784286> >= 3000 views, **$20**\n<:ember:993888291218784286> >= 5,000 views, **$50**\n<:ember:993888291218784286> >= 10,000 views, **$150**\n\nIn addition, we have upgraded rewards for the most popular works: :tada:\n<:ember:993888291218784286> Total views reach 300k, get an extra **$300**\n<:ember:993888291218784286> Total views reach 200k, get an extra **$200**\n<:ember:993888291218784286> Total views reach 100k, get an extra **$100**\n\n<#1088675985907519538>\n<#1088676463257079910>\n<#1088676929999229060>\n<#1088677798769594428>\n\nClick "**Learn More**" below to check details and sign up for the event!`;
-
-			const attachment = new AttachmentBuilder(
-				"https://i.ibb.co/SxKqj0g/signup-en.jpg"
-			);
-
-			const LearnMoreButton = new ButtonBuilder()
-				.setLabel("Learn More")
-				.setStyle(ButtonStyle.Link)
-				.setURL(
-					"https://discord.com/channels/951777532003381278/1088791299622174801"
-				);
-
-			const row = new ActionRowBuilder().addComponents([LearnMoreButton]);
-
-			client.channels.fetch(channel.id).then((channel) =>
-				channel.send({
-					content: ambassadorMessage,
-					files: [attachment],
 					components: [row],
 				})
 			);
