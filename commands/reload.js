@@ -371,10 +371,7 @@ module.exports = {
 				);
 				if (existingData) {
 					logger.info(
-						record.fields["Discord ID"] +
-							": +" +
-							tempData["Views"].toString() +
-							" views"
+						record.fields["Discord ID"] + ": +" + tempData["Views"] + " views"
 					);
 					existingData["Views"] += tempData["Views"];
 				} else {
