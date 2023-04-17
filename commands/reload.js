@@ -363,9 +363,6 @@ module.exports = {
 				)
 					continue;
 
-				if (record.fields["Discord ID"] == "584322009786351637")
-					logger.debug("HAIK: " + record.fields["Views"]);
-
 				let tempData = {
 					recordId: record.record_id,
 					discordId: record.fields["Discord ID"],
@@ -382,6 +379,7 @@ module.exports = {
 				}
 			}
 
+			console.log({ records });
 			logger.debug(records.length);
 
 			for (const record of records) {
