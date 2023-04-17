@@ -340,7 +340,9 @@ module.exports = {
 				const guild = await client.guilds.fetch(process.env.EVO_CEC_SERVER);
 				const guildMember = await guild.members
 					.fetch(record.fields["Discord ID"])
-					.then(console.log(guildMember.user.tag))
+					.then((member) => {
+						logger.debug(member.user.username);
+					})
 					.catch((error) => {
 						logger.error(error + " " + record.fields["Discord ID"]);
 					});
