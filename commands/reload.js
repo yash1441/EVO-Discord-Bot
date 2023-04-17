@@ -312,6 +312,8 @@ module.exports = {
 				ephemeral: true,
 			});
 
+			await interaction.member.fetch();
+
 			const tenantToken = await feishu.authorize(
 				process.env.FEISHU_ID,
 				process.env.FEISHU_SECRET
