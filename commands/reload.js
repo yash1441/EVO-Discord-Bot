@@ -357,7 +357,7 @@ module.exports = {
 				if (
 					(record.fields["Platform"] === "YouTube Shorts" ||
 						record.fields["Platform"] === "TikTok") &&
-					parseInt(record.fields["Views"] < 5000)
+					parseInt(record.fields["Views"]) < 5000
 				)
 					continue;
 
@@ -372,7 +372,7 @@ module.exports = {
 				);
 				if (existingData) {
 					logger.info(
-						record.fields["Discord ID"] + ": +" + tempData["Views"] + " views"
+						record.fields["Discord Name"] + ": +" + tempData["Views"] + " views"
 					);
 					existingData["Views"] += tempData["Views"];
 				} else {
