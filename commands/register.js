@@ -255,10 +255,81 @@ module.exports = {
 					ephemeral: true,
 				});
 			}
+
+			if (parseInt(response.data.total == 3)) {
+				await interaction.followUp({
+					content: `Team **${teamName}** now has 4 members.\n\nPlease use </register status:1097845563568963624> to check your team's registration status.`,
+				});
+				return;
+			}
 		} else if (subCommand === "status") {
 			await interaction.reply({
 				content: "Checking registration status...",
 				ephemeral: true,
+			});
+
+			const teamLeader = interaction.user;
+
+			const tenantToken = await feishu.authorize(
+				process.env.FEISHU_ID,
+				process.env.FEISHU_SECRET
+			);
+
+			let response = JSON.parse(
+				await feishu.getRecords(
+					tenantToken,
+					CS_BASE,
+					CS_TABLE,
+					`AND(CurrentValue.[Discord ID] = "${teamLeader.id}", CurrentValue.[Title] = "Leader")`
+				)
+			);
+
+			if (!response.data.total) {
+				await interaction.editReply({
+					content: `You are not a team leader.\n\nPlease use </register team:1097845563568963624> to register your team first.`,
+				});
+				return;
+			}
+
+			const teamLeaderRoleId = response.data.items[0].fields["Role ID"];
+			const teamName = response.data.items[0].fields["Team Name"];
+
+			response = JSON.parse(
+				await feishu.getRecords(
+					tenantToken,
+					CS_BASE,
+					CS_TABLE,
+					`AND(CurrentValue.[Team Name] = "${teamName}", CurrentValue.[Title] = "Member")`
+				)
+			);
+
+			if (!response.data.total) {
+				await interaction.editReply({
+					content: `Team **${teamName}** has no members.\n\nPlease use </register member:1097845563568963624> to register a member for your team.`,
+				});
+				return;
+			}
+
+			const embeds = [];
+
+			const mainEmbed = new EmbedBuilder()
+				.setTitle(`${teamName}`)
+				.setDescription(
+					`**Team Leader**\n<@${teamLeader.tag}>\n*${teamLeaderRoleId}*`
+				);
+
+			embeds.push(mainEmbed);
+
+			for (const record of response.data.items) {
+				const memberEmbed = new EmbedBuilder().setDescription(
+					`**Team Member**\n<@${record.fields["Discord Name"]}>\n*${record.fields["Role ID"]}*`
+				);
+
+				embeds.push(memberEmbed);
+			}
+
+			await interaction.editReply({
+				embeds: embeds,
 			});
 		}
 	},
