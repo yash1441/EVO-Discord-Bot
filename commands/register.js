@@ -277,6 +277,13 @@ module.exports = {
 			const teamLeader = interaction.user;
 			const teamMember = interaction.options.getUser("user");
 
+			if (teamLeader === teamMember) {
+				await interaction.editReply({
+					content: `You cannot remove yourself as a team leader.\n\nPlease use </register remove-member:1097845563568963624> to remove a team member.`,
+				});
+				return;
+			}
+
 			const tenantToken = await feishu.authorize(
 				process.env.FEISHU_ID,
 				process.env.FEISHU_SECRET
