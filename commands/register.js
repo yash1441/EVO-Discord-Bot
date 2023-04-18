@@ -81,26 +81,68 @@ module.exports = {
 				process.env.FEISHU_SECRET
 			);
 
-			const response = JSON.parse(
+			let response = JSON.parse(
 				await feishu.getRecords(
 					tenantToken,
 					CS_BASE,
 					CS_TABLE,
-					`OR(CurrentValue.[Discord ID] = "${teamLeader.id}", CurrentValue.[Team Name] = "${teamName}", CurrentValue.[Role ID] = "${teamLeaderRoleId}")`
+					`OR(CurrentValue.[Discord ID] = "${teamLeader.id}", CurrentValue.[Role ID] = "${teamLeaderRoleId}")`
 				)
 			);
 
 			if (response.data.total) {
 				await interaction.editReply({
-					content: `You have already registered a team with the name **${response.data.items[0].fields["Team Name"]}**. Please use \`/register member\` to add members or \`/register status\` to check status of your team.`,
+					content: `You have already registered a team with the name **${response.data.items[0].fields["Team Name"]}**. Please use </register member:1097845563568963624> to register a memberadd members for your team or </register status:1097845563568963624> to check your team's registration status.`,
 				});
 				return;
 			}
 
 			await interaction.editReply({
-				content: `Registering team **${teamName}** with the leader as **${teamLeader.tag}** *(Role ID: ${teamLeaderRoleId})*...`,
-				ephemeral: true,
+				content: `Checking if team name **${teamName}** is available...`,
 			});
+
+			response = JSON.parse(
+				await feishu.getRecords(
+					tenantToken,
+					CS_BASE,
+					CS_TABLE,
+					`CurrentValue.[Team Name] = "${teamName}"`
+				)
+			);
+
+			if (response.data.total) {
+				await interaction.editReply({
+					content: `Team name **${teamName}** is already taken. Please use </register team:1097845563568963624> and choose another name for your team.`,
+				});
+				return;
+			}
+
+			const details = {
+				"Discord ID": teamLeader.id,
+				"Discord Name": teamLeader.tag,
+				"Role ID": teamLeaderRoleId,
+				"Team Name": teamName,
+				Title: "Leader",
+			};
+
+			const success = await feishu.createRecord(
+				tenantToken,
+				CS_BASE,
+				CS_TABLE,
+				{ fields: { details } }
+			);
+
+			if (success) {
+				await interaction.editReply({
+					content: `Registering team **${teamName}** with the leader as **${teamLeader.tag}** *(Role ID: ${teamLeaderRoleId})*...`,
+					ephemeral: true,
+				});
+			} else {
+				await interaction.editReply({
+					content: `Failed to register team **${teamName}** with the leader as **${teamLeader.tag}** *(Role ID: ${teamLeaderRoleId})*. Please try again later or create a ticket in <#951850084335771700>.`,
+					ephemeral: true,
+				});
+			}
 		} else if (subCommand === "member") {
 			const teamLeader = interaction.user;
 			const teamMember = interaction.options.getUser("user");
