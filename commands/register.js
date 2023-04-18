@@ -218,7 +218,7 @@ module.exports = {
 				)
 			);
 
-			if (response.data.total >= 4) {
+			if (parseInt(response.data.total) >= 4) {
 				await interaction.editReply({
 					content: `Team **${teamName}** already has 4 members.\n\nPlease use </register status:1097845563568963624> to check your team's registration status.`,
 				});
@@ -244,7 +244,7 @@ module.exports = {
 			);
 
 			if (success) {
-				await interaction.reply({
+				await interaction.editReply({
 					content: `Registered team member **${teamMember.tag}** *(Role ID: ${teamMemberRoleId})* for team leader **${teamLeader.tag}**.`,
 					ephemeral: true,
 				});
