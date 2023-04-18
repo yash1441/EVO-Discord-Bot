@@ -315,14 +315,14 @@ module.exports = {
 			const mainEmbed = new EmbedBuilder()
 				.setTitle(`${teamName}`)
 				.setDescription(
-					`**Team Leader**\n<@${teamLeader.tag}>\n*${teamLeaderRoleId}*`
+					`**Team Leader**\n<@${teamLeader.id}>\n*${teamLeaderRoleId}*`
 				);
 
 			embeds.push(mainEmbed);
 
 			for (const record of response.data.items) {
 				const memberEmbed = new EmbedBuilder().setDescription(
-					`**Team Member**\n<@${record.fields["Discord Name"]}>\n*${record.fields["Role ID"]}*`
+					`**Team Member**\n<@${record.fields["Discord ID"]}>\n*${record.fields["Role ID"]}*`
 				);
 
 				embeds.push(memberEmbed);
