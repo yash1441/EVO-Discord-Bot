@@ -77,7 +77,7 @@ module.exports = {
 			const teamMemberRoleId = interaction.options.getInteger("role-id");
 
 			await interaction.reply({
-				content: `Registering team member **${teamMember.user.tag}** *(Role ID: ${teamMemberRoleId})* for team leader **${teamLeader.user.tag}**...`,
+				content: `Registering team member **${teamMember.tag}** *(Role ID: ${teamMemberRoleId})* for team leader **${teamLeader.user.tag}**...`,
 				ephemeral: true,
 			});
 		} else if (subCommand === "status") {
