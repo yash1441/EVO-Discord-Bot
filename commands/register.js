@@ -167,10 +167,6 @@ module.exports = {
 				process.env.FEISHU_SECRET
 			);
 
-			console.log(
-				`OR(CurrentValue.[Discord ID] = "${teamMember.id}, CurrentValue.[Role ID] = "${teamMemberRoleId}")`
-			);
-
 			let response = JSON.parse(
 				await feishu.getRecords(
 					tenantToken,
@@ -179,6 +175,8 @@ module.exports = {
 					`OR(CurrentValue.[Discord ID] = "${teamMember.id}, CurrentValue.[Role ID] = "${teamMemberRoleId}")`
 				)
 			);
+
+			console.log(response);
 
 			if (response.data.total) {
 				await interaction.editReply({
