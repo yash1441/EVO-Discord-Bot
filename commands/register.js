@@ -167,6 +167,8 @@ module.exports = {
 				process.env.FEISHU_SECRET
 			);
 
+			console.log(teamMember.id);
+
 			let response = JSON.parse(
 				await feishu.getRecords(
 					tenantToken,
