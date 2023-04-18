@@ -278,6 +278,7 @@ module.exports = {
 		} else if (subCommand === "remove-member") {
 			await interaction.reply({
 				content: `Checking if you are a team leader...`,
+				ephemeral: true,
 			});
 
 			const tenantToken = await feishu.authorize(
@@ -303,7 +304,6 @@ module.exports = {
 
 			await interaction.editReply({
 				content: "Checking if member unregistration is possible...",
-				ephemeral: true,
 			});
 
 			const teamName = response.data.items[0].fields["Team Name"];
