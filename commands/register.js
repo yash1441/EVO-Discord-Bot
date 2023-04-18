@@ -86,7 +86,7 @@ module.exports = {
 					tenantToken,
 					CS_BASE,
 					CS_TABLE,
-					`OR(CurrenValue.[Discord ID] = ${teamLeader.id}, CurrentValue.[Team Name] = ${teamName}, CurrentValue.[Role ID] = ${teamLeaderRoleId})`
+					`OR(CurrenValue.[Discord ID] = "${teamLeader.id}", CurrentValue.[Team Name] = "${teamName}", CurrentValue.[Role ID] = "${teamLeaderRoleId}")`
 				)
 			);
 
