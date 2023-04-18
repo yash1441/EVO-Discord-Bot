@@ -167,7 +167,9 @@ module.exports = {
 				process.env.FEISHU_SECRET
 			);
 
-			console.log(teamMember.id);
+			console.log(
+				`OR(CurrentValue.[Discord ID] = "${teamMember.id}, CurrentValue.[Role ID] = "${teamMemberRoleId}")`
+			);
 
 			let response = JSON.parse(
 				await feishu.getRecords(
