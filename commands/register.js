@@ -141,7 +141,7 @@ module.exports = {
 
 			if (success) {
 				await interaction.editReply({
-					content: `Registered team **${teamName}** with the leader as **${teamLeader.tag}** *(Role ID: ${teamLeaderRoleId})*.`,
+					content: `Registered team **${teamName}** with the leader as **<@${teamLeader.id}>** *(Role ID: ${teamLeaderRoleId})*.`,
 					ephemeral: true,
 				});
 			} else {
