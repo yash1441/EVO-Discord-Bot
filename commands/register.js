@@ -281,6 +281,9 @@ module.exports = {
 				ephemeral: true,
 			});
 
+			const teamLeader = interaction.user;
+			const teamMember = interaction.options.getUser("user");
+
 			const tenantToken = await feishu.authorize(
 				process.env.FEISHU_ID,
 				process.env.FEISHU_SECRET
@@ -307,8 +310,6 @@ module.exports = {
 			});
 
 			const teamName = response.data.items[0].fields["Team Name"];
-			const teamLeader = interaction.user;
-			const teamMember = interaction.options.getUser("user");
 
 			response = JSON.parse(
 				await feishu.getRecords(
