@@ -276,7 +276,7 @@ module.exports = {
 				ephemeral: true,
 			});
 		} else if (subCommand === "remove-member") {
-			await interaction.editReply({
+			await interaction.reply({
 				content: `Checking if you are a team leader...`,
 			});
 
@@ -296,7 +296,7 @@ module.exports = {
 				return;
 			}
 
-			await interaction.reply({
+			await interaction.editReply({
 				content: "Checking if member unregistration is possible...",
 				ephemeral: true,
 			});
