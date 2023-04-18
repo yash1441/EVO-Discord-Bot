@@ -172,11 +172,9 @@ module.exports = {
 					tenantToken,
 					CS_BASE,
 					CS_TABLE,
-					`OR(CurrentValue.[Role ID] = "${teamMember.id}, CurrentValue.[Role ID] = "${teamMemberRoleId}")`
+					`OR(CurrentValue.[Discord ID] = "${teamMember.id}, CurrentValue.[Role ID] = "${teamMemberRoleId}")`
 				)
 			);
-
-			console.log(response);
 
 			if (response.data.total) {
 				await interaction.editReply({
