@@ -219,4 +219,5 @@ module.exports = {
 	getFileToken,
 	uploadToDrive,
 	sendGroupMessage,
+	deleteRecord,
 };
