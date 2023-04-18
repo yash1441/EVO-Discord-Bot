@@ -218,12 +218,11 @@ module.exports = {
 				)
 			);
 
-			console.log(response.data.total);
-
 			if (parseInt(response.data.total) >= 4) {
 				await interaction.editReply({
 					content: `Team **${teamName}** already has 4 members.\n\nPlease use </register status:1097845563568963624> to check your team's registration status.`,
 				});
+				return;
 			}
 
 			await interaction.editReply({
