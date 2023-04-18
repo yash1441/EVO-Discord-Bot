@@ -98,7 +98,7 @@ module.exports = {
 
 			if (response.data.total) {
 				await interaction.editReply({
-					content: `You have already registered a team with the name **${response.data.items[0].fields["Team Name"]}**. Please use </register add-member:1097845563568963624> to register a member for your team or </register status:1097845563568963624> to check your team's registration status.`,
+					content: `You are already in team **${response.data.items[0].fields["Team Name"]}**. Please use </register add-member:1097845563568963624> to register a member for your team or </register status:1097845563568963624> to check your team's registration status.`,
 				});
 				return;
 			}
