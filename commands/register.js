@@ -280,6 +280,11 @@ module.exports = {
 				content: `Checking if you are a team leader...`,
 			});
 
+			const tenantToken = await feishu.authorize(
+				process.env.FEISHU_ID,
+				process.env.FEISHU_SECRET
+			);
+
 			let response = JSON.parse(
 				await feishu.getRecords(
 					tenantToken,
@@ -304,11 +309,6 @@ module.exports = {
 			const teamName = response.data.items[0].fields["Team Name"];
 			const teamLeader = interaction.user;
 			const teamMember = interaction.options.getUser("user");
-
-			const tenantToken = await feishu.authorize(
-				process.env.FEISHU_ID,
-				process.env.FEISHU_SECRET
-			);
 
 			response = JSON.parse(
 				await feishu.getRecords(
