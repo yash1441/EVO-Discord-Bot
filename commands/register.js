@@ -129,7 +129,8 @@ module.exports = {
 				tenantToken,
 				CS_BASE,
 				CS_TABLE,
-				{ fields: { details } }
+				{ fields: { details } },
+				true
 			);
 
 			if (success) {
