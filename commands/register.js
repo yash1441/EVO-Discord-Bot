@@ -117,25 +117,30 @@ module.exports = {
 				return;
 			}
 
-			const details = {
-				"Discord ID": teamLeader.id,
-				"Discord Name": teamLeader.tag,
-				"Role ID": teamLeaderRoleId,
-				"Team Name": teamName,
-				Title: "Leader",
-			};
+			await interaction.editReply({
+				content: `Registering team **${teamName}** with the leader as **${teamLeader.tag}** *(Role ID: ${teamLeaderRoleId})*...`,
+				ephemeral: true,
+			});
 
 			const success = await feishu.createRecord(
 				tenantToken,
 				CS_BASE,
 				CS_TABLE,
-				{ fields: { details } },
+				{
+					fields: {
+						"Discord ID": teamLeader.id,
+						"Discord Name": teamLeader.tag,
+						"Role ID": teamLeaderRoleId.toString(),
+						"Team Name": teamName,
+						Title: "Leader",
+					},
+				},
 				true
 			);
 
 			if (success) {
 				await interaction.editReply({
-					content: `Registering team **${teamName}** with the leader as **${teamLeader.tag}** *(Role ID: ${teamLeaderRoleId})*...`,
+					content: `Registered team **${teamName}** with the leader as **${teamLeader.tag}** *(Role ID: ${teamLeaderRoleId})*.`,
 					ephemeral: true,
 				});
 			} else {
