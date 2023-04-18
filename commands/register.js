@@ -68,7 +68,7 @@ module.exports = {
 			const teamLeaderRoleId = interaction.options.getInteger("role-id");
 
 			await interaction.reply({
-				content: `Registering team **${teamName}** with the leader as **${teamLeader.user.tag}** *(Role ID: ${teamLeaderRoleId})*...`,
+				content: `Registering team **${teamName}** with the leader as **${teamLeader.tag}** *(Role ID: ${teamLeaderRoleId})*...`,
 				ephemeral: true,
 			});
 		} else if (subCommand === "member") {
@@ -77,7 +77,7 @@ module.exports = {
 			const teamMemberRoleId = interaction.options.getInteger("role-id");
 
 			await interaction.reply({
-				content: `Registering team member **${teamMember.tag}** *(Role ID: ${teamMemberRoleId})* for team leader **${teamLeader.user.tag}**...`,
+				content: `Registering team member **${teamMember.tag}** *(Role ID: ${teamMemberRoleId})* for team leader **${teamLeader.tag}**...`,
 				ephemeral: true,
 			});
 		} else if (subCommand === "status") {
