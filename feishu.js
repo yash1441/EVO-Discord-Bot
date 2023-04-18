@@ -196,6 +196,20 @@ async function sendGroupMessage(webhookUrl, message) {
 	return request(options);
 }
 
+async function deleteRecord(token, app, table, recordId) {
+	const options = {
+		method: "DELETE",
+		url: `https://open.feishu.cn/open-apis/bitable/v1/apps/${app}/tables/${table}/records/${recordId}`,
+		headers: {
+			"Content-Type": "application/json",
+			Authorization: `Bearer ${token}`,
+		},
+		json: true,
+	};
+
+	return await request(options);
+}
+
 module.exports = {
 	authorize,
 	createRecord,

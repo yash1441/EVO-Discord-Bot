@@ -152,7 +152,7 @@ module.exports = {
 
 			if (success) {
 				await interaction.editReply({
-					content: `Registered team **${teamName}** with the leader as **<@${teamLeader.id}>** *(Role ID: ${teamLeaderRoleId})*.`,
+					content: `Registered team **${teamName}** with the leader as **<@${teamLeader.id}>** *(Role ID: ${teamLeaderRoleId})*.\n\nTo add a member use </register add-member:1097845563568963624>.\nTo remove a member use </register remove-member:1097845563568963624>.`,
 					ephemeral: true,
 				});
 			} else {
@@ -229,11 +229,15 @@ module.exports = {
 				)
 			);
 
+			const memberCount = parseInt(response.data.total) + 1;
+
 			if (parseInt(response.data.total) >= 4) {
 				await interaction.editReply({
 					content: `Team **${teamName}** already has 4 members.\n\nPlease use </register status:1097845563568963624> to check your team's registration status.`,
 				});
 				return;
+			} else if (parseInt(response.data.total) === 3) {
+				lastMember = true;
 			}
 
 			await interaction.editReply({
@@ -267,12 +271,77 @@ module.exports = {
 				});
 			}
 
-			if (parseInt(response.data.total == 3)) {
-				await interaction.followUp({
-					content: `Team **${teamName}** now has 4 members.\n\nPlease use </register status:1097845563568963624> to check your team's registration status.`,
+			await interaction.followUp({
+				content: `Team **${teamName}** now has ${memberCount} members.\n\nPlease use </register status:1097845563568963624> to check your team's registration status.\nTo add a member use </register add-member:1097845563568963624>.\nTo remove a member use </register remove-member:1097845563568963624>.`,
+				ephemeral: true,
+			});
+		} else if (subCommand === "remove-member") {
+			await interaction.editReply({
+				content: `Checking if you are a team leader...`,
+			});
+
+			let response = JSON.parse(
+				await feishu.getRecords(
+					tenantToken,
+					CS_BASE,
+					CS_TABLE,
+					`AND(CurrentValue.[Discord ID] = "${teamLeader.id}", CurrentValue.[Title] = "Leader")`
+				)
+			);
+
+			if (!response.data.total) {
+				await interaction.editReply({
+					content: `You are not a team leader.\n\nPlease use </register team:1097845563568963624> to register your team first.`,
 				});
 				return;
 			}
+
+			await interaction.reply({
+				content: "Checking if member unregistration is possible...",
+				ephemeral: true,
+			});
+
+			const teamName = response.data.items[0].fields["Team Name"];
+			const teamLeader = interaction.user;
+			const teamMember = interaction.options.getUser("user");
+
+			const tenantToken = await feishu.authorize(
+				process.env.FEISHU_ID,
+				process.env.FEISHU_SECRET
+			);
+
+			response = JSON.parse(
+				await feishu.getRecords(
+					tenantToken,
+					CS_BASE,
+					CS_TABLE,
+					`AND(CurrentValue.[Discord ID] = "${teamMember.id}", CurrentValue.[Team Name] = "${teamName}")`
+				)
+			);
+
+			if (!response.data.total) {
+				await interaction.editReply({
+					content: `We couldn't find **${teamMember.tag}** in team ${teamName}.\n\nPlease use </register add-member:1097845563568963624> to register a member for your team or </register status:1097845563568963624> to check your team's registration status.`,
+				});
+				return;
+			}
+
+			const recordId = response.data.items[0].record_id;
+
+			await interaction.editReply({
+				content: `Removing ${teamMember.tag} from team **${teamName}**...`,
+			});
+
+			await feishu.deleteRecord(tenantToken, CS_BASE, CS_TABLE, recordId);
+
+			await interaction.editReply({
+				content: `Removed ${teamMember.tag} from team **${teamName}**.`,
+			});
+
+			await interaction.followUp({
+				content: `Please use </register status:1097845563568963624> to check your team's registration status.\nTo add a member use </register add-member:1097845563568963624>.\nTo remove a member use </register remove-member:1097845563568963624>.`,
+				ephemeral: true,
+			});
 		} else if (subCommand === "status") {
 			await interaction.reply({
 				content: "Checking registration status...",
