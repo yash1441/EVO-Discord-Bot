@@ -38,7 +38,7 @@ module.exports = {
 		)
 		.addSubcommand((subcommand) =>
 			subcommand
-				.setName("member")
+				.setName("add-member")
 				.setDescription("Register a member for your team.")
 				.addUserOption((option) =>
 					option
@@ -53,6 +53,17 @@ module.exports = {
 						.setRequired(true)
 						.setMinValue(100000000)
 						.setMaxValue(999999999)
+				)
+		)
+		.addSubcommand((subcommand) =>
+			subcommand
+				.setName("remove-member")
+				.setDescription("Unregister a member from your team.")
+				.addUserOption((option) =>
+					option
+						.setName("user")
+						.setDescription("Select your team member.")
+						.setRequired(true)
 				)
 		)
 		.addSubcommand((subcommand) =>
@@ -94,7 +105,7 @@ module.exports = {
 
 			if (response.data.total) {
 				await interaction.editReply({
-					content: `You have already registered a team with the name **${response.data.items[0].fields["Team Name"]}**. Please use </register member:1097845563568963624> to register a member for your team or </register status:1097845563568963624> to check your team's registration status.`,
+					content: `You have already registered a team with the name **${response.data.items[0].fields["Team Name"]}**. Please use </register add-member:1097845563568963624> to register a member for your team or </register status:1097845563568963624> to check your team's registration status.`,
 				});
 				return;
 			}
@@ -150,7 +161,7 @@ module.exports = {
 					ephemeral: true,
 				});
 			}
-		} else if (subCommand === "member") {
+		} else if (subCommand === "add-member") {
 			await interaction.reply({
 				content: "Checking if member registration is possible...",
 				ephemeral: true,
@@ -178,7 +189,7 @@ module.exports = {
 
 			if (response.data.total) {
 				await interaction.editReply({
-					content: `**${teamMember.tag}** is already a **${response.data.items[0].fields.Title}** for team **${response.data.items[0].fields["Team Name"]}**.\n\nPlease use </register member:1097845563568963624> to register a member for your team or </register status:1097845563568963624> to check your team's registration status.`,
+					content: `**${teamMember.tag}** is already a **${response.data.items[0].fields.Title}** for team **${response.data.items[0].fields["Team Name"]}**.\n\nPlease use </register add-member:1097845563568963624> to register a member for your team or </register status:1097845563568963624> to check your team's registration status.`,
 				});
 				return;
 			}
@@ -305,7 +316,7 @@ module.exports = {
 
 			if (!response.data.total) {
 				await interaction.editReply({
-					content: `Team **${teamName}** has no members.\n\nPlease use </register member:1097845563568963624> to register a member for your team.`,
+					content: `Team **${teamName}** has no members.\n\nPlease use </register add-member:1097845563568963624> to register a member for your team.`,
 				});
 				return;
 			}
@@ -328,8 +339,15 @@ module.exports = {
 				embeds.push(memberEmbed);
 			}
 
+			if (embeds.length == 4) {
+				await interaction.editReply({
+					content: `To remove a member use </register remove-member:1097845563568963624>.`,
+					embeds: embeds,
+				});
+			}
+
 			await interaction.editReply({
-				content: ``,
+				content: `To add a member use </register add-member:1097845563568963624>.\nTo remove a member use </register remove-member:1097845563568963624>.`,
 				embeds: embeds,
 			});
 		}
