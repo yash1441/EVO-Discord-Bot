@@ -32,7 +32,8 @@ module.exports = {
 						.setName("role-id")
 						.setDescription("Enter your in-game Role ID.")
 						.setRequired(true)
-						.setMinValue(0)
+						.setMinValue(100000000)
+						.setMaxValue(999999999)
 				)
 		)
 		.addSubcommand((subcommand) =>
@@ -50,7 +51,8 @@ module.exports = {
 						.setName("role-id")
 						.setDescription("Enter your team member's in-game Role ID.")
 						.setRequired(true)
-						.setMinValue(0)
+						.setMinValue(100000000)
+						.setMaxValue(999999999)
 				)
 		)
 		.addSubcommand((subcommand) =>
@@ -61,13 +63,41 @@ module.exports = {
 
 	async execute(interaction) {
 		const subCommand = interaction.options.getSubcommand();
+		const CS_BASE = "bascnxUOz7DdG9mcOUvFlH7BIPg";
+		const CS_TABLE = "tblOIfZDNQS9JJTb";
 
 		if (subCommand === "team") {
+			await interaction.reply({
+				content: "Checking if registration is possible...",
+				ephemeral: true,
+			});
+
 			const teamLeader = interaction.user;
 			const teamName = interaction.options.getString("name");
 			const teamLeaderRoleId = interaction.options.getInteger("role-id");
 
-			await interaction.reply({
+			const tenantToken = await feishu.authorize(
+				process.env.FEISHU_ID,
+				process.env.FEISHU_SECRET
+			);
+
+			const response = JSON.parse(
+				await feishu.getRecords(
+					tenantToken,
+					CS_BASE,
+					CS_TABLE,
+					`OR(CurrenValue.[Discord ID] = ${teamLeader.id}, CurrentValue.[Team Name] = ${teamName}, CurrentValue.[Role ID] = ${teamLeaderRoleId})`
+				)
+			);
+
+			if (response.data.total) {
+				await interaction.editReply({
+					content: `You have already registered a team with the name **${response.data.items[0].fields["Team Name"]}**. Please use \`/register member\` to add members or \`/register status\` to check status of your team.`,
+				});
+				return;
+			}
+
+			await interaction.editReply({
 				content: `Registering team **${teamName}** with the leader as **${teamLeader.tag}** *(Role ID: ${teamLeaderRoleId})*...`,
 				ephemeral: true,
 			});
