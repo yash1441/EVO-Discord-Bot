@@ -74,7 +74,9 @@ module.exports = {
 
 			const teamLeader = interaction.user;
 			const teamName = interaction.options.getString("name");
-			const teamLeaderRoleId = interaction.options.getInteger("role-id");
+			const teamLeaderRoleId = interaction.options
+				.getInteger("role-id")
+				.toString();
 
 			const tenantToken = await feishu.authorize(
 				process.env.FEISHU_ID,
@@ -92,7 +94,7 @@ module.exports = {
 
 			if (response.data.total) {
 				await interaction.editReply({
-					content: `You have already registered a team with the name **${response.data.items[0].fields["Team Name"]}**. Please use </register member:1097845563568963624> to register a memberadd members for your team or </register status:1097845563568963624> to check your team's registration status.`,
+					content: `You have already registered a team with the name **${response.data.items[0].fields["Team Name"]}**. Please use </register member:1097845563568963624> to register a member for your team or </register status:1097845563568963624> to check your team's registration status.`,
 				});
 				return;
 			}
@@ -130,12 +132,11 @@ module.exports = {
 					fields: {
 						"Discord ID": teamLeader.id,
 						"Discord Name": teamLeader.tag,
-						"Role ID": teamLeaderRoleId.toString(),
+						"Role ID": teamLeaderRoleId,
 						"Team Name": teamName,
 						Title: "Leader",
 					},
-				},
-				true
+				}
 			);
 
 			if (success) {
@@ -145,19 +146,114 @@ module.exports = {
 				});
 			} else {
 				await interaction.editReply({
-					content: `Failed to register team **${teamName}** with the leader as **${teamLeader.tag}** *(Role ID: ${teamLeaderRoleId})*. Please try again later or create a ticket in <#951850084335771700>.`,
+					content: `Failed to register team **${teamName}** with the leader as **${teamLeader.tag}** *(Role ID: ${teamLeaderRoleId})*.\n\nPlease try again later or create a ticket in <#951850084335771700>.`,
 					ephemeral: true,
 				});
 			}
 		} else if (subCommand === "member") {
-			const teamLeader = interaction.user;
-			const teamMember = interaction.options.getUser("user");
-			const teamMemberRoleId = interaction.options.getInteger("role-id");
-
 			await interaction.reply({
-				content: `Registering team member **${teamMember.tag}** *(Role ID: ${teamMemberRoleId})* for team leader **${teamLeader.tag}**...`,
+				content: "Checking if member registration is possible...",
 				ephemeral: true,
 			});
+
+			const teamLeader = interaction.user;
+			const teamMember = interaction.options.getUser("user");
+			const teamMemberRoleId = interaction.options
+				.getInteger("role-id")
+				.toString();
+
+			const tenantToken = await feishu.authorize(
+				process.env.FEISHU_ID,
+				process.env.FEISHU_SECRET
+			);
+
+			let response = JSON.parse(
+				await feishu.getRecords(
+					tenantToken,
+					CS_BASE,
+					CS_TABLE,
+					`OR(CurrentValue.[Role ID] = "${teamMember.id}, CurrentValue.[Role ID] = "${teamMemberRoleId}")`
+				)
+			);
+
+			if (response.data.total) {
+				await interaction.editReply({
+					content: `**${teamMember.tag}** is already a **${response.data.items[0].fields.Title}** for team **${response.data.items[0].fields["Team Name"]}**.\n\nPlease use </register member:1097845563568963624> to register a member for your team or </register status:1097845563568963624> to check your team's registration status.`,
+				});
+				return;
+			}
+
+			await interaction.editReply({
+				content: `Checking if you are a team leader...`,
+			});
+
+			response = JSON.parse(
+				await feishu.getRecords(
+					tenantToken,
+					CS_BASE,
+					CS_TABLE,
+					`AND(CurrentValue.[Discord ID] = "${teamLeader.id}", CurrentValue.[Title] = "Leader")`
+				)
+			);
+
+			if (!response.data.total) {
+				await interaction.editReply({
+					content: `You are not a team leader.\n\nPlease use </register team:1097845563568963624> to register your team first.`,
+				});
+				return;
+			}
+
+			const teamName = response.data.items[0].fields["Team Name"];
+
+			await interaction.editReply({
+				content: `Checking if team **${teamName}** is available...`,
+			});
+
+			response = JSON.parse(
+				await feishu.getRecords(
+					tenantToken,
+					CS_BASE,
+					CS_TABLE,
+					`CurrentValue.[Team Name] = "${teamName}"`
+				)
+			);
+
+			if (response.data.total >= 4) {
+				await interaction.editReply({
+					content: `Team **${teamName}** already has 4 members.\n\nPlease use </register status:1097845563568963624> to check your team's registration status.`,
+				});
+			}
+
+			await interaction.editReply({
+				content: `Registering team member **${teamMember.tag}** *(Role ID: ${teamMemberRoleId})* for team leader **${teamLeader.tag}**...`,
+			});
+
+			const success = await feishu.createRecord(
+				tenantToken,
+				CS_BASE,
+				CS_TABLE,
+				{
+					fields: {
+						"Discord ID": teamMember.id,
+						"Discord Name": teamMember.tag,
+						"Role ID": teamMemberRoleId,
+						"Team Name": teamName,
+						Title: "Member",
+					},
+				}
+			);
+
+			if (success) {
+				await interaction.reply({
+					content: `Registered team member **${teamMember.tag}** *(Role ID: ${teamMemberRoleId})* for team leader **${teamLeader.tag}**.`,
+					ephemeral: true,
+				});
+			} else {
+				await interaction.editReply({
+					content: `Failed to register member **${teamMember.id}** with the team **${teamName}** *(Role ID: ${teamMemberRoleId})*.\n\nPlease try again later or create a ticket in <#951850084335771700>.`,
+					ephemeral: true,
+				});
+			}
 		} else if (subCommand === "status") {
 			await interaction.reply({
 				content: "Checking registration status...",
