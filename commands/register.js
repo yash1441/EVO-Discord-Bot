@@ -34,6 +34,20 @@ module.exports = {
 						.setMinValue(100000000)
 						.setMaxValue(999999999)
 				)
+				.addStringOption((option) =>
+					option
+						.setName("region")
+						.setDescription("Enter your region.")
+						.setRequired(true)
+						.addChoices(
+							{ name: "EN", value: "EN" },
+							{ name: "CIS", value: "CIS" },
+							{ name: "PT", value: "PT" },
+							{ name: "ES", value: "ES" },
+							{ name: "TH", value: "TH" },
+							{ name: "OTHER", value: "OTHER" }
+						)
+				)
 		)
 		.addSubcommand((subcommand) =>
 			subcommand
@@ -88,6 +102,7 @@ module.exports = {
 			});
 
 			const teamLeader = interaction.user;
+			const teamRegion = interaction.options.getString("region");
 			const teamName = interaction.options.getString("name");
 			const teamLeaderRoleId = interaction.options
 				.getInteger("role-id")
@@ -150,6 +165,7 @@ module.exports = {
 						"Role ID": teamLeaderRoleId,
 						"Team Name": teamName,
 						Title: "Leader",
+						Region: teamRegion,
 					},
 				}
 			);
@@ -534,6 +550,8 @@ module.exports = {
 				content: `Trying to find next team member of team **${teamName}** to transfer leader to...`,
 			});
 
+			const teamRegion = response.data.items[0].fields["Region"];
+
 			response = JSON.parse(
 				await feishu.getRecords(
 					tenantToken,
@@ -555,7 +573,7 @@ module.exports = {
 				CS_BASE,
 				CS_TABLE,
 				memberRecordId,
-				{ fields: { Title: "Leader" } }
+				{ fields: { Title: "Leader", Region: teamRegion } }
 			);
 
 			await feishu.deleteRecord(tenantToken, CS_BASE, CS_TABLE, recordId);
