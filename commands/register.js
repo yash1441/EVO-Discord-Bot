@@ -454,7 +454,7 @@ module.exports = {
 
 			const filter = (i) => i.user.id === interaction.user.id;
 
-			await interaction
+			await interaction.channel
 				.awaitMessageComponent({
 					filter,
 					time: 10000,
