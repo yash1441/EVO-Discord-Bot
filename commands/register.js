@@ -455,7 +455,7 @@ module.exports = {
 			const filter = (i) => i.user.id === interaction.user.id;
 
 			try {
-				const confirmation = await interaction.channel.awaitMessageComponent({
+				const confirmation = await interaction.message.awaitMessageComponent({
 					filter,
 					time: 10000,
 				});
