@@ -470,15 +470,13 @@ module.exports = {
 				await feishu.deleteRecord(tenantToken, CS_BASE, CS_TABLE, recordId);
 
 				await interaction.editReply({
-					content: `You have left teahm **${teamName}**.`,
+					content: `You have left team **${teamName}**.`,
 				});
 				return;
 			}
 
-			const teamLeader = interaction.user;
-
 			await interaction.editReply({
-				content: `Trying to find next team member of team ${teamName} to transfer leader to...`,
+				content: `Trying to find next team member of team **${teamName}** to transfer leader to...`,
 			});
 
 			response = JSON.parse(
@@ -490,13 +488,11 @@ module.exports = {
 				)
 			);
 
-			const member = await interaction.client.users.fetch(
-				response.data.items[0].fields["Discord ID"]
-			);
+			const memberName = response.data.items[0].fields["Discord Name"];
 			const memberRecordId = response.data.items[0].record_id;
 
 			await interaction.editReply({
-				content: `Transferring leader of team ${teamName} to **${member.tag}**...`,
+				content: `Transferring leader of team **${teamName}** to **${memberName}**...`,
 			});
 
 			await feishu.updateRecord(
@@ -510,7 +506,7 @@ module.exports = {
 			await feishu.deleteRecord(tenantToken, CS_BASE, CS_TABLE, recordId);
 
 			await interaction.editReply({
-				content: `You have left team **${teamName}** and transferred leader to **${member.tag}**.`,
+				content: `You have left team **${teamName}** and transferred leader to **${memberName}**.`,
 			});
 		}
 	},
