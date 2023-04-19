@@ -1,4 +1,10 @@
-const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
+const {
+	SlashCommandBuilder,
+	EmbedBuilder,
+	ButtonBuilder,
+	ButtonStyle,
+	ActionRowBuilder,
+} = require("discord.js");
 const feishu = require("../feishu.js");
 const logger = require("../logging/logger.js");
 
@@ -432,10 +438,40 @@ module.exports = {
 				embeds: embeds,
 			});
 		} else if (subCommand === "leave-team") {
+			const confirmButton = new ButtonBuilder()
+				.setCustomId("confirmLeave")
+				.setLabel("Confirm")
+				.setStyle(ButtonStyle.Danger)
+				.setEmoji("☑️");
+
+			const row = new ActionRowBuilder().addComponents(confirmButton);
+
 			await interaction.reply({
-				content: `Checking if you are on a team...`,
+				content: `Are you sure you want to leave your team?`,
+				components: [row],
 				ephemeral: true,
 			});
+
+			try {
+				const confirmation = await response.awaitMessageComponent({
+					time: 10000,
+				});
+
+				if (confirmation.customId === "confirmLeave") {
+					await confirmation.deferUpdate();
+					await interaction.editReply({
+						content: `Checking if you are on a team...`,
+						components: [],
+					});
+				}
+			} catch (error) {
+				await response.editReply({
+					content:
+						"You failed to confirm if you want to leave within the time limit. Please try again.",
+					components: [],
+				});
+				return;
+			}
 
 			const tenantToken = await feishu.authorize(
 				process.env.FEISHU_ID,
