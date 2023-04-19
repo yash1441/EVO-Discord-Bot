@@ -454,28 +454,29 @@ module.exports = {
 
 			const filter = (i) => i.user.id === interaction.user.id;
 
-			try {
-				const confirmation = await interaction.message.awaitMessageComponent({
+			await interaction.channel
+				.awaitMessageComponent({
 					filter,
 					time: 10000,
-				});
-
-				if (confirmation.customId === "confirmLeave") {
-					await confirmation.deferUpdate();
+					errors: ["time"],
+				})
+				.then(async (confirmation) => {
+					if (confirmation.customId === "confirmLeave") {
+						await confirmation.deferUpdate();
+						await interaction.editReply({
+							content: `Checking if you are on a team...`,
+							components: [],
+						});
+					}
+				})
+				.catch(async (error) => {
+					logger.error(error);
 					await interaction.editReply({
-						content: `Checking if you are on a team...`,
+						content: `You failed to confirm if you want to leave within the time limit. Please try again.`,
 						components: [],
 					});
-				}
-			} catch (error) {
-				logger.error(error);
-				await interaction.editReply({
-					content:
-						"You failed to confirm if you want to leave within the time limit. Please try again.",
-					components: [],
+					return;
 				});
-				return;
-			}
 
 			const tenantToken = await feishu.authorize(
 				process.env.FEISHU_ID,
