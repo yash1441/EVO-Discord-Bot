@@ -395,9 +395,8 @@ module.exports = {
 
 			const mainEmbed = new EmbedBuilder()
 				.setTitle(`${teamName}`)
-				.setDescription(
-					`**Team Leader**\n<@${teamLeader.id}>\n*${teamLeaderRoleId}*`
-				)
+				.setDescription(`**Team Leader**\n<@${teamLeader.id}>`)
+				.addFields({ name: `**Role**`, value: `${teamLeaderRoleId}` })
 				.setThumbnail(teamLeader.displayAvatarURL())
 				.setColor(`C04946`);
 
@@ -408,9 +407,8 @@ module.exports = {
 					record.fields["Discord ID"]
 				);
 				const memberEmbed = new EmbedBuilder()
-					.setDescription(
-						`**Team Member**\n<@${record.fields["Discord ID"]}>\n*${record.fields["Role ID"]}*`
-					)
+					.setDescription(`**Team Member**\n<@${record.fields["Discord ID"]}>`)
+					.addFields({ name: `**Role**`, value: `${record.fields["Role ID"]}` })
 					.setThumbnail(user.displayAvatarURL())
 					.setColor(`C04946`);
 
