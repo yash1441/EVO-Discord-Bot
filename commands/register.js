@@ -397,14 +397,22 @@ module.exports = {
 				.setTitle(`${teamName}`)
 				.setDescription(
 					`**Team Leader**\n<@${teamLeader.id}>\n*${teamLeaderRoleId}*`
-				);
+				)
+				.setThumbnail(teamLeader.displayAvatarURL())
+				.setColor(`C04946`);
 
 			embeds.push(mainEmbed);
 
 			for (const record of response.data.items) {
-				const memberEmbed = new EmbedBuilder().setDescription(
-					`**Team Member**\n<@${record.fields["Discord ID"]}>\n*${record.fields["Role ID"]}*`
+				const user = await interaction.client.users.fetch(
+					record.fields["Discord ID"]
 				);
+				const memberEmbed = new EmbedBuilder()
+					.setDescription(
+						`**Team Member**\n<@${record.fields["Discord ID"]}>\n*${record.fields["Role ID"]}*`
+					)
+					.setThumbnail(user.displayAvatarURL())
+					.setColor(`C04946`);
 
 				embeds.push(memberEmbed);
 			}
