@@ -468,6 +468,7 @@ module.exports = {
 					});
 				}
 			} catch (error) {
+				logger.error(error);
 				await interaction.editReply({
 					content:
 						"You failed to confirm if you want to leave within the time limit. Please try again.",
