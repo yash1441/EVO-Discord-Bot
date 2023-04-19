@@ -63,6 +63,11 @@ module.exports = {
 			subcommand
 				.setName("status")
 				.setDescription("Check your team's registration status.")
+		)
+		.addSubcommand((subcommand) =>
+			subcommand
+				.setName("leave-team")
+				.setDescription("Leave your current team.")
 		),
 
 	async execute(interaction) {
@@ -425,6 +430,87 @@ module.exports = {
 			await interaction.editReply({
 				content: `To add a member use </register add-member:1097845563568963624>.\nTo remove a member use </register remove-member:1097845563568963624>.`,
 				embeds: embeds,
+			});
+		} else if (subCommand === "leave-team") {
+			await interaction.reply({
+				content: `Checking if you are on a team...`,
+				ephemeral: true,
+			});
+
+			const tenantToken = await feishu.authorize(
+				process.env.FEISHU_ID,
+				process.env.FEISHU_SECRET
+			);
+
+			let response = JSON.parse(
+				await feishu.getRecords(
+					tenantToken,
+					CS_BASE,
+					CS_TABLE,
+					`CurrentValue.[Discord ID] = "${interaction.user.id}"`
+				)
+			);
+
+			if (!response.data.total) {
+				await interaction.editReply({
+					content: `You are not on a team.\n\nPlease use </register team:1097845563568963624> to register your team first.`,
+				});
+				return;
+			}
+
+			const title = response.data.items[0].fields["Title"];
+			const teamName = response.data.items[0].fields["Team Name"];
+			const recordId = response.data.items[0].record_id;
+
+			if (title === "Member") {
+				await interaction.editReply({
+					content: `Trying to leave team **${teamName}**...`,
+				});
+
+				await feishu.deleteRecord(tenantToken, CS_BASE, CS_TABLE, recordId);
+
+				await interaction.editReply({
+					content: `You have left teahm **${teamName}**.`,
+				});
+				return;
+			}
+
+			const teamLeader = interaction.user;
+
+			await interaction.editReply({
+				content: `Trying to find next team member of team ${teamName} to transfer leader to...`,
+			});
+
+			response = JSON.parse(
+				await feishu.getRecords(
+					tenantToken,
+					CS_BASE,
+					CS_TABLE,
+					`AND(CurrentValue.[Team Name] = "${teamName}", CurrentValue.[Title] = "Member")`
+				)
+			);
+
+			const member = await interaction.client.users.fetch(
+				response.data.items[0].fields["Discord ID"]
+			);
+			const memberRecordId = response.data.items[0].record_id;
+
+			await interaction.editReply({
+				content: `Transferring leader of team ${teamName} to **${member.tag}**...`,
+			});
+
+			await feishu.updateRecord(
+				tenantToken,
+				CS_BASE,
+				CS_TABLE,
+				memberRecordId,
+				{ fields: { Title: "Leader" } }
+			);
+
+			await feishu.deleteRecord(tenantToken, CS_BASE, CS_TABLE, recordId);
+
+			await interaction.editReply({
+				content: `You have left team **${teamName}** and transferred leader to **${member.tag}**.`,
 			});
 		}
 	},
