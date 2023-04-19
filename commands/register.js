@@ -455,9 +455,9 @@ module.exports = {
 			const filter = (i) => i.user.id === interaction.user.id;
 
 			try {
-				const confirmation = await response.awaitMessageComponent({
+				const confirmation = await interaction.awaitMessageComponent({
 					filter,
-					time: 10000,
+					time: 60000,
 				});
 
 				if (confirmation.customId === "confirmLeave") {
