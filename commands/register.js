@@ -440,6 +440,7 @@ module.exports = {
 					content: `To remove a member use </register remove-member:1097845563568963624>.\n\n4/4 Members`,
 					embeds: embeds,
 				});
+				return;
 			}
 
 			await interaction.editReply({
