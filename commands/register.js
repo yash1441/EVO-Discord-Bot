@@ -452,8 +452,11 @@ module.exports = {
 				ephemeral: true,
 			});
 
+			const filter = (i) => i.user.id === interaction.user.id;
+
 			try {
 				const confirmation = await response.awaitMessageComponent({
+					filter,
 					time: 10000,
 				});
 
