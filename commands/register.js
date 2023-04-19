@@ -396,9 +396,18 @@ module.exports = {
 			);
 
 			if (!response.data.total) {
+				const singleEmbed = new EmbedBuilder()
+					.setTitle(`${teamName}`)
+					.setDescription(`**Team Leader**\n<@${teamLeader.id}>`)
+					.addFields({ name: `**Role**`, value: `${teamLeaderRoleId}` })
+					.setThumbnail(teamLeader.displayAvatarURL())
+					.setColor(`C04946`);
+
 				await interaction.editReply({
-					content: `Team **${teamName}** has no members.\n\nPlease use </register add-member:1097845563568963624> to register a member for your team.`,
+					content: `To add a member use </register add-member:1097845563568963624>.\nTo remove a member use </register remove-member:1097845563568963624>.\n\n1/4 Members`,
+					embeds: [singleEmbed],
 				});
+
 				return;
 			}
 
@@ -428,13 +437,13 @@ module.exports = {
 
 			if (embeds.length == 4) {
 				await interaction.editReply({
-					content: `To remove a member use </register remove-member:1097845563568963624>.`,
+					content: `To remove a member use </register remove-member:1097845563568963624>.\n\n4/4 Members`,
 					embeds: embeds,
 				});
 			}
 
 			await interaction.editReply({
-				content: `To add a member use </register add-member:1097845563568963624>.\nTo remove a member use </register remove-member:1097845563568963624>.`,
+				content: `To add a member use </register add-member:1097845563568963624>.\nTo remove a member use </register remove-member:1097845563568963624>.\n\n${embeds.length}/4 Members`,
 				embeds: embeds,
 			});
 		} else if (subCommand === "leave-team") {
