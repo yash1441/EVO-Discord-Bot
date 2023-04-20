@@ -496,14 +496,14 @@ client.on("interactionCreate", async (interaction) => {
 				process.env.FEISHU_SECRET
 			);
 
-			const response = await feishu.getRecords(
-				tenantToken,
-				process.env.CODE_BASE,
-				"tbltEeAQEwyeWP6q",
-				`CurrentValue.[Discord ID] = ""`
+			const response = JSON.parse(
+				await feishu.getRecords(
+					tenantToken,
+					process.env.CODE_BASE,
+					"tbltEeAQEwyeWP6q",
+					`CurrentValue.[Discord ID] = ""`
+				)
 			);
-
-			logger.debug(response.data);
 
 			await interaction.editReply({
 				content: `There are currently **${response.data.total}** active codes.`,
