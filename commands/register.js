@@ -427,14 +427,14 @@ module.exports = {
 
 				const embeds = [];
 
-				const singleEmbed = new EmbedBuilder()
+				const mainEmbed = new EmbedBuilder()
 					.setTitle(`${teamName}`)
 					.setDescription(`**Team Leader**\n<@${teamLeader.id}>`)
 					.addFields({ name: `**Role**`, value: `${teamLeaderRoleId}` })
 					.setThumbnail(teamLeader.displayAvatarURL())
 					.setColor(`C04946`);
 
-				embeds.push(singleEmbed);
+				embeds.push(mainEmbed);
 
 				for (const record of response.data.items) {
 					const teamMember = await interaction.guild.members.fetch(
@@ -442,8 +442,7 @@ module.exports = {
 					);
 
 					if (record.fields.Title === "Member") {
-						const mainEmbed = new EmbedBuilder()
-							.setTitle(`${teamName}`)
+						const memberEmbed = new EmbedBuilder()
 							.setDescription(`**Team Member**\n<@${teamMember.id}>`)
 							.addFields({
 								name: `**Role**`,
@@ -452,7 +451,7 @@ module.exports = {
 							.setThumbnail(teamMember.displayAvatarURL())
 							.setColor(`C04946`);
 
-						embeds.push(mainEmbed);
+						embeds.push(memberEmbed);
 					}
 				}
 
