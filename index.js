@@ -503,7 +503,7 @@ client.on("interactionCreate", async (interaction) => {
 				`CurrentValue.[Discord ID] = ""`
 			);
 
-			logger.debug(response);
+			logger.debug(response.data);
 
 			await interaction.editReply({
 				content: `There are currently **${response.data.total}** active codes.`,
