@@ -489,14 +489,34 @@ client.on("interactionCreate", async (interaction) => {
 				channel.permissionOverwrites.delete(interaction.user, "Closed Thread");
 			});
 		} else if (interaction.customId === "asButton") {
-			await interaction.deferReply({ ephemeral: true });
+			await interaction.reply({
+				content: `Checking if you have already redeemed a code...`,
+				ephemeral: true,
+			});
+
+			const discordId = interaction.user.id;
 
 			const tenantToken = await feishu.authorize(
 				process.env.FEISHU_ID,
 				process.env.FEISHU_SECRET
 			);
 
-			const response = JSON.parse(
+			let response = JSON.parse(
+				await feishu.getRecords(
+					tenantToken,
+					process.env.CODE_BASE,
+					"tbltEeAQEwyeWP6q",
+					`CurrentValue.[Discord ID] = "${discordId}"`
+				)
+			);
+
+			if (response.data.total) {
+				return await interaction.editReply({
+					content: `You have already redeemed a code.\n\n\`${response.data.items[0].fields.Codes}\``,
+				});
+			}
+
+			response = JSON.parse(
 				await feishu.getRecords(
 					tenantToken,
 					process.env.CODE_BASE,
@@ -505,8 +525,25 @@ client.on("interactionCreate", async (interaction) => {
 				)
 			);
 
+			if (!response.data.total) {
+				return await interaction.editReply({
+					content: `There are no more codes available.`,
+				});
+			}
+
+			const code = response.data.items[0].fields.Codes;
+			const recordId = response.data.items[0].record_id;
+
+			await feishu.updateRecord(
+				tenantToken,
+				process.env.CODE_BASE,
+				"tbltEeAQEwyeWP6q",
+				recordId,
+				{ fields: { "Discord ID": discordId } }
+			);
+
 			await interaction.editReply({
-				content: `There are currently **${response.data.total}** active codes.`,
+				content: `You have redeemed the code: \`${code}\``,
 			});
 		}
 	} else if (interaction.isModalSubmit()) {
