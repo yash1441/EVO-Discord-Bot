@@ -425,7 +425,7 @@ module.exports = {
 
 				const teamLeader = await interaction.guild.members.fetch(teamLeaderId);
 
-				const embed = [];
+				const embeds = [];
 
 				const singleEmbed = new EmbedBuilder()
 					.setTitle(`${teamName}`)
@@ -434,7 +434,7 @@ module.exports = {
 					.setThumbnail(teamLeader.displayAvatarURL())
 					.setColor(`C04946`);
 
-				embed.push(singleEmbed);
+				embeds.push(singleEmbed);
 
 				for (const record of response.data.items) {
 					const teamMember = await interaction.guild.members.fetch(
@@ -452,7 +452,7 @@ module.exports = {
 							.setThumbnail(teamMember.displayAvatarURL())
 							.setColor(`C04946`);
 
-						embed.push(mainEmbed);
+						embeds.push(mainEmbed);
 					}
 				}
 
