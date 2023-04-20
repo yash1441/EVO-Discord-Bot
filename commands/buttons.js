@@ -317,7 +317,7 @@ module.exports = {
 					components: [row],
 				})
 			);
-		} else if (subCommand === "cheater-report") {
+		} else if (subCommand === "advance-server") {
 			const asEmbed = new EmbedBuilder()
 				.setTitle("Advance Server")
 				.setDescription(
