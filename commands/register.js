@@ -561,6 +561,14 @@ module.exports = {
 				)
 			);
 
+			if (!response.data.total) {
+				await feishu.deleteRecord(tenantToken, CS_BASE, CS_TABLE, recordId);
+				await interaction.editReply({
+					content: `You have left team **${teamName}** and deleted the team.`,
+				});
+				return;
+			}
+
 			const memberName = response.data.items[0].fields["Discord Name"];
 			const memberRecordId = response.data.items[0].record_id;
 
