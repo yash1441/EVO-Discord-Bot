@@ -102,8 +102,8 @@ module.exports = {
 		)
 		.addSubcommand((subcommand) =>
 			subcommand
-				.setName("pop-info")
-				.setDescription("Setup Plan of Publisher Info.")
+				.setName("advance-server")
+				.setDescription("Setup Advance Server.")
 				.addChannelOption((option) =>
 					option
 						.setName("channel")
@@ -317,31 +317,25 @@ module.exports = {
 					components: [row],
 				})
 			);
-		} else if (subCommand === "pop-info") {
-			const popEmbed = new EmbedBuilder()
-				.setTitle(
-					"Join Plan of Publisher and Win Really Cash! <:tiktok:1072002336836292708>"
-				)
+		} else if (subCommand === "cheater-report") {
+			const asEmbed = new EmbedBuilder()
+				.setTitle("Advance Server")
 				.setDescription(
-					`Introducing the Plan of Publisher for TikTok! Everyone can join and win up to **$1500 REAL CASH** 🪙, just by publishing short videos to recommend PROJECT EVO. Join now! <@&1074185209643278448> <@&${process.env.CC_ROLE}>\n\n**How to Participate?**\nClick the button below - Find the campaign of PROJECT EVO - Read the Introduction - Post your video and get rewards!\n\n**How to Make Your Video Go Viral?**\nWe have prepared the [short-video guide](https://docs.google.com/document/d/1Hkr6qe43FBDL35JaPk_30rUs-oVFp3NUIfCfkFYCTdk/edit?usp=sharing) and [media kit](https://drive.google.com/drive/folders/1PrxNCAuDAVuMlAHwegaLDKc24rRAjc3v?usp=share_link) for you, check it out!`
-				)
-				.setImage(
-					"https://i.ibb.co/L9Bjs7y/img-v2-94b274e0-9ad4-449c-864d-9821bcf4f34g.jpg"
+					`Advance Server is a place where we test next-version content and hunt bugs. Testers will help dev team bring more stabilities to the game before it's released on public.\nWe will launch Advance Server from 11:00PM (UTC-3) 20 April to 27 April. EVO Creators will be granted access to the Advance Server. Click the button to get a unique code that will not expire before the server closes.`
 				)
 				.setColor(`C04946`);
 
-			const joinButton = new ButtonBuilder()
-				.setLabel("Join Now")
-				.setStyle(ButtonStyle.Link)
-				.setURL(
-					"https://api.tiktokv.com/game_center/pop/deeplink?target=home-pop"
-				);
+			const asButton = new ButtonBuilder()
+				.setCustomId("asButton")
+				.setLabel("Get Code")
+				.setStyle(ButtonStyle.Success)
+				.setEmoji("🔑");
 
-			const row = new ActionRowBuilder().addComponents([joinButton]);
+			const row = new ActionRowBuilder().addComponents([asButton]);
 
 			client.channels.fetch(channel.id).then((channel) =>
 				channel.send({
-					embeds: [popEmbed],
+					embeds: [asEmbed],
 					components: [row],
 				})
 			);

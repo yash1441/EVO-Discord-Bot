@@ -488,6 +488,24 @@ client.on("interactionCreate", async (interaction) => {
 			await client.channels.fetch("1090274679807287296").then((channel) => {
 				channel.permissionOverwrites.delete(interaction.user, "Closed Thread");
 			});
+		} else if (interaction.customId === "asButton") {
+			await interaction.deferReply({ ephemeral: true });
+
+			const tenantToken = await feishu.authorize(
+				process.env.FEISHU_ID,
+				process.env.FEISHU_SECRET
+			);
+
+			const response = await feishu.getRecords(
+				tenantToken,
+				process.env.CODE_BASE,
+				"tbltEeAQEwyeWP6q",
+				`CurrentValue.[Discord ID] != ""`
+			);
+
+			await interaction.editReply({
+				content: `There are currently **${response.data.total}** active codes.`,
+			});
 		}
 	} else if (interaction.isModalSubmit()) {
 		if (interaction.customId === "betaAccess") {
