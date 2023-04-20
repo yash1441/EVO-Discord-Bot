@@ -500,7 +500,7 @@ client.on("interactionCreate", async (interaction) => {
 				tenantToken,
 				process.env.CODE_BASE,
 				"tbltEeAQEwyeWP6q",
-				`CurrentValue.[Discord ID] != ""`
+				`CurrentValue.[Discord ID] = ""`
 			);
 
 			await interaction.editReply({
