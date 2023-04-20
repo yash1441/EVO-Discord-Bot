@@ -437,17 +437,19 @@ module.exports = {
 				embed.push(singleEmbed);
 
 				for (const record of response.data.items) {
+					const teamMember = await interaction.guild.members.fetch(
+						record.fields["Discord ID"]
+					);
+
 					if (record.fields.Title === "Member") {
 						const mainEmbed = new EmbedBuilder()
 							.setTitle(`${teamName}`)
-							.setDescription(
-								`**Team Member**\n<@${record.fields["Discord ID"]}>`
-							)
+							.setDescription(`**Team Member**\n<@${teamMember.id}>`)
 							.addFields({
 								name: `**Role**`,
 								value: `${record.fields["Role ID"]}`,
 							})
-							.setThumbnail(member.displayAvatarURL())
+							.setThumbnail(teamMember.displayAvatarURL())
 							.setColor(`C04946`);
 
 						embed.push(mainEmbed);
