@@ -3045,8 +3045,8 @@ async function checkViolationStatus() {
 		if (status == "Valid") {
 			const embed = new EmbedBuilder()
 				.setColor("#00FF00")
-				.setTitle(
-					`After our review, it has been confirmed that the reported player \`${reportedPlayer}\` violates the game rules. The player has been punished for the violation. Thank you for supporting the maintenance of the game environment!`
+				.setDescription(
+					`**After our review, it has been confirmed that the reported player \`${reportedPlayer}\` violates the game rules. The player has been punished for the violation. Thank you for supporting the maintenance of the game environment!**`
 				);
 
 			const member = await guild.members.fetch(discordId).then(() => {
@@ -3076,8 +3076,8 @@ async function checkViolationStatus() {
 		} else if (status == "Invalid") {
 			const embed = new EmbedBuilder()
 				.setColor("#FF0000")
-				.setTitle(
-					`After our review, it is not found that the reported player \`${reportedPlayer}\` has violated the game rules. If there is more evidence, please submit them to continue your report. Appreciation for supporting the maintenance of the game environment!`
+				.setDescription(
+					`**After our review, it is not found that the reported player \`${reportedPlayer}\` has violated the game rules. If there is more evidence, please submit them to continue your report. Appreciation for supporting the maintenance of the game environment!**`
 				);
 
 			const guild = client.guilds.cache.get(process.env.EVO_SERVER);
