@@ -376,8 +376,6 @@ module.exports = {
 				ephemeral: true,
 			});
 
-			const teamLeader = interaction.user;
-
 			const tenantToken = await feishu.authorize(
 				process.env.FEISHU_ID,
 				process.env.FEISHU_SECRET
@@ -388,19 +386,83 @@ module.exports = {
 					tenantToken,
 					CS_BASE,
 					CS_TABLE,
-					`AND(CurrentValue.[Discord ID] = "${teamLeader.id}", CurrentValue.[Title] = "Leader")`
+					`CurrentValue.[Discord ID] = "${interaction.user.id}"`
 				)
 			);
 
 			if (!response.data.total) {
 				await interaction.editReply({
-					content: `You are not a team leader.\n\nPlease use </register team:1097845563568963624> to register your team first.`,
+					content: `You are not in a team.\n\nPlease use </register team:1097845563568963624> to register your team first.`,
 				});
 				return;
 			}
 
-			const teamLeaderRoleId = response.data.items[0].fields["Role ID"];
 			const teamName = response.data.items[0].fields["Team Name"];
+
+			if (response.data.items[0].fields.Title === "Member") {
+				await interaction.editReply({
+					content: `Getting team ${teamName} status...`,
+				});
+
+				response = JSON.parse(
+					await feishu.getRecords(
+						tenantToken,
+						CS_BASE,
+						CS_TABLE,
+						`CurrentValue.[Team Name] = "${teamName}"`
+					)
+				);
+
+				const memberCount = response.data.total;
+				let teamLeaderId, teamLeaderRoleId;
+
+				for (const record of response.data.items) {
+					if (record.fields.Title === "Leader") {
+						teamLeaderId = record.fields["Discord ID"];
+						teamLeaderRoleId = record.fields["Role ID"];
+					}
+				}
+
+				const teamLeader = await interaction.guild.members.fetch(teamLeaderId);
+
+				const embed = [];
+
+				const singleEmbed = new EmbedBuilder()
+					.setTitle(`${teamName}`)
+					.setDescription(`**Team Leader**\n<@${teamLeader.id}>`)
+					.addFields({ name: `**Role**`, value: `${teamLeaderRoleId}` })
+					.setThumbnail(teamLeader.displayAvatarURL())
+					.setColor(`C04946`);
+
+				embed.push(singleEmbed);
+
+				for (const record of response.data.items) {
+					if (record.fields.Title === "Member") {
+						const mainEmbed = new EmbedBuilder()
+							.setTitle(`${teamName}`)
+							.setDescription(
+								`**Team Member**\n<@${record.fields["Discord ID"]}>`
+							)
+							.addFields({
+								name: `**Role**`,
+								value: `${record.fields["Role ID"]}`,
+							})
+							.setThumbnail(member.displayAvatarURL())
+							.setColor(`C04946`);
+
+						embed.push(mainEmbed);
+					}
+				}
+
+				await interaction.editReply({
+					content: `${memberCount}/4 Members`,
+					embeds: embeds,
+				});
+				return;
+			}
+
+			const teamLeader = interaction.user;
+			const teamLeaderRoleId = response.data.items[0].fields["Role ID"];
 
 			response = JSON.parse(
 				await feishu.getRecords(
