@@ -15,6 +15,7 @@ module.exports = {
 	data: new SlashCommandBuilder()
 		.setName("reload")
 		.setDescription("Reload data from the database.")
+		.setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
 		.setDMPermission(false)
 		.addSubcommand((subcommand) =>
 			subcommand
@@ -56,14 +57,6 @@ module.exports = {
 		),
 
 	async execute(interaction, client) {
-		if (
-			interaction.user.id != process.env.MY_ID &&
-			interaction.user.id != process.env.VOID_ID &&
-			interaction.user.id != process.env.ELSON_ID &&
-			interaction.user.id != process.env.COSMOS_ID
-		) {
-			return;
-		}
 		const subCommand = interaction.options.getSubcommand();
 
 		if (subCommand === "creators") {
