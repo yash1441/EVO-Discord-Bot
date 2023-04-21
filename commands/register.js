@@ -64,7 +64,7 @@ module.exports = {
 						.setName("character-id")
 						.setDescription("Enter your team member's in-game Character ID.")
 						.setRequired(true)
-						.setMinValue(100000000)
+						.setMinValue(10000)
 						.setMaxValue(999999999)
 				)
 		)
