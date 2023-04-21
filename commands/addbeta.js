@@ -31,7 +31,7 @@ module.exports = {
 				`${interaction.user} added beta tester role to ${target}`
 			);
 
-		client.channels
+		await interaction.client.channels
 			.fetch("951854256477077554")
 			.then((channel) => channel.send({ embeds: [embed] }));
 	},
