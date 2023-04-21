@@ -4,6 +4,7 @@ const {
 	ButtonBuilder,
 	ButtonStyle,
 	EmbedBuilder,
+	PermissionFlagsBits,
 	AttachmentBuilder,
 } = require("discord.js");
 require("dotenv").config();
@@ -12,6 +13,7 @@ module.exports = {
 	data: new SlashCommandBuilder()
 		.setName("buttons")
 		.setDescription("Sets up embed and buttons for respective actions.")
+		.setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
 		.addSubcommand((subcommand) =>
 			subcommand
 				.setName("creator-application")
