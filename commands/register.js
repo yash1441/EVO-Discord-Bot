@@ -28,8 +28,8 @@ module.exports = {
 				)
 				.addIntegerOption((option) =>
 					option
-						.setName("role-id")
-						.setDescription("Enter your in-game Role ID.")
+						.setName("character-id")
+						.setDescription("Enter your in-game Character ID.")
 						.setRequired(true)
 						.setMinValue(10000)
 						.setMaxValue(999999999)
@@ -61,8 +61,8 @@ module.exports = {
 				)
 				.addIntegerOption((option) =>
 					option
-						.setName("role-id")
-						.setDescription("Enter your team member's in-game Role ID.")
+						.setName("character-id")
+						.setDescription("Enter your team member's in-game Character ID.")
 						.setRequired(true)
 						.setMinValue(100000000)
 						.setMaxValue(999999999)
@@ -105,7 +105,7 @@ module.exports = {
 			const teamRegion = interaction.options.getString("region");
 			const teamName = interaction.options.getString("name");
 			const teamLeaderRoleId = interaction.options
-				.getInteger("role-id")
+				.getInteger("character-id")
 				.toString();
 
 			const tenantToken = await feishu.authorize(
@@ -150,7 +150,7 @@ module.exports = {
 			}
 
 			await interaction.editReply({
-				content: `Registering team **${teamName}** with the leader as **${teamLeader.tag}** *(Role ID: ${teamLeaderRoleId})*...`,
+				content: `Registering team **${teamName}** with the leader as **${teamLeader.tag}** *(Character ID: ${teamLeaderRoleId})*...`,
 				ephemeral: true,
 			});
 
@@ -172,12 +172,12 @@ module.exports = {
 
 			if (success) {
 				await interaction.editReply({
-					content: `Registered team **${teamName}** with the leader as **<@${teamLeader.id}>** *(Role ID: ${teamLeaderRoleId})*.\n\nTo add a member use </register add-member:1097845563568963624>.\nTo remove a member use </register remove-member:1097845563568963624>.`,
+					content: `Registered team **${teamName}** with the leader as **<@${teamLeader.id}>** *(Character ID: ${teamLeaderRoleId})*.\n\nTo add a member use </register add-member:1097845563568963624>.\nTo remove a member use </register remove-member:1097845563568963624>.`,
 					ephemeral: true,
 				});
 			} else {
 				await interaction.editReply({
-					content: `Failed to register team **${teamName}** with the leader as **${teamLeader.tag}** *(Role ID: ${teamLeaderRoleId})*.\n\nPlease try again later or create a ticket in <#951850084335771700>.`,
+					content: `Failed to register team **${teamName}** with the leader as **${teamLeader.tag}** *(Character ID: ${teamLeaderRoleId})*.\n\nPlease try again later or create a ticket in <#951850084335771700>.`,
 					ephemeral: true,
 				});
 			}
@@ -190,7 +190,7 @@ module.exports = {
 			const teamLeader = interaction.user;
 			const teamMember = interaction.options.getUser("user");
 			const teamMemberRoleId = interaction.options
-				.getInteger("role-id")
+				.getInteger("character-id")
 				.toString();
 
 			const tenantToken = await feishu.authorize(
@@ -209,7 +209,7 @@ module.exports = {
 
 			if (response.data.total) {
 				await interaction.editReply({
-					content: `This Discord User or the Role ID is already a **${response.data.items[0].fields.Title}** for team **${response.data.items[0].fields["Team Name"]}**.\n\nPlease use </register add-member:1097845563568963624> to register a member for your team or </register status:1097845563568963624> to check your team's registration status.`,
+					content: `This Discord User or the Character ID is already a **${response.data.items[0].fields.Title}** for team **${response.data.items[0].fields["Team Name"]}**.\n\nPlease use </register add-member:1097845563568963624> to register a member for your team or </register status:1097845563568963624> to check your team's registration status.`,
 				});
 				return;
 			}
@@ -281,12 +281,12 @@ module.exports = {
 
 			if (success) {
 				await interaction.editReply({
-					content: `Registered team member **${teamMember.tag}** *(Role ID: ${teamMemberRoleId})* for team leader **${teamLeader.tag}**.`,
+					content: `Registered team member **${teamMember.tag}** *(Character ID: ${teamMemberRoleId})* for team leader **${teamLeader.tag}**.`,
 					ephemeral: true,
 				});
 			} else {
 				await interaction.editReply({
-					content: `Failed to register member **${teamMember.id}** with the team **${teamName}** *(Role ID: ${teamMemberRoleId})*.\n\nPlease try again later or create a ticket in <#951850084335771700>.`,
+					content: `Failed to register member **${teamMember.id}** with the team **${teamName}** *(Character ID: ${teamMemberRoleId})*.\n\nPlease try again later or create a ticket in <#951850084335771700>.`,
 					ephemeral: true,
 				});
 			}
@@ -430,7 +430,7 @@ module.exports = {
 				const mainEmbed = new EmbedBuilder()
 					.setTitle(`${teamName}`)
 					.setDescription(`**Team Leader**\n<@${teamLeader.id}>`)
-					.addFields({ name: `**Role**`, value: `${teamLeaderRoleId}` })
+					.addFields({ name: `**Character ID**`, value: `${teamLeaderRoleId}` })
 					.setThumbnail(teamLeader.displayAvatarURL())
 					.setColor(`C04946`);
 
@@ -445,7 +445,7 @@ module.exports = {
 						const memberEmbed = new EmbedBuilder()
 							.setDescription(`**Team Member**\n<@${teamMember.id}>`)
 							.addFields({
-								name: `**Role**`,
+								name: `**Character ID**`,
 								value: `${record.fields["Role ID"]}`,
 							})
 							.setThumbnail(teamMember.displayAvatarURL())
@@ -478,7 +478,7 @@ module.exports = {
 				const singleEmbed = new EmbedBuilder()
 					.setTitle(`${teamName}`)
 					.setDescription(`**Team Leader**\n<@${teamLeader.id}>`)
-					.addFields({ name: `**Role**`, value: `${teamLeaderRoleId}` })
+					.addFields({ name: `**Character ID**`, value: `${teamLeaderRoleId}` })
 					.setThumbnail(teamLeader.displayAvatarURL())
 					.setColor(`C04946`);
 
@@ -495,7 +495,7 @@ module.exports = {
 			const mainEmbed = new EmbedBuilder()
 				.setTitle(`${teamName}`)
 				.setDescription(`**Team Leader**\n<@${teamLeader.id}>`)
-				.addFields({ name: `**Role**`, value: `${teamLeaderRoleId}` })
+				.addFields({ name: `**Character ID**`, value: `${teamLeaderRoleId}` })
 				.setThumbnail(teamLeader.displayAvatarURL())
 				.setColor(`C04946`);
 
@@ -507,7 +507,10 @@ module.exports = {
 				);
 				const memberEmbed = new EmbedBuilder()
 					.setDescription(`**Team Member**\n<@${record.fields["Discord ID"]}>`)
-					.addFields({ name: `**Role**`, value: `${record.fields["Role ID"]}` })
+					.addFields({
+						name: `**Character ID**`,
+						value: `${record.fields["Role ID"]}`,
+					})
 					.setThumbnail(user.displayAvatarURL())
 					.setColor(`C04946`);
 
