@@ -31,7 +31,7 @@ module.exports = {
 						.setName("role-id")
 						.setDescription("Enter your in-game Role ID.")
 						.setRequired(true)
-						.setMinValue(100000000)
+						.setMinValue(10000)
 						.setMaxValue(999999999)
 				)
 				.addStringOption((option) =>
