@@ -21,7 +21,7 @@ module.exports = {
 		const commandName = interaction.options
 			.getString("command", true)
 			.toLowerCase();
-		const command = interaction.client.commands.get(commandName);
+		const command = await interaction.client.commands.get(commandName);
 
 		if (!command) {
 			return interaction.reply({

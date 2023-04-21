@@ -15,7 +15,7 @@ module.exports = {
 				.setRequired(true)
 		),
 
-	async execute(interaction, client) {
+	async execute(interaction) {
 		await interaction.deferReply({ ephemeral: true });
 		const target = await interaction.options.getUser("user");
 

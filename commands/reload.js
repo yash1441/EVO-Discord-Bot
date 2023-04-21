@@ -57,7 +57,7 @@ module.exports = {
 				.setDescription("Check if violation report is pending.")
 		),
 
-	async execute(interaction, client) {
+	async execute(interaction) {
 		const subCommand = interaction.options.getSubcommand();
 
 		if (subCommand === "creators") {
@@ -97,7 +97,9 @@ module.exports = {
 				}
 
 				for (const creator of creatorList) {
-					const guild = client.guilds.cache.get(process.env.EVO_SERVER);
+					const guild = await interaction.client.guilds.cache.get(
+						process.env.EVO_SERVER
+					);
 					const member = await guild.members
 						.fetch(creator.discordId)
 						.catch((error) => {
@@ -211,7 +213,9 @@ module.exports = {
 			for (const record of response.data.items) {
 				let shouldContinue = false;
 				if (!record.fields["Discord ID"]) continue;
-				const guild = client.guilds.cache.get(process.env.EVO_CEC_SERVER);
+				const guild = await interaction.client.guilds.cache.get(
+					process.env.EVO_CEC_SERVER
+				);
 				const member = await guild.members
 					.fetch(record.fields["Discord ID"])
 					.catch((error) => {
@@ -334,7 +338,9 @@ module.exports = {
 				let shouldContinue = false,
 					tempData = {};
 
-				const guild = await client.guilds.fetch(process.env.EVO_CEC_SERVER);
+				const guild = await interaction.client.guilds.fetch(
+					process.env.EVO_CEC_SERVER
+				);
 				await guild.members
 					.fetch(record.fields["Discord ID"])
 					.then((member) => {
@@ -441,7 +447,9 @@ module.exports = {
 			}
 
 			for (const record of response.data.items) {
-				let guild = client.guilds.cache.get(process.env.EVO_SERVER);
+				let guild = await interaction.client.guilds.cache.get(
+					process.env.EVO_SERVER
+				);
 				let member = await guild.members.fetch(record.fields["Discord ID"]);
 
 				const row = new ActionRowBuilder().addComponents(
@@ -495,10 +503,10 @@ module.exports = {
 					});
 
 				if (error) {
-					const channel = await client.channels.cache.get(
+					const channel = await interaction.client.channels.cache.get(
 						process.env.COLLECT_REWARDS_CHANNEL
 					);
-					const user = await client.users.cache.get(
+					const user = await interaction.client.users.cache.get(
 						record.fields["Discord ID"]
 					);
 
@@ -720,14 +728,13 @@ module.exports = {
 						`Sending message to ${discordId} failed. Creating private channel.`
 					);
 
-					const channel = await client.channels.cache.get(
+					const channel = await interaction.client.channels.cache.get(
 						process.env.COLLECT_REWARDS_CHANNEL
 					);
 					await privateChannel(
 						channel,
 						"Reward - " + member.user.username,
 						discordId,
-						client,
 						message,
 						false,
 						[claimRow],
@@ -754,7 +761,9 @@ module.exports = {
 			);
 		} else if (subCommand === "check-appeal") {
 			await interaction.deferReply({ ephemeral: true });
-			const guild = await client.guilds.fetch(process.env.EVO_SERVER);
+			const guild = await interaction.client.guilds.fetch(
+				process.env.EVO_SERVER
+			);
 			//await guild.members.fetch();
 
 			const tenantToken = await feishu.authorize(
@@ -886,11 +895,13 @@ module.exports = {
 
 				const row = new ActionRowBuilder().addComponents(closeButton);
 
-				const user = await client.users
+				const user = await interaction.client.users
 					.fetch(record.discord_id)
 					.catch(() => null);
 
-				const channel = await client.channels.cache.get("1090274679807287296");
+				const channel = await interaction.client.channels.cache.get(
+					"1090274679807287296"
+				);
 
 				await privateChannel(
 					channel,
@@ -947,7 +958,9 @@ module.exports = {
 							`After our review, it has been confirmed that the reported player \`${reportedPlayer}\` violates the game rules. The player has been punished for the violation. Thank you for supporting the maintenance of the game environment!`
 						);
 
-					const guild = client.guilds.cache.get(process.env.EVO_SERVER);
+					const guild = await interaction.client.guilds.cache.get(
+						process.env.EVO_SERVER
+					);
 					const member = await guild.members.fetch(discordId).then(() => {
 						note = "Alert Sent";
 					});
@@ -979,7 +992,9 @@ module.exports = {
 							`After our review, it is not found that the reported player \`${reportedPlayer}\` has violated the game rules. If there is more evidence, please submit them to continue your report. Appreciation for supporting the maintenance of the game environment!`
 						);
 
-					const guild = client.guilds.cache.get(process.env.EVO_SERVER);
+					const guild = await interaction.client.guilds.cache.get(
+						process.env.EVO_SERVER
+					);
 					const member = await guild.members.fetch(discordId).then(() => {
 						note = "Alert Sent";
 					});
@@ -1039,17 +1054,18 @@ module.exports = {
 
 				const row = new ActionRowBuilder().addComponents(closeButton);
 
-				const user = await client.users
+				const user = await interaction.client.users
 					.fetch(record.discord_id)
 					.catch(() => null);
 
-				const channel = await client.channels.cache.get("1090274679807287296");
+				const channel = await interaction.client.channels.cache.get(
+					"1090274679807287296"
+				);
 
 				await privateChannel(
 					channel,
 					"Violation - " + user.username,
 					record.discord_id,
-					client,
 					false,
 					[record.embed],
 					[row],
@@ -1068,13 +1084,12 @@ async function privateChannel(
 	channel,
 	channelName,
 	discordId,
-	client,
 	message,
 	embeds,
 	components,
 	closer
 ) {
-	const user = await client.users.cache.get(discordId);
+	const user = await interaction.client.users.cache.get(discordId);
 
 	await channel.permissionOverwrites.create(user, {
 		ViewChannel: true,

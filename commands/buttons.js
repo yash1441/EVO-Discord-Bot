@@ -114,7 +114,7 @@ module.exports = {
 				)
 		),
 
-	async execute(interaction, client) {
+	async execute(interaction) {
 		await interaction.deferReply();
 		if (interaction.user.id != process.env.MY_ID) {
 			interaction.deleteReply();
@@ -161,7 +161,7 @@ module.exports = {
 
 			const row = new ActionRowBuilder().addComponents([creatorButton]);
 
-			client.channels.fetch(channel.id).then((channel) =>
+			await interaction.client.channels.fetch(channel.id).then((channel) =>
 				channel.send({
 					embeds: [creatorPoster, creatorEmbed],
 					components: [row],
@@ -183,7 +183,7 @@ module.exports = {
 
 			const bpRow = new ActionRowBuilder().addComponents([bpButton]);
 
-			client.channels
+			await interaction.client.channels
 				.fetch(channel.id)
 				.then((channel) =>
 					channel.send({ embeds: [bpEmbed], components: [bpRow] })
@@ -204,7 +204,7 @@ module.exports = {
 
 			const submitRow = new ActionRowBuilder().addComponents([submitButton]);
 
-			client.channels
+			await interaction.client.channels
 				.fetch(channel.id)
 				.then((channel) =>
 					channel.send({ embeds: [submitEmbed], components: [submitRow] })
@@ -228,7 +228,7 @@ module.exports = {
 
 			const submitRow = new ActionRowBuilder().addComponents([submitButton]);
 
-			client.channels
+			await interaction.client.channels
 				.fetch(channel.id)
 				.then((channel) =>
 					channel.send({ embeds: [submitEmbed], components: [submitRow] })
@@ -249,7 +249,7 @@ module.exports = {
 
 			const submitRow = new ActionRowBuilder().addComponents([submitButton]);
 
-			client.channels
+			await interaction.client.channels
 				.fetch(channel.id)
 				.then((channel) =>
 					channel.send({ embeds: [submitEmbed], components: [submitRow] })
@@ -263,7 +263,7 @@ module.exports = {
 
 			const clubRow = new ActionRowBuilder().addComponents([clubButton]);
 
-			client.channels
+			await interaction.client.channels
 				.fetch(channel.id)
 				.then((channel) => channel.send({ components: [clubRow] }));
 		} else if (subCommand === "bug-report") {
@@ -282,7 +282,7 @@ module.exports = {
 
 			const row = new ActionRowBuilder().addComponents([bugButton]);
 
-			client.channels.fetch(channel.id).then((channel) =>
+			await interaction.client.channels.fetch(channel.id).then((channel) =>
 				channel.send({
 					embeds: [bugEmbed],
 					components: [row],
@@ -313,7 +313,7 @@ module.exports = {
 				appealButton,
 			]);
 
-			client.channels.fetch(channel.id).then((channel) =>
+			await interaction.client.channels.fetch(channel.id).then((channel) =>
 				channel.send({
 					embeds: [cheaterEmbed],
 					components: [row],
@@ -335,7 +335,7 @@ module.exports = {
 
 			const row = new ActionRowBuilder().addComponents([asButton]);
 
-			client.channels.fetch(channel.id).then((channel) =>
+			await interaction.client.channels.fetch(channel.id).then((channel) =>
 				channel.send({
 					embeds: [asEmbed],
 					components: [row],
