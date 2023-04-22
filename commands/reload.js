@@ -55,6 +55,13 @@ module.exports = {
 			subcommand
 				.setName("check-violation")
 				.setDescription("Check if violation report is pending.")
+		)
+		.addSubcommand((subcommand) =>
+			subcommand
+				.setName("series-role")
+				.setDescription(
+					"Gives players in the Community Series Participants table the role."
+				)
 		),
 
 	async execute(interaction) {
@@ -1075,6 +1082,44 @@ module.exports = {
 
 			await interaction.editReply({
 				content: `**Total Violations Resolved** ${response.data.items.length}`,
+			});
+		} else if (subCommand === "series-role") {
+			await interaction.deferReply({ ephemeral: true });
+
+			const roleId = "1099265236332200008";
+
+			const tenantToken = await feishu.authorize(
+				process.env.FEISHU_ID,
+				process.env.FEISHU_SECRET
+			);
+
+			const response = JSON.parse(
+				await feishu.getRecords(
+					tenantToken,
+					process.env.CEP_BASE,
+					"tbldRdK13SWajFrN"
+				)
+			);
+
+			if (!response.data.total) {
+				await interaction.editReply({
+					content: "No records found.",
+				});
+				return;
+			}
+
+			for (const record of response.data.items) {
+				const discordId = record.fields["Discord ID"];
+				await interaction.member
+					.fetch(discordId)
+					.then(async (member) => {
+						await member.roles.add(roleId);
+					})
+					.catch(() => null);
+			}
+
+			await interaction.editReply({
+				content: `**Total Roles Added** ${response.data.items.length}`,
 			});
 		}
 	},
