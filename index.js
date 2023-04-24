@@ -2937,7 +2937,7 @@ async function checkAppealStatus() {
 			tenantToken,
 			"bascnZdSuzx6L7uAxP9sNJcY0vY",
 			"tblybKlZE3yCZk72",
-			`OR(CurrentValue.[Status] = "Approve", CurrentValue.[Status] = "Deny")`
+			`OR(CurrentValue.[Status] = "Approve", CurrentValue.[Status] = "Deny", CurrentValue.[Status] = "Lack of information")`
 		)
 	);
 
@@ -2959,7 +2959,7 @@ async function checkAppealStatus() {
 			const embed = new EmbedBuilder()
 				.setColor("#00FF00")
 				.setTitle(
-					"After further review, it was confirmed that your account had been unbanned."
+					"**After further review, it was confirmed that your account had been unbanned.**"
 				);
 
 			const member = await guild.members
@@ -2995,7 +2995,38 @@ async function checkAppealStatus() {
 			const embed = new EmbedBuilder()
 				.setColor("#FF0000")
 				.setTitle(
-					"After further review, it was confirmed that your account had violated the game rules and thus could not be unbanned."
+					"**After further review, it was confirmed that your account had violated the game rules and thus could not be unbanned.**"
+				);
+
+			const member = await guild.members.fetch(discordId).then(() => {
+				note = "Alert Sent";
+			});
+
+			if (!member) {
+				logger.warn("Member not found - " + discordId);
+				failed.push({
+					discord_id: discordId,
+					embed: embed,
+					record_id: recordId,
+					reason: "Member not found",
+				});
+				continue;
+			}
+
+			await member.send({ embeds: [embed] }).catch((error) => {
+				logger.error(error);
+				failed.push({
+					discord_id: discordId,
+					embed: embed,
+					record_id: recordId,
+					reason: "DM failed",
+				});
+			});
+		} else if (status == "Lack of information") {
+			const embed = new EmbedBuilder()
+				.setColor("#FFFF00")
+				.setTitle(
+					"**The appeal information you provided is insufficient. Please submit a new appeal to provide more detailed information, such as an accurate Role ID, a clear screenshot that shows you can't login, etc.**"
 				);
 
 			const member = await guild.members.fetch(discordId).then(() => {
@@ -3080,7 +3111,7 @@ async function checkViolationStatus() {
 			tenantToken,
 			"bascnZdSuzx6L7uAxP9sNJcY0vY",
 			"tblmLa8SlkiASY0R",
-			`OR(CurrentValue.[Result of Report Review] = "Invalid", CurrentValue.[Result of Report Review] = "Valid")`
+			`OR(CurrentValue.[Result of Report Review] = "Invalid", CurrentValue.[Result of Report Review] = "Valid", CurrentValue.[Result of Report Review] = "Lack of information")`
 		)
 	);
 
@@ -3135,6 +3166,38 @@ async function checkViolationStatus() {
 				.setColor("#FF0000")
 				.setDescription(
 					`**After our review, it is not found that the reported player \`${reportedPlayer}\` has violated the game rules. If there is more evidence, please submit them to continue your report. Appreciation for supporting the maintenance of the game environment!**`
+				);
+
+			const guild = client.guilds.cache.get(process.env.EVO_SERVER);
+			const member = await guild.members.fetch(discordId).then(() => {
+				note = "Alert Sent";
+			});
+
+			if (!member) {
+				logger.warn("Member not found - " + discordId);
+				failed.push({
+					discord_id: discordId,
+					embed: embed,
+					record_id: recordId,
+					reason: "Member not found",
+				});
+				continue;
+			}
+
+			await member.send({ embeds: [embed] }).catch((error) => {
+				logger.error(error);
+				failed.push({
+					discord_id: discordId,
+					embed: embed,
+					record_id: recordId,
+					reason: "DM failed",
+				});
+			});
+		} else if (status == "Lack of information") {
+			const embed = new EmbedBuilder()
+				.setColor("#FFFF00")
+				.setDescription(
+					`**The report information for ${reportedPlayer} you provided is insufficient. Please submit a new report to provide more detailed information, such as an accurate Role ID, a video that can clearly identify the violation, etc.**`
 				);
 
 			const guild = client.guilds.cache.get(process.env.EVO_SERVER);
