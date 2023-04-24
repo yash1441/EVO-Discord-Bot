@@ -3197,7 +3197,7 @@ async function checkViolationStatus() {
 			const embed = new EmbedBuilder()
 				.setColor("#FFFF00")
 				.setDescription(
-					`**The report information for ${reportedPlayer} you provided is insufficient. Please submit a new report to provide more detailed information, such as an accurate Role ID, a video that can clearly identify the violation, etc.**`
+					`**The report information for \`${reportedPlayer}\` you provided is insufficient. Please submit a new report to provide more detailed information, such as an accurate Role ID, a video that can clearly identify the violation, etc.**`
 				);
 
 			const guild = client.guilds.cache.get(process.env.EVO_SERVER);
