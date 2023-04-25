@@ -927,7 +927,7 @@ module.exports = {
 		} else if (subCommand === "check-violation") {
 			await interaction.deferReply({ ephemeral: true });
 
-			const guild = client.guilds.cache.get(process.env.EVO_SERVER);
+			const guild = interaction.client.guilds.cache.get(process.env.EVO_SERVER);
 			await guild.members.fetch();
 
 			const tenantToken = await feishu.authorize(
@@ -995,7 +995,9 @@ module.exports = {
 							`**After our review, it is not found that the reported player \`${reportedPlayer}\` has violated the game rules. If there is more evidence, please submit them to continue your report. Appreciation for supporting the maintenance of the game environment!**`
 						);
 
-					const guild = client.guilds.cache.get(process.env.EVO_SERVER);
+					const guild = interaction.client.guilds.cache.get(
+						process.env.EVO_SERVER
+					);
 					const member = await guild.members.fetch(discordId).then(() => {
 						note = "Alert Sent";
 					});
@@ -1027,7 +1029,9 @@ module.exports = {
 							`**The report information for \`${reportedPlayer}\` you provided is insufficient. Please submit a new report to provide more detailed information, such as an accurate Role ID, a video that can clearly identify the violation, etc.**`
 						);
 
-					const guild = client.guilds.cache.get(process.env.EVO_SERVER);
+					const guild = interaction.client.guilds.cache.get(
+						process.env.EVO_SERVER
+					);
 					const member = await guild.members.fetch(discordId).then(() => {
 						note = "Alert Sent";
 					});
@@ -1087,7 +1091,7 @@ module.exports = {
 
 				const row = new ActionRowBuilder().addComponents(closeButton);
 
-				const user = await client.users
+				const user = await interaction.client.users
 					.fetch(record.discord_id)
 					.catch(() => null);
 
