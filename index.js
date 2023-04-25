@@ -2925,7 +2925,6 @@ async function sendAppealResponseToFeishu(interaction) {
 
 async function checkAppealStatus() {
 	const guild = client.guilds.cache.get(process.env.EVO_SERVER);
-	//await guild.members.fetch();
 
 	const tenantToken = await feishu.authorize(
 		process.env.FEISHU_ID,
@@ -2962,35 +2961,31 @@ async function checkAppealStatus() {
 					"**After further review, it was confirmed that your account had been unbanned.**"
 				);
 
-			const member = await guild.members
+			await guild.members
 				.fetch(discordId)
+				.then(async (member) => {
+					await member.send({ embeds: [embed] }).catch((error) => {
+						logger.warn(error);
+						failed.push({
+							discord_id: discordId,
+							embed: embed,
+							record_id: recordId,
+							reason: "DM failed",
+						});
+					});
+				})
 				.then(() => {
 					note = "Alert Sent";
 				})
 				.catch(() => {
-					logger.debug("Member not found - " + discordId);
+					logger.warn("Member not found - " + discordId);
+					failed.push({
+						discord_id: discordId,
+						embed: embed,
+						record_id: recordId,
+						reason: "Member not found",
+					});
 				});
-
-			if (!member) {
-				logger.warn("Member not found - " + discordId);
-				failed.push({
-					discord_id: discordId,
-					embed: embed,
-					record_id: recordId,
-					reason: "Member not found",
-				});
-				continue;
-			}
-
-			await member.send({ embeds: [embed] }).catch((error) => {
-				logger.error(error);
-				failed.push({
-					discord_id: discordId,
-					embed: embed,
-					record_id: recordId,
-					reason: "DM failed",
-				});
-			});
 		} else if (status == "Deny") {
 			const embed = new EmbedBuilder()
 				.setColor("#FF0000")
@@ -2998,30 +2993,31 @@ async function checkAppealStatus() {
 					"**After further review, it was confirmed that your account had violated the game rules and thus could not be unbanned.**"
 				);
 
-			const member = await guild.members.fetch(discordId).then(() => {
-				note = "Alert Sent";
-			});
-
-			if (!member) {
-				logger.warn("Member not found - " + discordId);
-				failed.push({
-					discord_id: discordId,
-					embed: embed,
-					record_id: recordId,
-					reason: "Member not found",
+			await guild.members
+				.fetch(discordId)
+				.then(async (member) => {
+					await member.send({ embeds: [embed] }).catch((error) => {
+						logger.warn(error);
+						failed.push({
+							discord_id: discordId,
+							embed: embed,
+							record_id: recordId,
+							reason: "DM failed",
+						});
+					});
+				})
+				.then(() => {
+					note = "Alert Sent";
+				})
+				.catch(() => {
+					logger.warn("Member not found - " + discordId);
+					failed.push({
+						discord_id: discordId,
+						embed: embed,
+						record_id: recordId,
+						reason: "Member not found",
+					});
 				});
-				continue;
-			}
-
-			await member.send({ embeds: [embed] }).catch((error) => {
-				logger.error(error);
-				failed.push({
-					discord_id: discordId,
-					embed: embed,
-					record_id: recordId,
-					reason: "DM failed",
-				});
-			});
 		} else if (status == "Lack of information") {
 			const embed = new EmbedBuilder()
 				.setColor("#FFFF00")
@@ -3029,30 +3025,31 @@ async function checkAppealStatus() {
 					"**The appeal information you provided is insufficient. Please submit a new appeal to provide more detailed information, such as an accurate Role ID, a clear screenshot that shows you can't login, etc.**"
 				);
 
-			const member = await guild.members.fetch(discordId).then(() => {
-				note = "Alert Sent";
-			});
-
-			if (!member) {
-				logger.warn("Member not found - " + discordId);
-				failed.push({
-					discord_id: discordId,
-					embed: embed,
-					record_id: recordId,
-					reason: "Member not found",
+			await guild.members
+				.fetch(discordId)
+				.then(async (member) => {
+					await member.send({ embeds: [embed] }).catch((error) => {
+						logger.warn(error);
+						failed.push({
+							discord_id: discordId,
+							embed: embed,
+							record_id: recordId,
+							reason: "DM failed",
+						});
+					});
+				})
+				.then(() => {
+					note = "Alert Sent";
+				})
+				.catch(() => {
+					logger.warn("Member not found - " + discordId);
+					failed.push({
+						discord_id: discordId,
+						embed: embed,
+						record_id: recordId,
+						reason: "Member not found",
+					});
 				});
-				continue;
-			}
-
-			await member.send({ embeds: [embed] }).catch((error) => {
-				logger.error(error);
-				failed.push({
-					discord_id: discordId,
-					embed: embed,
-					record_id: recordId,
-					reason: "DM failed",
-				});
-			});
 		}
 
 		await feishu.updateRecord(
@@ -3099,7 +3096,6 @@ async function checkAppealStatus() {
 
 async function checkViolationStatus() {
 	const guild = client.guilds.cache.get(process.env.EVO_SERVER);
-	await guild.members.fetch();
 
 	const tenantToken = await feishu.authorize(
 		process.env.FEISHU_ID,
@@ -3137,30 +3133,31 @@ async function checkViolationStatus() {
 					`**After our review, it has been confirmed that the reported player \`${reportedPlayer}\` violates the game rules. The player has been punished for the violation. Thank you for supporting the maintenance of the game environment!**`
 				);
 
-			const member = await guild.members.fetch(discordId).then(() => {
-				note = "Alert Sent";
-			});
-
-			if (!member) {
-				logger.warn("Member not found - " + discordId);
-				failed.push({
-					discord_id: discordId,
-					embed: embed,
-					record_id: recordId,
-					reason: "Member not found",
+			await guild.members
+				.fetch(discordId)
+				.then(async (member) => {
+					await member.send({ embeds: [embed] }).catch((error) => {
+						logger.warn(error);
+						failed.push({
+							discord_id: discordId,
+							embed: embed,
+							record_id: recordId,
+							reason: "DM failed",
+						});
+					});
+				})
+				.then(() => {
+					note = "Alert Sent";
+				})
+				.catch(() => {
+					logger.warn("Member not found - " + discordId);
+					failed.push({
+						discord_id: discordId,
+						embed: embed,
+						record_id: recordId,
+						reason: "Member not found",
+					});
 				});
-				continue;
-			}
-
-			await member.send({ embeds: [embed] }).catch((error) => {
-				logger.error(error);
-				failed.push({
-					discord_id: discordId,
-					embed: embed,
-					record_id: recordId,
-					reason: "DM failed",
-				});
-			});
 		} else if (status == "Invalid") {
 			const embed = new EmbedBuilder()
 				.setColor("#FF0000")
@@ -3168,31 +3165,31 @@ async function checkViolationStatus() {
 					`**After our review, it is not found that the reported player \`${reportedPlayer}\` has violated the game rules. If there is more evidence, please submit them to continue your report. Appreciation for supporting the maintenance of the game environment!**`
 				);
 
-			const guild = client.guilds.cache.get(process.env.EVO_SERVER);
-			const member = await guild.members.fetch(discordId).then(() => {
-				note = "Alert Sent";
-			});
-
-			if (!member) {
-				logger.warn("Member not found - " + discordId);
-				failed.push({
-					discord_id: discordId,
-					embed: embed,
-					record_id: recordId,
-					reason: "Member not found",
+			await guild.members
+				.fetch(discordId)
+				.then(async (member) => {
+					await member.send({ embeds: [embed] }).catch((error) => {
+						logger.warn(error);
+						failed.push({
+							discord_id: discordId,
+							embed: embed,
+							record_id: recordId,
+							reason: "DM failed",
+						});
+					});
+				})
+				.then(() => {
+					note = "Alert Sent";
+				})
+				.catch(() => {
+					logger.warn("Member not found - " + discordId);
+					failed.push({
+						discord_id: discordId,
+						embed: embed,
+						record_id: recordId,
+						reason: "Member not found",
+					});
 				});
-				continue;
-			}
-
-			await member.send({ embeds: [embed] }).catch((error) => {
-				logger.error(error);
-				failed.push({
-					discord_id: discordId,
-					embed: embed,
-					record_id: recordId,
-					reason: "DM failed",
-				});
-			});
 		} else if (status == "Lack of information") {
 			const embed = new EmbedBuilder()
 				.setColor("#FFFF00")
@@ -3200,31 +3197,31 @@ async function checkViolationStatus() {
 					`**The report information for \`${reportedPlayer}\` you provided is insufficient. Please submit a new report to provide more detailed information, such as an accurate Role ID, a video that can clearly identify the violation, etc.**`
 				);
 
-			const guild = client.guilds.cache.get(process.env.EVO_SERVER);
-			const member = await guild.members.fetch(discordId).then(() => {
-				note = "Alert Sent";
-			});
-
-			if (!member) {
-				logger.warn("Member not found - " + discordId);
-				failed.push({
-					discord_id: discordId,
-					embed: embed,
-					record_id: recordId,
-					reason: "Member not found",
+			await guild.members
+				.fetch(discordId)
+				.then(async (member) => {
+					await member.send({ embeds: [embed] }).catch((error) => {
+						logger.warn(error);
+						failed.push({
+							discord_id: discordId,
+							embed: embed,
+							record_id: recordId,
+							reason: "DM failed",
+						});
+					});
+				})
+				.then(() => {
+					note = "Alert Sent";
+				})
+				.catch(() => {
+					logger.warn("Member not found - " + discordId);
+					failed.push({
+						discord_id: discordId,
+						embed: embed,
+						record_id: recordId,
+						reason: "Member not found",
+					});
 				});
-				continue;
-			}
-
-			await member.send({ embeds: [embed] }).catch((error) => {
-				logger.error(error);
-				failed.push({
-					discord_id: discordId,
-					embed: embed,
-					record_id: recordId,
-					reason: "DM failed",
-				});
-			});
 		}
 
 		await feishu.updateRecord(
