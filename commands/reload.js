@@ -926,7 +926,9 @@ module.exports = {
 			});
 		} else if (subCommand === "check-violation") {
 			await interaction.deferReply({ ephemeral: true });
-			await interaction.guild.members.fetch();
+
+			const guild = client.guilds.cache.get(process.env.EVO_SERVER);
+			await guild.members.fetch();
 
 			const tenantToken = await feishu.authorize(
 				process.env.FEISHU_ID,
@@ -938,13 +940,12 @@ module.exports = {
 					tenantToken,
 					"bascnZdSuzx6L7uAxP9sNJcY0vY",
 					"tblmLa8SlkiASY0R",
-					`OR(CurrentValue.[Result of Report Review] = "Invalid", CurrentValue.[Result of Report Review] = "Valid")`
+					`OR(CurrentValue.[Result of Report Review] = "Invalid", CurrentValue.[Result of Report Review] = "Valid", CurrentValue.[Result of Report Review] = "Lack of information")`
 				)
 			);
 
 			if (!response.data.total) {
 				logger.info("No violations found.");
-				await interaction.editReply({ content: "No violations found." });
 				return;
 			}
 
@@ -961,13 +962,40 @@ module.exports = {
 				if (status == "Valid") {
 					const embed = new EmbedBuilder()
 						.setColor("#00FF00")
-						.setTitle(
-							`After our review, it has been confirmed that the reported player \`${reportedPlayer}\` violates the game rules. The player has been punished for the violation. Thank you for supporting the maintenance of the game environment!`
+						.setDescription(
+							`**After our review, it has been confirmed that the reported player \`${reportedPlayer}\` violates the game rules. The player has been punished for the violation. Thank you for supporting the maintenance of the game environment!**`
 						);
 
-					const guild = await interaction.client.guilds.cache.get(
-						process.env.EVO_SERVER
-					);
+					await guild.members
+						.fetch(discordId)
+						.then(async (member) => {
+							await member.send({ embeds: [embed] }).catch((error) => {
+								logger.error(error);
+								failed.push({
+									discord_id: discordId,
+									embed: embed,
+									record_id: recordId,
+									reason: "DM failed",
+								});
+							});
+						})
+						.catch(() => {
+							logger.warn("Member not found - " + discordId);
+							failed.push({
+								discord_id: discordId,
+								embed: embed,
+								record_id: recordId,
+								reason: "Member not found",
+							});
+						});
+				} else if (status == "Invalid") {
+					const embed = new EmbedBuilder()
+						.setColor("#FF0000")
+						.setDescription(
+							`**After our review, it is not found that the reported player \`${reportedPlayer}\` has violated the game rules. If there is more evidence, please submit them to continue your report. Appreciation for supporting the maintenance of the game environment!**`
+						);
+
+					const guild = client.guilds.cache.get(process.env.EVO_SERVER);
 					const member = await guild.members.fetch(discordId).then(() => {
 						note = "Alert Sent";
 					});
@@ -992,16 +1020,14 @@ module.exports = {
 							reason: "DM failed",
 						});
 					});
-				} else if (status == "Invalid") {
+				} else if (status == "Lack of information") {
 					const embed = new EmbedBuilder()
-						.setColor("#FF0000")
-						.setTitle(
-							`After our review, it is not found that the reported player \`${reportedPlayer}\` has violated the game rules. If there is more evidence, please submit them to continue your report. Appreciation for supporting the maintenance of the game environment!`
+						.setColor("#FFFF00")
+						.setDescription(
+							`**The report information for \`${reportedPlayer}\` you provided is insufficient. Please submit a new report to provide more detailed information, such as an accurate Role ID, a video that can clearly identify the violation, etc.**`
 						);
 
-					const guild = await interaction.client.guilds.cache.get(
-						process.env.EVO_SERVER
-					);
+					const guild = client.guilds.cache.get(process.env.EVO_SERVER);
 					const member = await guild.members.fetch(discordId).then(() => {
 						note = "Alert Sent";
 					});
@@ -1061,16 +1087,12 @@ module.exports = {
 
 				const row = new ActionRowBuilder().addComponents(closeButton);
 
-				const user = await interaction.client.users
+				const user = await client.users
 					.fetch(record.discord_id)
 					.catch(() => null);
 
-				const channel = await interaction.client.channels.cache.get(
-					"1090274679807287296"
-				);
-
 				await privateChannel(
-					channel,
+					"1090274679807287296",
 					"Violation - " + user.username,
 					record.discord_id,
 					false,
