@@ -1507,61 +1507,62 @@ client.on("messageCreate", async (message) => {
 			"https://open.larksuite.com/open-apis/bot/v2/hook/f710206e-f9e1-4c7f-9e47-d2c3c6dbd21a",
 			body
 		);
-	} else if (
-		message.channel.type != ChannelType.DM &&
-		message.mentions.has(client.user)
-	) {
-		let extraPrompt = "";
+	} 
+	// 	else if (
+	// 	message.channel.type != ChannelType.DM &&
+	// 	message.mentions.has(client.user)
+	// ) {
+	// 	let extraPrompt = "";
 
-		const messageContent = message.content.replace(
-			new RegExp(`^<@!?${client.user.id}> ?`),
-			""
-		);
+	// 	const messageContent = message.content.replace(
+	// 		new RegExp(`^<@!?${client.user.id}> ?`),
+	// 		""
+	// 	);
 
-		// if (
-		// 	/[^a-zA-Z0-9~`!@#$%^&*()-_=+[\]{}\\|;:'",.<>/? ]/.test(messageContent)
-		// ) {
-		// 	return;
-		// }
+	// 	// if (
+	// 	// 	/[^a-zA-Z0-9~`!@#$%^&*()-_=+[\]{}\\|;:'",.<>/? ]/.test(messageContent)
+	// 	// ) {
+	// 	// 	return;
+	// 	// }
 
-		try {
-			const reference = message.reference;
+	// 	try {
+	// 		const reference = message.reference;
 
-			if (reference) {
-				const botMessage = await message.channel.messages.fetch(
-					reference.messageId
-				);
-				const oldReference = botMessage.reference;
-				const oldMessage = await message.channel.messages.fetch(
-					oldReference.messageId
-				);
+	// 		if (reference) {
+	// 			const botMessage = await message.channel.messages.fetch(
+	// 				reference.messageId
+	// 			);
+	// 			const oldReference = botMessage.reference;
+	// 			const oldMessage = await message.channel.messages.fetch(
+	// 				oldReference.messageId
+	// 			);
 
-				extraPrompt = `${message.author.username}: ${oldMessage.content}\nAI: ${botMessage.content}\n${message.author.username}: ${messageContent}\nAI: `;
-			}
+	// 			extraPrompt = `${message.author.username}: ${oldMessage.content}\nAI: ${botMessage.content}\n${message.author.username}: ${messageContent}\nAI: `;
+	// 		}
 
-			let finalPrompt = `The following is a conversation with an AI assistant. The assistant is helpful, creative, clever, and very friendly.\n\n${message.author.username}: Hello, who are you?\nAI: I am an AI created by OpenAI. How can I help you today?\n${message.author.username}: ${messageContent}\nAI: `;
+	// 		let finalPrompt = `The following is a conversation with an AI assistant. The assistant is helpful, creative, clever, and very friendly.\n\n${message.author.username}: Hello, who are you?\nAI: I am an AI created by OpenAI. How can I help you today?\n${message.author.username}: ${messageContent}\nAI: `;
 
-			if (extraPrompt) {
-				finalPrompt =
-					`The following is a conversation with an AI assistant. The assistant is helpful, creative, clever, and very friendly.\n\n${message.author.username}: Hello, who are you?\nAI: I am an AI created by OpenAI. ` +
-					extraPrompt;
-			}
+	// 		if (extraPrompt) {
+	// 			finalPrompt =
+	// 				`The following is a conversation with an AI assistant. The assistant is helpful, creative, clever, and very friendly.\n\n${message.author.username}: Hello, who are you?\nAI: I am an AI created by OpenAI. ` +
+	// 				extraPrompt;
+	// 		}
 
-			const gptResponse = await openai.createCompletion({
-				model: "davinci",
-				prompt: finalPrompt,
-				temperature: 0.2,
-				max_tokens: 100,
-				stop: ["AI:", `${message.author.username}`],
-				user: message.author.id,
-			});
+	// 		const gptResponse = await openai.createCompletion({
+	// 			model: "davinci",
+	// 			prompt: finalPrompt,
+	// 			temperature: 0.2,
+	// 			max_tokens: 100,
+	// 			stop: ["AI:", `${message.author.username}`],
+	// 			user: message.author.id,
+	// 		});
 
-			// console.log(gptResponse.data.choices);
+	// 		// console.log(gptResponse.data.choices);
 
-			await message.reply(gptResponse.data.choices[0].text);
-		} catch {
-			return;
-		}
+	// 		await message.reply(gptResponse.data.choices[0].text);
+	// 	} catch {
+	// 		return;
+	// 	}
 	}
 });
 
