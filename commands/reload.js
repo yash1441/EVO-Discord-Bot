@@ -1145,14 +1145,14 @@ module.exports = {
 						.then(async (member) => {
 							await member.roles.add(memberRoleId);
 						})
-						.catch(() => null);
+						.catch((error) => logger.error(error));
 				} else if (title === "Leader") {
 					await interaction.member
 						.fetch(discordId)
 						.then(async (member) => {
 							await member.roles.add(leaderRoleId);
 						})
-						.catch(() => null);
+						.catch((error) => logger.error(error));
 				}
 			}
 
