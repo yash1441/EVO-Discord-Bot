@@ -1507,7 +1507,7 @@ client.on("messageCreate", async (message) => {
 			"https://open.larksuite.com/open-apis/bot/v2/hook/f710206e-f9e1-4c7f-9e47-d2c3c6dbd21a",
 			body
 		);
-	} 
+	}
 	// 	else if (
 	// 	message.channel.type != ChannelType.DM &&
 	// 	message.mentions.has(client.user)
@@ -1563,7 +1563,7 @@ client.on("messageCreate", async (message) => {
 	// 	} catch {
 	// 		return;
 	// 	}
-	}
+	// }
 });
 
 client.on("guildMemberUpdate", async (oldMember, newMember) => {
