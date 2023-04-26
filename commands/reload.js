@@ -1136,8 +1136,8 @@ module.exports = {
 			}
 
 			for (const record of response.data.items) {
-				const discordId = record.fields["Discord ID"];
-				const title = record.fields["Title"];
+				let discordId = record.fields["Discord ID"];
+				let title = record.fields["Title"];
 
 				if (title === "Member") {
 					await interaction.member
