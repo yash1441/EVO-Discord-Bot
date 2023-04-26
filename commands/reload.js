@@ -1112,7 +1112,8 @@ module.exports = {
 		} else if (subCommand === "series-role") {
 			await interaction.deferReply({ ephemeral: true });
 
-			const roleId = "1099265236332200008";
+			const memberRoleId = "1099265236332200008";
+			const leaderRoleId = "1100494341484593283";
 
 			const tenantToken = await feishu.authorize(
 				process.env.FEISHU_ID,
@@ -1136,12 +1137,23 @@ module.exports = {
 
 			for (const record of response.data.items) {
 				const discordId = record.fields["Discord ID"];
-				await interaction.member
-					.fetch(discordId)
-					.then(async (member) => {
-						await member.roles.add(roleId);
-					})
-					.catch(() => null);
+				const title = record.fields["Title"];
+
+				if (title === "Member") {
+					await interaction.member
+						.fetch(discordId)
+						.then(async (member) => {
+							await member.roles.add(memberRoleId);
+						})
+						.catch(() => null);
+				} else if (title === "Leader") {
+					await interaction.member
+						.fetch(discordId)
+						.then(async (member) => {
+							await member.roles.add(leaderRoleId);
+						})
+						.catch(() => null);
+				}
 			}
 
 			await interaction.editReply({
