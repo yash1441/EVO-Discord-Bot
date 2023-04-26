@@ -1136,18 +1136,18 @@ module.exports = {
 			}
 
 			for (const record of response.data.items) {
-				let discordId = record.fields["Discord ID"];
-				let title = record.fields["Title"];
+				const discordId = record.fields["Discord ID"];
+				const title = record.fields["Title"];
 
 				if (title === "Member") {
-					await interaction.member
+					await interaction.guild.members
 						.fetch(discordId)
 						.then(async (member) => {
 							await member.roles.add(memberRoleId);
 						})
 						.catch((error) => logger.error(error));
 				} else if (title === "Leader") {
-					await interaction.member
+					await interaction.guild.members
 						.fetch(discordId)
 						.then(async (member) => {
 							await member.roles.add(leaderRoleId);
