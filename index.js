@@ -71,6 +71,8 @@ for (const file of commandFiles) {
 let betaTesterCodes = {};
 let betaTesterCodesLoaded = false;
 
+client.on("debug", (e) => console.log(e));
+
 client.on("ready", () => {
 	logger.info(`Discord bot went online. Username: ${client.user.tag}`);
 	client.user.setPresence({
