@@ -108,7 +108,7 @@ client.on("ready", () => {
 		}
 	);
 
-	loadBetaTesterCodes();
+	//loadBetaTesterCodes();
 
 	logger.info(`Deleting old bug reports.`);
 	checkOldFiles();
