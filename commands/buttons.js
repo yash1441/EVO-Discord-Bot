@@ -125,7 +125,9 @@ module.exports = {
 
 		if (subCommand === "creator-application") {
 			const creatorPoster = new EmbedBuilder()
-				.setImage("https://i.ibb.co/sJfH3Qj/20221201-114500-1.png")
+				.setImage(
+					"https://i.ibb.co/cvBgpLf/img-v2-d2bc2101-2021-4beb-ab64-49b076843cbg.png"
+				)
 				.setColor(`C04946`);
 			const creatorEmbed = new EmbedBuilder()
 				.setTitle("BECOME EVO CREATOR NOW!")
