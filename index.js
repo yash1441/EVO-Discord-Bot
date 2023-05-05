@@ -2025,7 +2025,7 @@ function checkURL(text, log) {
 	}
 
 	const expression =
-		/^(https?\:\/\/)?((www\.)?youtube\.com|youtu\.be|tiktok\.com|taptap\.io|twitter\.com|instagram\.com|twitch\.com)\/.+$/;
+		/^(https?\:\/\/)?((www\.)?youtube\.com|youtu\.be|tiktok\.com|taptap\.io|twitter\.com|instagram\.com|twitch\.com|fb\.watch|fb\.gg)\/.+$/;
 	const regex = new RegExp(expression);
 
 	if (text.match(regex)) {
@@ -2109,6 +2109,9 @@ function checkPlatform(code) {
 			break;
 		case "IG":
 			platform = "Instagram";
+			break;
+		case "FB":
+			platform = "Facebook";
 			break;
 		default:
 			platform = "YouTube";
@@ -2303,6 +2306,10 @@ async function platformMenu(customId) {
 			{
 				label: "Instagram",
 				value: "IG",
+			},
+			{
+				label: "Facebook",
+				value: "FB",
 			}
 		);
 
