@@ -14,6 +14,7 @@ const {
 	ActivityType,
 	ButtonBuilder,
 	ButtonStyle,
+	PermissionsBitField,
 	AttachmentBuilder,
 } = require("discord.js");
 const fs = require("fs");
