@@ -1513,9 +1513,13 @@ client.on("messageCreate", async (message) => {
 		);
 	} else if (
 		message.channel.type != ChannelType.DM &&
-		message.mentions.has(client.user) &&
-		message.member.permissions.has(PermissionsBitField.Flags.Administrator)
+		message.mentions.has(client.user)
 	) {
+		if (
+			message.member.permissions.has(PermissionsBitField.Flags.Administrator)
+		) {
+			logger.debug("Admin message received");
+		} else return;
 		let extraPrompt = "";
 
 		const messageContent = message.content.replace(
