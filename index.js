@@ -80,7 +80,7 @@ client.on("ready", () => {
 	client.user.setPresence({
 		activities: [
 			{
-				name: `Project EVO`,
+				name: `Mission EVO`,
 				type: ActivityType.Playing,
 			},
 		],
