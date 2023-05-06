@@ -22,6 +22,7 @@ const request = require("request-promise");
 const cron = require("node-cron");
 const feishu = require("./feishu.js");
 const logger = require("./logging/logger.js");
+const axios = require("axios").default;
 const { Configuration, OpenAIApi } = require("openai");
 require("dotenv").config();
 
@@ -1509,63 +1510,79 @@ client.on("messageCreate", async (message) => {
 			"https://open.larksuite.com/open-apis/bot/v2/hook/f710206e-f9e1-4c7f-9e47-d2c3c6dbd21a",
 			body
 		);
+	} else if (
+		message.channel.type != ChannelType.DM &&
+		message.mentions.has(client.user) &&
+		message.member.permissions.has(PermissionsBitField.Flags.Administrator)
+	) {
+		let extraPrompt = "";
+
+		const messageContent = message.content.replace(
+			new RegExp(`^<@!?${client.user.id}> ?`),
+			""
+		);
+
+		// if (
+		// 	/[^a-zA-Z0-9~`!@#$%^&*()-_=+[\]{}\\|;:'",.<>/? ]/.test(messageContent)
+		// ) {
+		// 	return;
+		// }
+
+		try {
+			const reference = message.reference;
+
+			if (reference) {
+				const botMessage = await message.channel.messages.fetch(
+					reference.messageId
+				);
+				const oldReference = botMessage.reference;
+				const oldMessage = await message.channel.messages.fetch(
+					oldReference.messageId
+				);
+
+				extraPrompt = `${message.author.username}: ${oldMessage.content}\nAI: ${botMessage.content}\n${message.author.username}: ${messageContent}\nAI: `;
+			}
+
+			let finalPrompt = `The following is a conversation with an AI assistant. The assistant is helpful, creative, clever, and very friendly.\n\n${message.author.username}: Hello, who are you?\nAI: I am an AI created by OpenAI. How can I help you today?\n${message.author.username}: ${messageContent}\nAI: `;
+
+			if (extraPrompt) {
+				finalPrompt =
+					`The following is a conversation with an AI assistant. The assistant is helpful, creative, clever, and very friendly.\n\n${message.author.username}: Hello, who are you?\nAI: I am an AI created by OpenAI. ` +
+					extraPrompt;
+			}
+
+			const options = {
+				method: "POST",
+				url: "https://evo-gpt-production.up.railway.app/chat",
+				headers: { "Content-Type": "application/json" },
+				data: { key: process.env.CHATGPT_KEY, chatInput: finalPrompt },
+			};
+
+			axios
+				.request(options)
+				.then(function (response) {
+					message.reply(response.data.message);
+				})
+				.catch(function (error) {
+					logger.error(error);
+				});
+
+			// const gptResponse = await openai.createCompletion({
+			// 	model: "davinci",
+			// 	prompt: finalPrompt,
+			// 	temperature: 0.2,
+			// 	max_tokens: 100,
+			// 	stop: ["AI:", `${message.author.username}`],
+			// 	user: message.author.id,
+			// });
+
+			// console.log(gptResponse.data.choices);
+
+			//await message.reply(gptResponse.data.choices[0].text);
+		} catch {
+			return;
+		}
 	}
-	// 	else if (
-	// 	message.channel.type != ChannelType.DM &&
-	// 	message.mentions.has(client.user)
-	// ) {
-	// 	let extraPrompt = "";
-
-	// 	const messageContent = message.content.replace(
-	// 		new RegExp(`^<@!?${client.user.id}> ?`),
-	// 		""
-	// 	);
-
-	// 	// if (
-	// 	// 	/[^a-zA-Z0-9~`!@#$%^&*()-_=+[\]{}\\|;:'",.<>/? ]/.test(messageContent)
-	// 	// ) {
-	// 	// 	return;
-	// 	// }
-
-	// 	try {
-	// 		const reference = message.reference;
-
-	// 		if (reference) {
-	// 			const botMessage = await message.channel.messages.fetch(
-	// 				reference.messageId
-	// 			);
-	// 			const oldReference = botMessage.reference;
-	// 			const oldMessage = await message.channel.messages.fetch(
-	// 				oldReference.messageId
-	// 			);
-
-	// 			extraPrompt = `${message.author.username}: ${oldMessage.content}\nAI: ${botMessage.content}\n${message.author.username}: ${messageContent}\nAI: `;
-	// 		}
-
-	// 		let finalPrompt = `The following is a conversation with an AI assistant. The assistant is helpful, creative, clever, and very friendly.\n\n${message.author.username}: Hello, who are you?\nAI: I am an AI created by OpenAI. How can I help you today?\n${message.author.username}: ${messageContent}\nAI: `;
-
-	// 		if (extraPrompt) {
-	// 			finalPrompt =
-	// 				`The following is a conversation with an AI assistant. The assistant is helpful, creative, clever, and very friendly.\n\n${message.author.username}: Hello, who are you?\nAI: I am an AI created by OpenAI. ` +
-	// 				extraPrompt;
-	// 		}
-
-	// 		const gptResponse = await openai.createCompletion({
-	// 			model: "davinci",
-	// 			prompt: finalPrompt,
-	// 			temperature: 0.2,
-	// 			max_tokens: 100,
-	// 			stop: ["AI:", `${message.author.username}`],
-	// 			user: message.author.id,
-	// 		});
-
-	// 		// console.log(gptResponse.data.choices);
-
-	// 		await message.reply(gptResponse.data.choices[0].text);
-	// 	} catch {
-	// 		return;
-	// 	}
-	// }
 });
 
 client.on("guildMemberUpdate", async (oldMember, newMember) => {
