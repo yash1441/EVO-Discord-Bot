@@ -1516,6 +1516,7 @@ client.on("messageCreate", async (message) => {
 		message.channel.id === "1105532480557170758" &&
 		message.mentions.has(client.user)
 	) {
+		logger.debug("Message received in #evo-gpt-testing");
 		let extraPrompt = "";
 
 		const messageContent = message.content.replace(
