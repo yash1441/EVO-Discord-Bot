@@ -1513,13 +1513,8 @@ client.on("messageCreate", async (message) => {
 		);
 	} else if (
 		message.channel.type != ChannelType.DM &&
-		message.mentions.has(client.user)
+		message.channel.id === "1105532480557170758"
 	) {
-		if (
-			message.member.permissions.has(PermissionsBitField.Flags.Administrator)
-		) {
-			logger.debug("Admin message received");
-		} else return;
 		let extraPrompt = "";
 
 		const messageContent = message.content.replace(
@@ -1534,7 +1529,7 @@ client.on("messageCreate", async (message) => {
 		// }
 
 		try {
-			const reference = message.reference;
+			/*const reference = message.reference;
 
 			if (reference) {
 				const botMessage = await message.channel.messages.fetch(
@@ -1554,13 +1549,13 @@ client.on("messageCreate", async (message) => {
 				finalPrompt =
 					`The following is a conversation with an AI assistant. The assistant is helpful, creative, clever, and very friendly.\n\n${message.author.username}: Hello, who are you?\nAI: I am an AI created by OpenAI. ` +
 					extraPrompt;
-			}
+			}*/
 
 			const options = {
 				method: "POST",
 				url: "https://evo-gpt-production.up.railway.app/chat",
 				headers: { "Content-Type": "application/json" },
-				data: { key: process.env.CHATGPT_KEY, chatInput: finalPrompt },
+				data: { key: process.env.CHATGPT_KEY, chatInput: messageContent },
 			};
 
 			axios
