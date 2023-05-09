@@ -1513,7 +1513,8 @@ client.on("messageCreate", async (message) => {
 		);
 	} else if (
 		message.channel.type != ChannelType.DM &&
-		message.channel.id === "1105532480557170758"
+		message.channel.id === "1105532480557170758" &&
+		message.mentions.has(client.user)
 	) {
 		let extraPrompt = "";
 
