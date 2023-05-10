@@ -739,6 +739,7 @@ module.exports = {
 						process.env.COLLECT_REWARDS_CHANNEL
 					);
 					await privateChannel(
+						interaction,
 						channel,
 						"Reward - " + member.user.username,
 						discordId,
@@ -911,6 +912,7 @@ module.exports = {
 				);
 
 				await privateChannel(
+					interaction,
 					channel,
 					"Appeal - " + user.username,
 					record.discord_id,
@@ -1096,6 +1098,7 @@ module.exports = {
 					.catch(() => null);
 
 				await privateChannel(
+					interaction,
 					"1090274679807287296",
 					"Violation - " + user.username,
 					record.discord_id,
@@ -1164,6 +1167,7 @@ module.exports = {
 };
 
 async function privateChannel(
+	interaction,
 	channel,
 	channelName,
 	discordId,
