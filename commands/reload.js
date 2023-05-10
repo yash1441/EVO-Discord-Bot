@@ -743,7 +743,7 @@ module.exports = {
 						channel,
 						"Reward - " + member.user.username,
 						discordId,
-						message,
+						`${member.user}\n` + message,
 						false,
 						[claimRow],
 						"**Once you click CLAIM, this thread would be DELETED.**\nPlease copy the reward/code somewhere and only then press the button."
