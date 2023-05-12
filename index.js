@@ -2248,6 +2248,10 @@ async function showSubmitModal(interaction) {
 		.setPlaceholder("Select a topic")
 		.addOptions(
 			{
+				label: "Update Unleashed: New Tactics Uncovered",
+				value: formatSelection + "Update Unleashed: New Tactics Uncovered",
+			},
+			{
 				label: "EVO Guide Creation Event",
 				value: formatSelection + "EVO Guide Creation Event",
 			},
