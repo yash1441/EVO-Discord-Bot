@@ -2252,38 +2252,6 @@ async function showSubmitModal(interaction) {
 				value: formatSelection + "Update Unleashed: New Tactics Uncovered",
 			},
 			{
-				label: "EVO Guide Creation Event",
-				value: formatSelection + "EVO Guide Creation Event",
-			},
-			{
-				label: "EVO Ambassador Event",
-				value: formatSelection + "EVO Ambassador Event",
-			},
-			{
-				label: "EVO Guider Team",
-				value: formatSelection + "EVO Guider Team",
-			},
-			{
-				label: "Make EVO Shorts Event",
-				value: formatSelection + "Make EVO Shorts Event",
-			},
-			{
-				label: "ECC - Gameplay Guide",
-				value: formatSelection + "ECC - Gameplay Guide",
-			},
-			{
-				label: "ECC - Storytelling",
-				value: formatSelection + "ECC - Storytelling",
-			},
-			{
-				label: "ECC - Entertaining Montages",
-				value: formatSelection + "ECC - Entertaining Montages",
-			},
-			{
-				label: "Beta 1.3 Update",
-				value: formatSelection + "Beta 1.3 Update",
-			},
-			{
 				label: "Other Topics",
 				value: formatSelection + "Other Topics",
 			}
