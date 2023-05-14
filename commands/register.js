@@ -32,7 +32,7 @@ module.exports = {
 						.setDescription("Enter your in-game Character ID.")
 						.setRequired(true)
 						.setMinValue(10000)
-						.setMaxValue(999999999)
+						.setMaxValue(9999999999)
 				)
 				.addStringOption((option) =>
 					option
@@ -65,7 +65,7 @@ module.exports = {
 						.setDescription("Enter your team member's in-game Character ID.")
 						.setRequired(true)
 						.setMinValue(10000)
-						.setMaxValue(999999999)
+						.setMaxValue(9999999999)
 				)
 		)
 		.addSubcommand((subcommand) =>
