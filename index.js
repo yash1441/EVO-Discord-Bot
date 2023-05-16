@@ -835,7 +835,7 @@ client.on("interactionCreate", async (interaction) => {
 						});
 						sendCheaterResponseToFeishu(interaction);
 					}
-					collected.first().delete();
+					collected.first().delete().catch((error) => {logger.error(error)});
 				})
 				.catch((collected) => {
 					logger.debug("No screenshot uploaded in time.");
