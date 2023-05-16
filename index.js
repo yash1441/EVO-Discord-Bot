@@ -2074,7 +2074,7 @@ async function checkOldFiles() {
 			// Get the full path of the file
 			const filePath = path.join(rootDir, file);
 
-			if (!file.endsWith("-bug.jpg")) {
+			if (!file.endsWith("-bug.jpg") || !file.endsWith("-cheater.jpg") || !file.endsWith("-appeal.jpg")) {
 				continue;
 			}
 
