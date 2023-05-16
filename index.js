@@ -838,6 +838,7 @@ client.on("interactionCreate", async (interaction) => {
 					collected.first().delete();
 				})
 				.catch((collected) => {
+					logger.debug("No screenshot uploaded in time.");
 					interaction.editReply({
 						content:
 							"You weren't able to upload a screenshot in time. Please try again.",
