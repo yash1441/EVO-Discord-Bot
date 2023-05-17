@@ -1516,7 +1516,7 @@ client.on("messageCreate", async (message) => {
 		message.channel.type != ChannelType.DM &&
 		message.channel.id === "1105532480557170758" &&
 		message.mentions.has(client.user) &&
-		message.content.startsWith(`<@!${client.user.id}>`)
+		message.content.startsWith(`<@${client.user.id}>`)
 	) {
 		await message.channel.sendTyping();
 		//let extraPrompt = "";
