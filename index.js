@@ -798,7 +798,7 @@ client.on("interactionCreate", async (interaction) => {
 						});
 						sendBugResponseToFeishu(interaction);
 					}
-					collected.first().delete();
+					collected.first().delete().catch((error) => {logger.error(error)});;
 				})
 				.catch((collected) => {
 					interaction.editReply({
@@ -1002,7 +1002,7 @@ client.on("interactionCreate", async (interaction) => {
 						});
 						sendAppealResponseToFeishu(interaction);
 					}
-					collected.first().delete();
+					collected.first().delete().catch((error) => {logger.error(error)});;
 				})
 				.catch((collected) => {
 					interaction.editReply({
