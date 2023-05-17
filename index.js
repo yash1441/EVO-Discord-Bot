@@ -1515,10 +1515,11 @@ client.on("messageCreate", async (message) => {
 	} else if (
 		message.channel.type != ChannelType.DM &&
 		message.channel.id === "1105532480557170758" &&
-		message.mentions.has(client.user)
+		message.mentions.has(client.user) &&
+		message.content.startsWith(`<@!${client.user.id}>`)
 	) {
 		await message.channel.sendTyping();
-		let extraPrompt = "";
+		//let extraPrompt = "";
 
 		const messageContent = message.content.replace(
 			new RegExp(`^<@!?${client.user.id}> ?`),
