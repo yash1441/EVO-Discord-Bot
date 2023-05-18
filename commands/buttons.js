@@ -272,8 +272,10 @@ module.exports = {
 			const bugEmbed = new EmbedBuilder()
 				.setTitle("YOU REPORT IT AND WE FIX IT")
 				.setDescription(
-					`**Click the button below** to start the report procedure, which takes you __less than 2 minutes__.\n\n**Please follow the bot instruction and submit the required bug info:**\n1. Select a bug category.\n2. Select a game mode where a bug occurs.\n3. Describe the bug.\n 4. Upload a screenshot that shows the bug (has to be done within 60 seconds)\n\n*Please give us as much bug detail as you can. It is very important for us to locate the issue and get it fixed as soon as possible.*\n*In the end, thanks for helping us improve the game. Your effort really matters!*`
+					`**Click the button below** to start the report procedure, which takes you __less than 2 minutes__.\n\n**Please follow the bot instruction and submit the required bug info:**\n1. Select a bug category.\n2. Select a game mode where a bug occurs.\n3. Describe the bug.\n 4. Upload a screenshot that shows the bug (has to be done within 60 seconds)\n\n*Please give us as much bug detail as you can. It is very important for us to locate the issue and get it fixed as soon as possible.*\n*In the end, thanks for helping us improve the game. Your effort really matters!*\n\nTo increase our effieiency of fixing bugs, we provide the journal upload function! It will help us to locate bugs easily! Please also upload the journal in games after you submit bugs in discord, go to Setting and then find Provide Feedback, enter your username and your bug details! Thank you! 
+					Please also help better locate the bug in your log, please also provide the time when the bug occurs in bug report form, for example, a bug happens at 14:00PM 18 May (UTC+8).`
 				)
+				.setImage("https://i.ibb.co/GvVsW9R/img-v2-61fd02f7-517c-4f64-8a23-c54c3c7dbbbg.jpg")
 				.setColor(`C04946`);
 
 			const bugButton = new ButtonBuilder()
