@@ -2250,6 +2250,10 @@ async function showSubmitModal(interaction) {
 		.setPlaceholder("Select a topic")
 		.addOptions(
 			{
+				label: "Architecture Replica Challenge",
+				value: formatSelection + "Architecture Replica Challenge",
+			},
+			{
 				label: "Update Unleashed: New Tactics Uncovered",
 				value: formatSelection + "Update Unleashed: New Tactics Uncovered",
 			},
