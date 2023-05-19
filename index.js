@@ -2075,11 +2075,13 @@ async function checkOldFiles() {
 			// Get the full path of the file
 			const filePath = path.join(rootDir, file);
 
+			logger.debug(`Checking ${file}...`);
+
 			if (!file.endsWith("-bug.jpg") || !file.endsWith("-cheater.jpg") || !file.endsWith("-appeal.jpg")) {
 				continue;
 			}
 
-			logger.debug(`Checking ${file}...`);
+			logger.info(`Deleting ${file}...`);
 
 			// Get the timestamp of when the file was last modified
 			fs.stat(filePath, (err, stats) => {
