@@ -2079,8 +2079,6 @@ async function checkOldFiles() {
 				continue;
 			}
 
-			logger.info(`Deleting ${file}`);
-
 			// Get the timestamp of when the file was last modified
 			fs.stat(filePath, (err, stats) => {
 				if (err) {
@@ -2091,7 +2089,7 @@ async function checkOldFiles() {
 				// Check if the file is older than 1 hour
 				const oneHourAgo = new Date(Date.now() - 1000 * 60 * 60);
 				if (stats.mtime < oneHourAgo) {
-					console.log(`${file} is older than 1 hour.`);
+					logger.info(`${file} is older than 1 hour.`);
 					fs.unlinkSync(file);
 				}
 			});
