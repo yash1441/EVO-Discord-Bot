@@ -2079,6 +2079,8 @@ async function checkOldFiles() {
 				continue;
 			}
 
+			logger.debug(`Checking ${file}...`);
+
 			// Get the timestamp of when the file was last modified
 			fs.stat(filePath, (err, stats) => {
 				if (err) {
