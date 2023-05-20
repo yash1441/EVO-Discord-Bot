@@ -2046,7 +2046,7 @@ function checkURL(text, log) {
 	}
 
 	const expression =
-		/^(https?\:\/\/)?((www\.)?youtube\.com|youtu\.be|tiktok\.com|taptap\.io|twitter\.com|instagram\.com|twitch\.com|twitch\.tv|fb\.watch|fb\.gg)\/.+$/;
+		/^(https?\:\/\/)?((www\.)?youtube\.com|youtu\.be|tiktok\.com|taptap\.io|twitter\.com|instagram\.com|twitch\.com|twitch\.tv|fb\.watch|fb\.gg|facebook\.com)\/.+$/;
 	const regex = new RegExp(expression);
 
 	if (text.match(regex)) {
