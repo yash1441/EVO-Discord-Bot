@@ -1586,7 +1586,16 @@ client.on("messageCreate", async (message) => {
 		} catch {
 			return;
 		}
-	}
+	} else if (
+		message.channel.id === '1090274679807287296' ||
+		message.channel.id === '1028153309476966451'
+	  ) {
+		// Wait for 3 seconds
+		await new Promise((resolve) => setTimeout(resolve, 3000));
+	
+		// Delete the message
+		await message.delete().catch(() => {});
+	  }
 });
 
 client.on("guildMemberUpdate", async (oldMember, newMember) => {
