@@ -1334,8 +1334,8 @@ client.on("interactionCreate", async (interaction) => {
 				.setTitle(category);
 			const bugUsername = new TextInputBuilder()
 				.setCustomId("bugUsername")
-				.setLabel("Nickname")
-				.setPlaceholder("Please enter your in-game nickname here.")
+				.setLabel("Character ID")
+				.setPlaceholder("Find Character ID in the character profile.")
 				.setStyle(TextInputStyle.Short)
 				.setRequired(true);
 			const bugPhone = new TextInputBuilder()
@@ -1356,13 +1356,20 @@ client.on("interactionCreate", async (interaction) => {
 				.setPlaceholder("Give a detailed explanation of the bug here.")
 				.setStyle(TextInputStyle.Paragraph)
 				.setRequired(true);
+			const bugTime = new TextInputBuilder()
+				.setCustomId("bugTime")
+				.setLabel("Bug Occurrence Time")
+				.setPlaceholder("Exact hour and time zone, e.g. 14:00 22May (UTC+8)")
+				.setStyle(TextInputStyle.Short)
+				.setRequired(true);
 
 			let r1 = new ActionRowBuilder().addComponents(bugUsername);
 			let r2 = new ActionRowBuilder().addComponents(bugPhone);
 			let r3 = new ActionRowBuilder().addComponents(bugSession);
 			let r4 = new ActionRowBuilder().addComponents(bugDetails);
+			let r5 = new ActionRowBuilder().addComponents(bugTime);
 
-			bugreportModal.addComponents(r1, r2, r3, r4);
+			bugreportModal.addComponents(r1, r2, r3, r4, r5);
 
 			await interaction.showModal(bugreportModal);
 		} else if (interaction.customId === "cheaterCategories") {
@@ -2434,6 +2441,7 @@ async function sendBugResponseToFeishu(interaction) {
 	const bDetails = interaction.fields.getTextInputValue("bugDetails");
 	const bUserId = interaction.user.id;
 	const bSession = interaction.fields.getTextInputValue("bugSession");
+	const bTime = interaction.fields.getTextInputValue("bugTime");
 	const bCategory = bOptions[0];
 	const bMode = bOptions[1];
 
@@ -2441,12 +2449,13 @@ async function sendBugResponseToFeishu(interaction) {
 		fields: {
 			"Discord ID": bUserId,
 			"Discord Name": interaction.user.tag,
-			Nickname: bUsername,
+			"Character ID": bUsername,
 			"Session ID": bSession,
 			"Bug Details": bDetails,
 			Channel: "Discord",
 			"Phone Model": bPhone,
 			"Bug Type": bCategory,
+			"Bug Occur Time": bTime,
 			"Game Mode": bMode,
 			Screenshot: [{ file_token: file_token }],
 		},
@@ -2502,7 +2511,7 @@ async function sendBugResponseToFeishu(interaction) {
 						{
 							is_short: true,
 							text: {
-								content: `**Nickname**\n${bugs.fields.Nickname}`,
+								content: `**Character ID**\n${bugs.fields.Nickname}`,
 								tag: "lark_md",
 							},
 						},
@@ -2517,6 +2526,13 @@ async function sendBugResponseToFeishu(interaction) {
 							is_short: true,
 							text: {
 								content: `**Session ID**\n${bugs.fields["Session ID"]}`,
+								tag: "lark_md",
+							},
+						},
+						{
+							is_short: true,
+							text: {
+								content: `**Bug Occur Time**\n${bugs.fields["Bug Occur Time"]}`,
 								tag: "lark_md",
 							},
 						},
