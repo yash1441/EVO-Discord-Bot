@@ -2511,7 +2511,7 @@ async function sendBugResponseToFeishu(interaction) {
 						{
 							is_short: true,
 							text: {
-								content: `**Character ID**\n${bugs.fields.Nickname}`,
+								content: `**Character ID**\n${bugs.fields["Character ID"]}`,
 								tag: "lark_md",
 							},
 						},
