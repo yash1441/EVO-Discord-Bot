@@ -2523,6 +2523,13 @@ async function sendBugResponseToFeishu(interaction) {
 							},
 						},
 						{
+							is_short: false,
+							text: {
+								content: ``,
+								tag: "lark_md",
+							},
+						},
+						{
 							is_short: true,
 							text: {
 								content: `**Session ID**\n${bugs.fields["Session ID"]}`,
