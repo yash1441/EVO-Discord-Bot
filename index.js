@@ -3350,7 +3350,8 @@ async function privateChannel(
 
 function logGPTMessage(message, user) {
 	const logData = {
-		[user]: message,
+		"Discord ID": user,
+		"Prompt": message
 	}
 
 	fs.readFile('./logging/gpt.log.json', 'utf8', (err, data) => {
@@ -3359,7 +3360,7 @@ function logGPTMessage(message, user) {
 			return;
 		}
 
-		let log = {};
+		let log = [];
 
 		// If the log file is not empty, parse the existing data
 		if (data.trim() !== '') {
@@ -3372,7 +3373,7 @@ function logGPTMessage(message, user) {
 		}
 
 		// Add the new log entry to the existing log data
-		Object.assign(log, logData);
+		log.push(logData);
 
 		// Write the updated log data to the log file
 		fs.writeFile('./logging/gpt.log.json', JSON.stringify(log, null, 4), (writeErr) => {
