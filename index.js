@@ -1521,7 +1521,7 @@ client.on("messageCreate", async (message) => {
 		);
 	} else if (
 		message.channel.type != ChannelType.DM &&
-		message.channel.id === "1105532480557170758" &&
+		(message.channel.id === "1105532480557170758" || (message.channel.parent && message.channel.parent.name.includes("STAFF"))) &&
 		message.mentions.has(client.user) &&
 		message.content.startsWith(`<@${client.user.id}>`)
 	) {
