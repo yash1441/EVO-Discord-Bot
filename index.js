@@ -44,7 +44,7 @@ const configuration = new Configuration({
 	organization: process.env.OPENAI_ORG,
 	apiKey: process.env.OPENAI_KEY,
 });
-const openai = new OpenAIApi(configuration);
+//const openai = new OpenAIApi(configuration);
 
 let files = fs.readdirSync("./"),
 	file;
@@ -1573,6 +1573,7 @@ client.on("messageCreate", async (message) => {
 				.request(options)
 				.then(function (response) {
 					message.reply(response.data.message);
+					logGPTMessage(messageContent, message.author.id);
 				})
 				.catch(function (error) {
 					logger.error(error);
@@ -3344,5 +3345,42 @@ async function privateChannel(
 
 	await thread.send({
 		content: closer,
+	});
+}
+
+function logGPTMessage(message, user) {
+	const logData = {
+		[user]: message,
+	}
+
+	fs.readFile('./logging/gpt.log.json', 'utf8', (err, data) => {
+		if (err) {
+			logger.error(err);
+			return;
+		}
+
+		let log = {};
+
+		// If the log file is not empty, parse the existing data
+		if (data.trim() !== '') {
+			try {
+				log = JSON.parse(data);
+			} catch (parseError) {
+				logger.error(parseError);
+				return;
+			}
+		}
+
+		// Add the new log entry to the existing log data
+		Object.assign(log, logData);
+
+		// Write the updated log data to the log file
+		fs.writeFile('./logging/gpt.log.json', JSON.stringify(log, null, 4), (writeErr) => {
+			if (writeErr) {
+				logger.error(writeErr);
+			} else {
+				logger.info(`${user} asked GPT: ${message}`);
+			}
+		});
 	});
 }
