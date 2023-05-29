@@ -216,6 +216,7 @@ module.exports = {
 	createRecords,
 	getRecords,
 	updateRecord,
+	updateRecords,
 	getFileToken,
 	uploadToDrive,
 	sendGroupMessage,
