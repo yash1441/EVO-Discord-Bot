@@ -921,11 +921,7 @@ module.exports = {
 
 			for (const record of response.data.items) {
 				const discordId = record.fields["Discord ID"];
-				const member = await interaction.guild.members.fetch(discordId);
-
-				if (!member) {
-					left.push(record.record_id);
-				}
+				await interaction.guild.members.fetch(discordId).catch(() => left.push(record.record_id));
 			}
 
 			await interaction.editReply({ content: `${left.length} members left the server. ${left[0]}` });
