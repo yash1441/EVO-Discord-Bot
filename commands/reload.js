@@ -893,7 +893,7 @@ module.exports = {
 			});
 		} else if (subCommand === "check-cep-app") {
 			await interaction.reply({
-				content: "Checking for creator applications...",
+				content: "Getting all creator applications...",
 				ephemeral: true,
 			});
 
@@ -919,12 +919,33 @@ module.exports = {
 				});
 			}
 
+			await interaction.editReply({ content: "Checking if they are still members..."});
+
 			for (const record of response.data.items) {
 				const discordId = record.fields["Discord ID"];
-				await interaction.guild.members.fetch(discordId).catch(() => left.push(record.record_id));
+				await interaction.guild.members.fetch(discordId).catch(() => {
+						left.push(record.record_id);
+					});
 			}
 
-			await interaction.editReply({ content: `${left.length} members left the server. ${left[0]}` });
+			const data = {
+				records: [],
+			}
+
+			for (const recordId of left) {
+				data.records.push({
+					record_id: recordId,
+					fields: {
+						Status: "Left",
+					},
+				});
+			}
+
+			await interaction.editReply({ content: `**${left.length}** users left the server. Marking them \`Left\`...` });
+
+			await feishu.updateRecords(tenantToken, process.env.CEP_BASE, process.env.CEP_APP, data);
+
+			await interaction.editReply({ content: `Done.` });
 		}
 	},
 };
