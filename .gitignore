@@ -27,3 +27,6 @@ hs_err_pid*
 
 # Node Modules
 node_modules/
+
+# Logs
+logging/gpt.log.json

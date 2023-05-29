@@ -30,19 +30,6 @@ module.exports = {
 		)
 		.addSubcommand((subcommand) =>
 			subcommand
-				.setName("creators-list")
-				.setDescription("Add all Content Creators to the list.")
-		)
-		.addSubcommand((subcommand) =>
-			subcommand.setName("cec-data").setDescription("Calculate CEC data.")
-		)
-		.addSubcommand((subcommand) =>
-			subcommand
-				.setName("cec-bp")
-				.setDescription("Calculate BP Amount in CEC data.")
-		)
-		.addSubcommand((subcommand) =>
-			subcommand
 				.setName("ask-reward")
 				.setDescription("Ask winners their region and reward type.")
 		)
@@ -61,6 +48,13 @@ module.exports = {
 				.setName("series-role")
 				.setDescription(
 					"Gives players in the Community Series Participants table the role."
+				)
+		)
+		.addSubcommand((subcommand) =>
+			subcommand
+				.setName("check-creators")
+				.setDescription(
+					"Check if creators are still in the server."
 				)
 		),
 
@@ -161,278 +155,13 @@ module.exports = {
 						logger.info("No creators accepted yet.");
 					});
 			}
-		} else if (subCommand === "creators-list") {
-			if (interaction.user.id != process.env.MY_ID) return;
-			await interaction.guild.members.fetch();
-			const creatorRole = interaction.guild.roles.cache.find(
-				(role) => role.name === "Content Creator"
-			);
-			let creatorsIdList = creatorRole.members.map((member) => member.id);
-			let creatorsNameList = creatorRole.members.map(
-				(member) => member.user.tag
-			);
-
-			let creatorsList = [];
-
-			for (let i = 0; i < creatorsIdList.length; i++) {
-				let data = {
-					fields: {
-						"Discord ID": creatorsIdList[i],
-						"Discord Name": creatorsNameList[i],
-					},
-				};
-				creatorsList.records.push(data);
-			}
-
-			let tenantToken = await feishu.authorize(
-				process.env.FEISHU_ID,
-				process.env.FEISHU_SECRET
-			);
-
-			await feishu.createRecords(
-				tenantToken,
-				process.env.CEP_BASE,
-				process.env.CEP_CREATOR,
-				{ records: creatorsList }
-			);
-		} else if (subCommand === "cec-data") {
-			await interaction.reply({
-				content: "Calculating CLUB Data...",
-				ephemeral: true,
-			});
-
-			const tenantToken = await feishu.authorize(
-				process.env.FEISHU_ID,
-				process.env.FEISHU_SECRET
-			);
-
-			let response = JSON.parse(
-				await feishu.getRecords(
-					tenantToken,
-					process.env.CEP_BASE,
-					process.env.CEP_SUBMISSION,
-					`AND(CurrentValue.[Validity] = "VALID", CurrentValue.[Views] > 999, CurrentValue.[Submission Date] >= DATE(2022,12,1))`
-				)
-			);
-
-			let records = [];
-
-			for (const record of response.data.items) {
-				let shouldContinue = false;
-				if (!record.fields["Discord ID"]) continue;
-				const guild = await interaction.client.guilds.cache.get(
-					process.env.EVO_CEC_SERVER
-				);
-				const member = await guild.members
-					.fetch(record.fields["Discord ID"])
-					.catch((error) => {
-						logger.error(
-							`Error fetching member ${record.fields["Discord ID"]}. ${error}`
-						);
-						shouldContinue = true;
-					});
-
-				if (shouldContinue) continue;
-
-				if (member == undefined) continue;
-
-				if (!member.roles.cache.has(process.env.VERIFIED_ROLE)) continue;
-
-				if (
-					(record.fields["Platform"] == "TikTok" ||
-						record.fields["Platform"] == "YouTube Shorts") &&
-					record.fields["Views"] < 5000
-				)
-					continue;
-
-				let tempRecord = {};
-				if (
-					record.fields["Platform"] == "TikTok" ||
-					record.fields["Platform"] == "YouTube Shorts"
-				) {
-					tempRecord = {
-						"Discord ID": record.fields["Discord ID"],
-						"Discord Name": record.fields["Discord Name"],
-						"Short Views": parseInt(record.fields["Views"]),
-						Views: 0,
-						Videos: 1,
-					};
-				} else {
-					tempRecord = {
-						"Discord ID": record.fields["Discord ID"],
-						"Discord Name": record.fields["Discord Name"],
-						"Short Views": 0,
-						Views: parseInt(record.fields["Views"]),
-						Videos: 1,
-					};
-				}
-
-				let existingData = records.find(
-					(r) => r["Discord ID"] === tempRecord["Discord ID"]
-				);
-
-				if (existingData) {
-					existingData["Short Views"] += tempRecord["Short Views"];
-					existingData["Views"] += tempRecord["Views"];
-					existingData["Videos"] += tempRecord["Videos"];
-				} else {
-					records.push(tempRecord);
-				}
-			}
-
-			for (const record of records) {
-				response = JSON.parse(
-					await feishu.getRecords(
-						tenantToken,
-						process.env.CEP_BASE,
-						process.env.CEC_DATA,
-						`CurrentValue.[Discord ID] = "${record["Discord ID"]}"`
-					)
-				);
-				if (response.data.total) {
-					await feishu.updateRecord(
-						tenantToken,
-						process.env.CEP_BASE,
-						process.env.CEC_DATA,
-						response.data.items[0].record_id,
-						{ fields: record }
-					);
-				} else {
-					await feishu.createRecord(
-						tenantToken,
-						process.env.CEP_BASE,
-						process.env.CEC_DATA,
-						{ fields: record }
-					);
-				}
-			}
-
-			await interaction.editReply({
-				content: "CLUB Data Calculated.",
-				ephemeral: true,
-			});
-		} else if (subCommand === "cec-bp") {
-			await interaction.reply({
-				content: "Calculating CEC BP Data...",
-				ephemeral: true,
-			});
-
-			await interaction.member.fetch();
-
-			const tenantToken = await feishu.authorize(
-				process.env.FEISHU_ID,
-				process.env.FEISHU_SECRET
-			);
-
-			let response = JSON.parse(
-				await feishu.getRecords(
-					tenantToken,
-					process.env.CEP_BASE,
-					process.env.CEP_SUBMISSION,
-					`AND(CurrentValue.[Validity] = "VALID", OR(CurrentValue.[Platform] = "YouTube", CurrentValue.[Platform] = "YouTube Shorts", CurrentValue.[Platform] = "TikTok"), CurrentValue.[Views] > 999)`
-				)
-			);
-
-			if (!response.data.total) {
-				return await interaction.editReply({
-					content: "No CEP Submissions Found.",
-				});
-			}
-
-			let records = [];
-
-			for (const record of response.data.items) {
-				let shouldContinue = false,
-					tempData = {};
-
-				const guild = await interaction.client.guilds.fetch(
-					process.env.EVO_CEC_SERVER
-				);
-				await guild.members
-					.fetch(record.fields["Discord ID"])
-					.then((member) => {
-						if (!member.roles.cache.has(process.env.VERIFIED_ROLE)) {
-							return (shouldContinue = true);
-						} else shouldContinue = false;
-					})
-					.catch((error) => {
-						shouldContinue = true;
-					});
-
-				if (shouldContinue) continue;
-
-				if (
-					(record.fields["Platform"] === "YouTube Shorts" ||
-						record.fields["Platform"] === "TikTok") &&
-					parseInt(record.fields["Views"]) < 5000
-				)
-					continue;
-
-				tempData = {
-					recordId: record.record_id,
-					discordId: record.fields["Discord ID"],
-					totalViews: parseInt(record.fields["Views"]),
-				};
-
-				let existingData = records.find(
-					(r) => r["Discord ID"] === tempData["Discord ID"]
-				);
-				if (existingData) {
-					logger.info(
-						record.fields["Discord Name"] + ": +" + tempData["Views"] + " views"
-					);
-					existingData["Views"] += tempData["Views"];
-				} else {
-					console.log({ tempData });
-					records.push(tempData);
-				}
-			}
-
-			logger.debug(records.length);
-
-			for (const record of records) {
-				let bp = 0.0,
-					bpRate = 1.0;
-
-				response = JSON.parse(
-					await feishu.getRecords(
-						tenantToken,
-						process.env.CEP_BASE,
-						process.env.CEC_BENEFIT,
-						`CurrentValue.[Discord ID] = "${record.discordId}"`
-					)
-				);
-
-				if (
-					response.data.total &&
-					(response.data.items[0].fields["Benefit Level"].includes("Senior") ||
-						response.data.items[0].fields["Benefit Level"].includes("Elite"))
-				) {
-					bpRate = parseFloat(response.data.items[0].fields["BP Rate"]);
-				} else continue;
-
-				if (bpRate == NaN) bpRate = 0.0;
-				bp = (record.totalViews / 5000) * bpRate;
-
-				await feishu.updateRecord(
-					tenantToken,
-					process.env.CEP_BASE,
-					process.env.CEC_DATA,
-					record.recordId,
-					{ fields: { "BP Amount": bp } }
-				);
-			}
-
-			await interaction.editReply({
-				content: "BP Data Calculated.",
-			});
 		} else if (subCommand === "ask-reward") {
 			await interaction.reply({
 				content: "Checking for records marked **Ask**...",
 				ephemeral: true,
 			});
 
-			let tenantToken = await feishu.authorize(
+			const tenantToken = await feishu.authorize(
 				process.env.FEISHU_ID,
 				process.env.FEISHU_SECRET
 			);
@@ -1162,6 +891,44 @@ module.exports = {
 			await interaction.editReply({
 				content: `**Total Roles Added** ${response.data.items.length}`,
 			});
+		} else if (subCommand === "check-cep-app") {
+			await interaction.reply({
+				content: "Checking for creator applications...",
+				ephemeral: true,
+			});
+
+			const left = [];
+
+			const tenantToken = await feishu.authorize(
+				process.env.FEISHU_ID,
+				process.env.FEISHU_SECRET
+			);
+
+			const response = JSON.parse(
+				await feishu.getRecords(
+					tenantToken,
+					process.env.CEP_BASE,
+					process.env.CEP_APP,
+					`CurrentValue.[Status] = "Done"`
+				)
+			);
+
+			if (!response.data.total) {
+				return await interaction.editReply({
+					content: "No records found.",
+				});
+			}
+
+			for (const record of response.data.items) {
+				const discordId = record.fields["Discord ID"];
+				const member = await interaction.guild.members.fetch(discordId);
+
+				if (!member) {
+					left.push(record.record_id);
+				}
+			}
+
+			await interaction.editReply({ content: `${left.length} members left the server. ${left[0]}` });
 		}
 	},
 };
