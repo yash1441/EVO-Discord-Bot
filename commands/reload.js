@@ -988,7 +988,7 @@ module.exports = {
 
 			await interaction.editReply({ content: `**${invalid.length}** creators left the server. Marking them \`Left\`...` });
 
-			await feishu.updateRecords(tenantToken, process.env.CEP_BASE, process.env.CEP_CREATOR, data);
+			await feishu.updateRecords(tenantToken, process.env.CEP_BASE, process.env.CEP_CREATOR, invalidData);
 
 			await interaction.editReply({ content: `CEP Application - **${left.length} Left**\nCEP Creator - **${invalid.length} Invalid**` });
 		}
