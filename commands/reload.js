@@ -52,7 +52,7 @@ module.exports = {
 		)
 		.addSubcommand((subcommand) =>
 			subcommand
-				.setName("check-cep-app")
+				.setName("check-creators")
 				.setDescription(
 					"Check if creators are still in the server."
 				)
@@ -891,7 +891,7 @@ module.exports = {
 			await interaction.editReply({
 				content: `**Total Roles Added** ${response.data.items.length}`,
 			});
-		} else if (subCommand === "check-cep-app") {
+		} else if (subCommand === "check-creators") {
 			await interaction.reply({
 				content: "Getting all creator applications...",
 				ephemeral: true,
@@ -904,7 +904,7 @@ module.exports = {
 				process.env.FEISHU_SECRET
 			);
 
-			const response = JSON.parse(
+			const cep_app_response = JSON.parse(
 				await feishu.getRecords(
 					tenantToken,
 					process.env.CEP_BASE,
@@ -913,7 +913,7 @@ module.exports = {
 				)
 			);
 
-			if (!response.data.total) {
+			if (!cep_app_response.data.total) {
 				return await interaction.editReply({
 					content: "No records found.",
 				});
@@ -921,19 +921,19 @@ module.exports = {
 
 			await interaction.editReply({ content: "Checking if they are still members..."});
 
-			for (const record of response.data.items) {
+			for (const record of cep_app_response.data.items) {
 				const discordId = record.fields["Discord ID"];
 				await interaction.guild.members.fetch(discordId).catch(() => {
 						left.push(record.record_id);
 					});
 			}
 
-			const data = {
+			const leftData = {
 				records: [],
 			}
 
 			for (const recordId of left) {
-				data.records.push({
+				leftData.records.push({
 					record_id: recordId,
 					fields: {
 						Status: "Left",
@@ -943,9 +943,54 @@ module.exports = {
 
 			await interaction.editReply({ content: `**${left.length}** users left the server. Marking them \`Left\`...` });
 
-			await feishu.updateRecords(tenantToken, process.env.CEP_BASE, process.env.CEP_APP, data);
+			await feishu.updateRecords(tenantToken, process.env.CEP_BASE, process.env.CEP_APP, leftData);
 
-			await interaction.editReply({ content: `Done.` });
+			await interaction.editReply({ content: `CEP Application Done. Now checking CEP Creator...` });
+
+			const invalid = [];
+
+			const cep_creator_response = JSON.parse(
+				await feishu.getRecords(
+					tenantToken,
+					process.env.CEP_BASE,
+					process.env.CEP_CREATOR,
+					`CurrentValue.[Monthly Status] = "Valid"`
+				)
+			);
+
+			if (!cep_creator_response.data.total) {
+				return await interaction.editReply({
+					content: "No records found.",
+				});
+			}
+
+			await interaction.editReply({ content: "Checking if they are still members..."});
+
+			for (const record of cep_creator_response.data.items) {
+				const discordId = record.fields["Discord ID"];
+				await interaction.guild.members.fetch(discordId).catch(() => {
+						invalid.push(record.record_id);
+					});
+			}
+
+			const invalidData = {
+				records: [],
+			}
+
+			for (const recordId of invalid) {
+				invalidData.records.push({
+					record_id: recordId,
+					fields: {
+						"Monthly Status": "Invalid",
+					},
+				});
+			}
+
+			await interaction.editReply({ content: `**${invalid.length}** creators left the server. Marking them \`Left\`...` });
+
+			await feishu.updateRecords(tenantToken, process.env.CEP_BASE, process.env.CEP_CREATOR, data);
+
+			await interaction.editReply({ content: `CEP Application - **${left.length} Left**\nCEP Creator - **${invalid.length} Invalid**` });
 		}
 	},
 };
