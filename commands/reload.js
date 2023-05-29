@@ -52,7 +52,7 @@ module.exports = {
 		)
 		.addSubcommand((subcommand) =>
 			subcommand
-				.setName("check-creators")
+				.setName("check-cep-app")
 				.setDescription(
 					"Check if creators are still in the server."
 				)
