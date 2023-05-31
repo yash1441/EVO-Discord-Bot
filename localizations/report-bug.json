@@ -1,0 +1,170 @@
+{
+    "Optimization": {
+        "en-US": "Optimization",
+        "es-ES": "Optimización",
+        "pt-BR": "Otimização",
+        "ru": "Оптимизация",
+        "th": "การเพิ่มประสิทธิภาพ"
+    },
+    "Connection": {
+        "en-US": "Connection",
+        "es-ES": "Conexión",
+        "pt-BR": "Conexão",
+        "ru": "Соединение",
+        "th": "การเชื่อมต่อ"
+    },
+    "Login": {
+        "en-US": "Login",
+        "es-ES": "Acceso",
+        "pt-BR": "Conectar",
+        "ru": "Вход",
+        "th": "เข้าสู่ระบบ"
+    },
+    "Gameplay Abnormal": {
+        "en-US": "Gameplay Abnormal",
+        "es-ES": "Jugabilidad Anormal",
+        "pt-BR": "Jogabilidade Anormal",
+        "ru": "Ненормальный геймплей",
+        "th": "เกมเพลย์มีบางอย่างผิดปกติ"
+    },
+    "Data Loss": {
+        "en-US": "Data Loss",
+        "es-ES": "Datos Perdido",
+        "pt-BR": "Perda de Dados",
+        "ru": "Потеря данных",
+        "th": "ข้อมูลสูญหาย"
+    },
+    "Others": {
+        "en-US": "Others",
+        "es-ES": "Otros",
+        "pt-BR": "Outros",
+        "ru": "Другое",
+        "th": "อื่นๆ"
+    },
+    "Casual Mode": {
+        "en-US": "Casual Mode",
+        "es-ES": "Modo Casual",
+        "pt-BR": "Modo Casual",
+        "ru": "Казуальный режим",
+        "th": "โหมดเล่นเพลิน"
+    },
+    "Standard Mode": {
+        "en-US": "Standard Mode",
+        "es-ES": "Modo Estándar",
+        "pt-BR": "Modo Padrão",
+        "ru": "Стандартный режим",
+        "th": "โหมดมาตราฐาน"
+    },
+    "Lobby": {
+        "en-US": "Lobby",
+        "es-ES": "Vestíbulo",
+        "pt-BR": "Salão",
+        "ru": "Лобби",
+        "th": "ล๊อบบี้"
+    },
+    "Other Places": {
+        "en-US": "Other Places",
+        "es-ES": "Otros Lugares",
+        "pt-BR": "Outros Lugares",
+        "ru": "Прочие места",
+        "th": "สถานที่อื่นๆ"
+    },
+    "Character ID": {
+        "en-US": "Character ID",
+        "es-ES": "ID Personaje",
+        "pt-BR": "ID do Personagem",
+        "ru": "ID персонажа",
+        "th": "ไอดีตัวละคร"
+    },
+    "Character ID Alt": {
+        "en-US": "Find Character ID in the character profile.",
+        "es-ES": "Busca ID del personaje en el perfil.",
+        "pt-BR": "Encontre o ID do Personagem no perfil do personagem.",
+        "ru": "Вы можете найти ID персонажа в профиле.",
+        "th": "หาไอดีของตัวละครในหน้าโปรไฟล์"
+    },
+    "Phone Model and RAM": {
+        "en-US": "Phone Model and RAM",
+        "es-ES": "Modelo de Teléfono y RAM",
+        "pt-BR": "Modelo de Telefone e RAM",
+        "ru": "Модель устройства и ОЗУ",
+        "th": "รุ่นมือถือและ RAM"
+    },
+    "Phone Model and RAM Alt": {
+        "en-US": "Mention your phone model and RAM here.",
+        "es-ES": "Menciona tu Modelo teléfono y RAM.",
+        "pt-BR": "Mencione o modelo do telefone e a RAM aqui.",
+        "ru": "Укажите здесь модель вашего устройства и ОЗУ.",
+        "th": "ระบุรุ่นมือถือและRAM ของคุณที่นี้"
+    },
+    "Session ID": {
+        "en-US": "Session ID",
+        "es-ES": "Sesión ID",
+        "pt-BR": "ID da Sessão",
+        "ru": "ID сессии",
+        "th": "ไอดีเซสชั่น"
+    },
+    "Session ID Alt": {
+        "en-US": "In which session did you encounter the bug?",
+        "es-ES": "¿En que sesión se encontró el error?",
+        "pt-BR": "Em qual sessão você encontrou o erro?",
+        "ru": "В какой сессии вы столкнулись с багом?",
+        "th": "เซสชั่นไหนที่คุณได้พบเจอกับข้อบกพร่อง?"
+    },
+    "Bug Details": {
+        "en-US": "Bug Details",
+        "es-ES": "Detalles del Error",
+        "pt-BR": "Detalhes de Erro",
+        "ru": "Подробности об ошибке",
+        "th": "รายละเอียดของข้อบกพร่อง"
+    },
+    "Bug Details Alt": {
+        "en-US": "Give a detailed explanation of the bug here.",
+        "es-ES": "Da una explicación detalla del Error aquí.",
+        "pt-BR": "Dê uma explicação detalhada do erro aqui.",
+        "ru": "Дайте подробное объяснение бага здесь.",
+        "th": "ให้คำอธิบายรายละเอียดของข้อบกพร่องในนี้"
+    },
+    "Bug Occurence Time": {
+        "en-US": "Tiempo del error encontrado",
+        "es-ES": "Hora de Ocurrencia del Error",
+        "pt-BR": "Horário de ocorrência do erro",
+        "ru": "Время возникновения бага",
+        "th": "เวลาที่เกิดข้อบกพร่อง"
+    },
+    "Bug Occurence Time Alt": {
+        "en-US": "Exact hour and time zone, e.g. 14:00 22May (UTC+8)",
+        "es-ES": "Hora exacta y zona horaria, por ejemplo: 14:00 22 de mayo (UTC+8)",
+        "pt-BR": "Hora exata e fuso horário, por ex. 14:00 22 de maio (UTC-3)",
+        "ru": "Точное время и часовой пояс, например, 14:00 22 мая (UTC+3)",
+        "th": "ชั่วโมงและโซนเวลาที่แน่นอน เช่น 14:00 น. 22 พ.ค. (UTC+8)"
+    },
+    "Screenshot": {
+        "en-US": "Please upload a screenshot. Only jpg and png are accepted.",
+        "es-ES": "Carga una captura de pantalla. Solo jpn y png.",
+        "pt-BR": "Carregue uma captura de tela. Somente jpg e png são aceitos.",
+        "ru": "Пожалуйста, загрузите скриншот. Принимаются только jpg и png.",
+        "th": "โปรดอัปโหลดภาพหน้าจอด้วยภาพ jpg และ png เท่านั้น"
+    },
+    "Screenshot Error": {
+        "en-US": "You can only submit images in this. To submit a video, upload it to a public site (Youtube, Google Drive, Dropbox, etc.) and send link in the Bug Details section of the form. Please try again.",
+        "es-ES": "Solo puedes enviar imágenes en esto, para enviar vídeo, cargarlo a un sitió web(YouTube, Google Drive, Dropbox, etc.) Y envié el enlace en la sección Detalles de Error del formulario. Inténtalo de nuevo.",
+        "pt-BR": "Você só pode enviar imagens neste. Para enviar um vídeo, carregue-o em um site público (Youtube, Google Drive, Dropbox, etc.) e envie o link na seção Detalhes do erro no formulário. Por favor, tente novamente.",
+        "ru": "Здесь можно отправлять только изображения. Чтобы отправить видео, загрузите его на публичный сайт (Youtube, Google Drive, Dropbox и т.д.) и отправьте ссылку в разделе формы \"Подробности об ошибке\". Попробуйте еще раз.",
+        "th": "ส่งภาพได้เฉพาะในนี้เท่านั้น หากท่านต้องการส่งวิดีโอ ให้อัปโหลดไปที่ไซต์สาธารณะ (YouTube, Google Drive, Dropbox ฯลฯ) และส่งลิงก์ไปในส่วนรายละเอียดของข้อบกพร่องในแบบฟอร์ม กรุณาลองอีกครั้ง"
+    },
+    "Screenshot Success": {
+        "en-US": "Image uploaded. Please wait while we try to submit your application...",
+        "es-ES": "Imagen cargada. Espere mientras intentamos enviar tu solicitud...",
+        "pt-BR": "Imagem carregada. Aguarde enquanto tentamos enviar sua solicitação...",
+        "ru": "Изображение загружено. Пожалуйста, подождите, пока мы попытаемся отправить вашу заявку...",
+        "th": "อัปโหลดรูปภาพแล้ว โปรดรอสักครู่ในขณะที่เราพยายามกำลังส่งเรื่องของคุณ..."
+    },
+    "Screenshot Timeout": {
+        "en-US": "You weren't able to upload a screenshot in time. Please try again.",
+        "es-ES": "No pudiste cargar una captura de pantalla a tiempo. Inténtalo de nuevos.",
+        "pt-BR": "Você não conseguiu enviar uma captura de tela a tempo. Por favor, tente novamente.",
+        "ru": "Вы не смогли вовремя загрузить скриншот. Попробуйте еще раз.",
+        "th": "คุณไม่สามารถอัปโหลดภาพหน้าจอได้ทันเวลาที่กำหนด กรุณาลองอีกครั้ง"
+    }
+}
