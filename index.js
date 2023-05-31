@@ -256,6 +256,8 @@ client.on("interactionCreate", async (interaction) => {
 			if (response.data.total != 0) {
 				bp_amount = parseInt(response.data.items[0].fields["Final BP Amount"]);
 				bp_costed = parseInt(response.data.items[0].fields["BP Costed"]);
+
+				if (bp_costed == undefined || bp_costed == NaN) bp_costed = 0;
 			}
 
 			response = JSON.parse(
