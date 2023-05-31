@@ -43,10 +43,10 @@
     },
     "Where Bug": {
         "en-US": "Where the bug occurs",
-        "es-ES": "Donde ocurre el error",
+        "es-ES": "Donde ocurrio el error",
         "pt-BR": "Onde o erro ocorre",
-        "ru": "Где происходит баг",
-        "th": "ที่เกิดข้อบกพร่อง"
+        "ru": "Где возникает баг",
+        "th": "จุดบกพร่องเกิดขึ้นที่ใด"
     },
     "Casual Mode": {
         "en-US": "Casual Mode",
