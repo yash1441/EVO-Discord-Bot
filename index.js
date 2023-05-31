@@ -73,6 +73,11 @@ for (const file of commandFiles) {
 let betaTesterCodes = {};
 let betaTesterCodesLoaded = false;
 
+const localizationsDirectory = path.join(__dirname, "localizations");
+const reportBugLocales = JSON.parse(
+	fs.readFileSync(path.join(localizationsDirectory, "report-bug.json"))
+);
+
 // client.on("debug", (e) => console.log(e));
 
 client.on("ready", () => {
@@ -397,12 +402,12 @@ client.on("interactionCreate", async (interaction) => {
 				.setCustomId("bugCategories")
 				.setPlaceholder("Select a category")
 				.addOptions(
-					{ label: "Optimization", value: "Optimization" },
-					{ label: "Connection", value: "Connection" },
-					{ label: "Login", value: "Login" },
-					{ label: "Gameplay Abnormal", value: "Gameplay Abnormal" },
-					{ label: "Data Loss", value: "Data Loss" },
-					{ label: "Others", value: "Others" }
+					{ label: reportBugLocales["Optimization"][interaction.locale] ?? reportBugLocales["Optimization"]["en-US"], value: "Optimization" },
+					{ label: reportBugLocales["Connection"][interaction.locale] ?? reportBugLocales["Connection"]["en-US"], value: "Connection" },
+					{ label: reportBugLocales["Login"][interaction.locale] ?? reportBugLocales["Login"]["en-US"], value: "Login" },
+					{ label: reportBugLocales["Gameplay Abnormal"][interaction.locale] ?? reportBugLocales["Gameplay Abnormal"]["en-US"], value: "Gameplay Abnormal" },
+					{ label: reportBugLocales["Data Loss"][interaction.locale] ?? reportBugLocales["Data Loss"]["en-US"], value: "Data Loss" },
+					{ label: reportBugLocales["Others"][interaction.locale] ?? reportBugLocales["Others"]["en-US"], value: "Others" }
 				);
 
 			const row = new ActionRowBuilder().addComponents(bugCategories);
