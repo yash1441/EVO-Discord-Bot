@@ -41,6 +41,13 @@
         "ru": "Другое",
         "th": "อื่นๆ"
     },
+    "Where Bug": {
+        "en-US": "Where the bug occurs",
+        "es-ES": "Donde ocurre el error",
+        "pt-BR": "Onde o erro ocorre",
+        "ru": "Где происходит баг",
+        "th": "ที่เกิดข้อบกพร่อง"
+    },
     "Casual Mode": {
         "en-US": "Casual Mode",
         "es-ES": "Modo Casual",

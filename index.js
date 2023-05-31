@@ -779,7 +779,7 @@ client.on("interactionCreate", async (interaction) => {
 			}
 		} else if (interaction.customId.startsWith("bug_")) {
 			await interaction.reply({
-				content: "Please upload a screenshot. Only jpg and png are accepted.",
+				content: reportBugLocales["Screenshot"][interaction.locale] ?? reportBugLocales["Screenshot"]["en-US"],
 				ephemeral: true,
 			});
 
@@ -794,14 +794,12 @@ client.on("interactionCreate", async (interaction) => {
 						!attachment.url.endsWith("png")
 					) {
 						return interaction.editReply({
-							content:
-								"You can only submit images in this. To submit a video, upload it to a public site (Youtube, Google Drive, Dropbox, etc.) and send link in the Bug Details section of the form. Please try again.",
+							content: reportBugLocales["Screenshot Error"][interaction.locale] ?? reportBugLocales["Screenshot Error"]["en-US"],
 						});
 					} else {
 						download(attachment.url, `${interaction.user.id}-bug.jpg`);
 						interaction.editReply({
-							content:
-								"Image uploaded. Please wait while we try to submit your application...",
+							content: reportBugLocales["Screenshot Success"][interaction.locale] ?? reportBugLocales["Screenshot Success"]["en-US"],
 						});
 						sendBugResponseToFeishu(interaction);
 					}
@@ -809,8 +807,7 @@ client.on("interactionCreate", async (interaction) => {
 				})
 				.catch((collected) => {
 					interaction.editReply({
-						content:
-							"You weren't able to upload a screenshot in time. Please try again.",
+						content: reportBugLocales["Screenshot Timeout"][interaction.locale] ?? reportBugLocales["Screenshot Timeout"]["en-US"],
 					});
 				});
 		} else if (interaction.customId.startsWith("che_")) {
@@ -1318,12 +1315,12 @@ client.on("interactionCreate", async (interaction) => {
 			const selection = interaction.values[0];
 			const bugMode = new StringSelectMenuBuilder()
 				.setCustomId("bugMode" + selection)
-				.setPlaceholder("Where the bug occurs")
+				.setPlaceholder(reportBugLocales["Where Bug"][interaction.locale] ?? reportBugLocales["Where Bug"]["en-US"])
 				.addOptions(
-					{ label: "Casual Mode", value: "Casual Mode" },
-					{ label: "Standard Mode", value: "Standard Mode" },
-					{ label: "Lobby", value: "Lobby" },
-					{ label: "Other Places", value: "Other Places" }
+					{ label: reportBugLocales["Casual Mode"][interaction.locale] ?? reportBugLocales["Casual Mode"]["en-US"], value: "Casual Mode" },
+					{ label: reportBugLocales["Standard Mode"][interaction.locale] ?? reportBugLocales["Standard Mode"]["en-US"], value: "Standard Mode" },
+					{ label: reportBugLocales["Lobby"][interaction.locale] ?? reportBugLocales["Lobby"]["en-US"], value: "Lobby" },
+					{ label: reportBugLocales["Other Places"][interaction.locale] ?? reportBugLocales["Other Places"]["en-US"], value: "Other Places" }
 				);
 
 			const row = new ActionRowBuilder().addComponents(bugMode);
@@ -1341,32 +1338,32 @@ client.on("interactionCreate", async (interaction) => {
 				.setTitle(category);
 			const bugUsername = new TextInputBuilder()
 				.setCustomId("bugUsername")
-				.setLabel("Character ID")
-				.setPlaceholder("Find Character ID in the character profile.")
+				.setLabel(reportBugLocales["Character ID"][interaction.locale] ?? reportBugLocales["Character ID"]["en-US"])
+				.setPlaceholder(reportBugLocales["Character ID Alt"][interaction.locale] ?? reportBugLocales["Character ID Alt"]["en-US"])
 				.setStyle(TextInputStyle.Short)
 				.setRequired(true);
 			const bugPhone = new TextInputBuilder()
 				.setCustomId("bugPhone")
-				.setLabel("Phone Model and RAM")
-				.setPlaceholder("Mention your phone model and RAM here.")
+				.setLabel(reportBugLocales["Phone Model and RAM"][interaction.locale] ?? reportBugLocales["Phone Model and RAM"]["en-US"])
+				.setPlaceholder(reportBugLocales["Phone Model and RAM Alt"][interaction.locale] ?? reportBugLocales["Phone Model and RAM Alt"]["en-US"])
 				.setStyle(TextInputStyle.Short)
 				.setRequired(true);
 			const bugSession = new TextInputBuilder()
 				.setCustomId("bugSession")
-				.setLabel("Session ID")
-				.setPlaceholder("In which session did you encounter the bug?")
+				.setLabel(reportBugLocales["Session ID"][interaction.locale] ?? reportBugLocales["Session ID"]["en-US"])
+				.setPlaceholder(reportBugLocales["Session ID Alt"][interaction.locale] ?? reportBugLocales["Session ID Alt"]["en-US"])
 				.setStyle(TextInputStyle.Short)
 				.setRequired(true);
 			const bugDetails = new TextInputBuilder()
 				.setCustomId("bugDetails")
-				.setLabel("Bug Details")
-				.setPlaceholder("Give a detailed explanation of the bug here.")
+				.setLabel(reportBugLocales["Bug Details"][interaction.locale] ?? reportBugLocales["Bug Details"]["en-US"])
+				.setPlaceholder(reportBugLocales["Bug Details Alt"][interaction.locale] ?? reportBugLocales["Bug Details Alt"]["en-US"])
 				.setStyle(TextInputStyle.Paragraph)
 				.setRequired(true);
 			const bugTime = new TextInputBuilder()
 				.setCustomId("bugTime")
-				.setLabel("Bug Occurrence Time")
-				.setPlaceholder("Exact hour and time zone, e.g. 14:00 22May (UTC+8)")
+				.setLabel(reportBugLocales["Bug Occurence Time"][interaction.locale] ?? reportBugLocales["Bug Occurence Time"]["en-US"])
+				.setPlaceholder(reportBugLocales["Bug Occurence Time Alt"][interaction.locale] ?? reportBugLocales["Bug Occurence Time Alt"]["en-US"])
 				.setStyle(TextInputStyle.Short)
 				.setRequired(true);
 
