@@ -133,7 +133,7 @@
         "th": "ให้คำอธิบายรายละเอียดของข้อบกพร่องในนี้"
     },
     "Bug Occurence Time": {
-        "en-US": "Tiempo del error encontrado",
+        "en-US": "Bug Occurence Time",
         "es-ES": "Hora de Ocurrencia del Error",
         "pt-BR": "Horário de ocorrência do erro",
         "ru": "Время возникновения бага",
