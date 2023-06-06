@@ -2470,7 +2470,8 @@ async function sendBugResponseToFeishu(interaction) {
 		tenantToken,
 		process.env.EA1_BASE,
 		process.env.BUGS,
-		bugs
+		bugs,
+		true
 	);
 	response = await feishu.getFileToken(tenantToken, file);
 	const image_key = JSON.parse(response).data.image_key;
