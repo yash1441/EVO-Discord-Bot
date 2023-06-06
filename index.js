@@ -2456,13 +2456,13 @@ async function sendBugResponseToFeishu(interaction) {
 			"Discord Name": interaction.user.tag,
 			"Character ID": bUsername,
 			"Session ID": bSession,
-			"Bug Details": bDetails,
-			Channel: "Discord",
-			"Phone Model": bPhone,
 			"Bug Type": bCategory,
 			"Bug Occur Time": bTime,
 			"Game Mode": bMode,
-			Screenshot: [{ file_token: file_token }],
+			"Bug Details": bDetails,
+			"Channel": "Discord",
+			"Screenshot": [{ file_token: file_token }],
+			"Phone Model": bPhone,
 		},
 	};
 
@@ -2470,8 +2470,7 @@ async function sendBugResponseToFeishu(interaction) {
 		tenantToken,
 		process.env.EA1_BASE,
 		process.env.BUGS,
-		bugs,
-		true
+		bugs
 	);
 	response = await feishu.getFileToken(tenantToken, file);
 	const image_key = JSON.parse(response).data.image_key;
