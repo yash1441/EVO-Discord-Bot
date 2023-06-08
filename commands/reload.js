@@ -98,15 +98,26 @@ module.exports = {
 				}
 
 				for (const creator of creatorList) {
-					const guild = await interaction.client.guilds.cache.get(
+					const evoServer = await interaction.client.guilds.cache.get(
 						process.env.EVO_SERVER
 					);
-					const member = await guild.members
+					const cecServer = await interaction.client.guilds.cache.get(
+						process.env.EVO_CEC_SERVER
+					);
+
+					const evoMember = await evoServer.members
 						.fetch(creator.discordId)
 						.catch((error) => {
 							logger.error(error);
 						});
-					if (member == undefined) {
+					
+					const cecMember = await cecServer.members
+						.fetch(creator.discordId)
+						.catch((error) => {
+							logger.error(error);
+						});
+					
+					if (evoMember == undefined) {
 						await feishu.updateRecord(
 							tenantToken,
 							process.env.CEP_BASE,
@@ -116,7 +127,7 @@ module.exports = {
 						);
 						logger.error(`Failed to find member ${creator.discordId}.`);
 					} else {
-						await member.roles
+						await evoMember.roles
 							.add(process.env.CC_ROLE)
 							.catch(() => {
 								feishu.updateRecord(
@@ -137,6 +148,17 @@ module.exports = {
 									{ fields: { Status: "Done" } }
 								);
 								logger.info(`Added CC role to ${creator.discordId}.`);
+							});
+					}
+
+					if (cecMember != undefined) {
+						await cecMember.roles
+							.add(process.env.CEC_MEMBER_ROLE)
+							.catch(() => {
+								logger.error(`Failed to add CEC Member role to ${creator.discordId}.`);
+							})
+							.then(() => {
+								logger.info(`Added CEC Member role to ${creator.discordId}.`);
 							});
 					}
 				}
