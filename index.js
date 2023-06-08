@@ -1735,20 +1735,21 @@ client.on("guildMemberAdd", async (member) => {
 				member.roles
 					.add([process.env.CEC_MEMBER_ROLE])
 					.catch((error) => console.error(error));
-			} else {
-				member
-					.send({
-						content:
-							"You have been kicked from the server because you don't have access to **Creator Evolution Club**.",
-					})
-					.then(() => {
-						member.kick("No CC Role").catch((error) => console.error(error));
-					})
-					.catch((error) => {
-						console.error(error);
-						member.kick("No CC Role").catch((error) => console.error(error));
-					});
 			}
+			// } else {
+			// 	member
+			// 		.send({
+			// 			content:
+			// 				"You have been kicked from the server because you don't have access to **Creator Evolution Club**.",
+			// 		})
+			// 		.then(() => {
+			// 			member.kick("No CC Role").catch((error) => console.error(error));
+			// 		})
+			// 		.catch((error) => {
+			// 			console.error(error);
+			// 			member.kick("No CC Role").catch((error) => console.error(error));
+			// 		});
+			// }
 		}, 5000);
 	}
 });
