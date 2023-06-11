@@ -2275,6 +2275,10 @@ async function showSubmitModal(interaction) {
 		.setPlaceholder("Select a topic")
 		.addOptions(
 			{
+				label: "Meme in Shorts",
+				value: formatSelection + "Meme in Shorts",
+			},
+			{
 				label: "Architecture Replica Challenge",
 				value: formatSelection + "Architecture Replica Challenge",
 			},
