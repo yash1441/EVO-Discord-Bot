@@ -2062,16 +2062,12 @@ function checkURL(text, log) {
 		text = text.replace("www.", "");
 	}
 
-	if (text.includes("vm.")) {
-		text = text.replace("vm.", "");
-	}
-
 	if (text.includes("m.")) {
 		text = text.replace("m.", "");
 	}
 
 	const expression =
-		/^(https?\:\/\/)?((www\.)?youtube\.com|youtu\.be|tiktok\.com|taptap\.io|twitter\.com|instagram\.com|twitch\.com|twitch\.tv|fb\.watch|fb\.gg|facebook\.com)\/.+$/;
+		/^(https?\:\/\/)?((www\.)?.*youtube\.com|.*youtu\.be|.*tiktok\.com|taptap\.io|twitter\.com|instagram\.com|twitch\.com|twitch\.tv|fb\.watch|fb\.gg|facebook\.com)\/.+$/;
 	const regex = new RegExp(expression);
 
 	if (text.match(regex)) {
