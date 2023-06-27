@@ -2628,7 +2628,7 @@ async function sendCheaterResponseToFeishu(interaction) {
 			Category: cheaterCategory,
 			"Session ID": cheaterSession,
 			Reason: cheaterDetails,
-			Screenshot: [{ file_token: file_token }],
+			"Screenshot/Video": [{ file_token: file_token }],
 		},
 	};
 
