@@ -673,7 +673,7 @@ client.on("interactionCreate", async (interaction) => {
 				let submissionDate =
 					parseInt(
 						response.data.items[response.data.items.length - 1].fields[
-							"Submission Date"
+						"Submission Date"
 						]
 					) / 1000;
 
@@ -803,7 +803,7 @@ client.on("interactionCreate", async (interaction) => {
 						});
 						sendBugResponseToFeishu(interaction);
 					}
-					collected.first().delete().catch((error) => {logger.error(error)});;
+					collected.first().delete().catch((error) => { logger.error(error) });;
 				})
 				.catch((collected) => {
 					interaction.editReply({
@@ -823,6 +823,7 @@ client.on("interactionCreate", async (interaction) => {
 				.awaitMessages({ filter, max: 1, time: 60000, errors: ["time"] })
 				.then((collected) => {
 					const attachment = collected.first().attachments.first();
+					console.log({ attachment });
 					if (
 						!attachment.url.endsWith("jpg") &&
 						!attachment.url.endsWith("png")
@@ -839,7 +840,7 @@ client.on("interactionCreate", async (interaction) => {
 						});
 						sendCheaterResponseToFeishu(interaction);
 					}
-					collected.first().delete().catch((error) => {logger.error(error)});
+					collected.first().delete().catch((error) => { logger.error(error) });
 				})
 				.catch((collected) => {
 					logger.debug("No screenshot uploaded in time.");
@@ -949,7 +950,7 @@ client.on("interactionCreate", async (interaction) => {
 				let submissionDate =
 					parseInt(
 						response.data.items[response.data.items.length - 1].fields[
-							"Submission Date"
+						"Submission Date"
 						]
 					) / 1000;
 
@@ -1006,7 +1007,7 @@ client.on("interactionCreate", async (interaction) => {
 						});
 						sendAppealResponseToFeishu(interaction);
 					}
-					collected.first().delete().catch((error) => {logger.error(error)});;
+					collected.first().delete().catch((error) => { logger.error(error) });;
 				})
 				.catch((collected) => {
 					interaction.editReply({
@@ -1604,13 +1605,13 @@ client.on("messageCreate", async (message) => {
 	} else if (
 		message.channel.id === '1090274679807287296' ||
 		message.channel.id === '1028153309476966451'
-	  ) {
+	) {
 		// Wait for 3 seconds
 		await new Promise((resolve) => setTimeout(resolve, 3000));
-	
+
 		// Delete the message
-		await message.delete().catch(() => {});
-	  }
+		await message.delete().catch(() => { });
+	}
 });
 
 client.on("guildMemberUpdate", async (oldMember, newMember) => {
