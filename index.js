@@ -790,8 +790,8 @@ client.on("interactionCreate", async (interaction) => {
 				.then((collected) => {
 					const attachment = collected.first().attachments.first();
 					if (
-						!attachment.url.endsWith("jpg") &&
-						!attachment.url.endsWith("png")
+						!attachment.contentType == 'image/png' ||
+						!attachment.contentType == 'image/jpeg'
 					) {
 						return interaction.editReply({
 							content: reportBugLocales["Screenshot Error"][interaction.locale] ?? reportBugLocales["Screenshot Error"]["en-US"],
@@ -991,8 +991,8 @@ client.on("interactionCreate", async (interaction) => {
 				.then((collected) => {
 					const attachment = collected.first().attachments.first();
 					if (
-						!attachment.url.endsWith("jpg") &&
-						!attachment.url.endsWith("png")
+						!attachment.contentType == 'image/png' ||
+						!attachment.contentType == 'image/jpeg'
 					) {
 						return interaction.editReply({
 							content:
