@@ -823,10 +823,9 @@ client.on("interactionCreate", async (interaction) => {
 				.awaitMessages({ filter, max: 1, time: 60000, errors: ["time"] })
 				.then((collected) => {
 					const attachment = collected.first().attachments.first();
-					console.log({ attachment });
 					if (
-						!attachment.url.endsWith("jpg") &&
-						!attachment.url.endsWith("png")
+						!attachment.contentType == 'image/png' ||
+						!attachment.contentType == 'image/jpeg'
 					) {
 						return interaction.editReply({
 							content:
