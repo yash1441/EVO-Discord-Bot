@@ -1,2 +1,2 @@
 # EVO-Discord-Bot
-A discord bot for the Project EVO server.
+A discord bot for the Mission EVO server.
